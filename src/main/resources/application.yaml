@@ -10,7 +10,6 @@ jwt:
   audience: "jwt-audience"
   realm: "orienteeringApp"
   secret: ${JWT_SECRET}
-  issuer: ${JWT_ISSUER}
 postgres:
   host: ${DB_HOST}
   port: "5432"
