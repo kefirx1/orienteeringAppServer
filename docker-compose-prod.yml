@@ -37,7 +37,7 @@ services:
   frontend:
     container_name: orienteering-app-fe-prod
     build:
-      context: ../frontend
+      context: ../orienteeringAppAdminPanel
     ports:
       - "80:80"
     depends_on:
