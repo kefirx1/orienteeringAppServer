@@ -1,13 +1,7 @@
-val h2_version: String by project
-val koin_version: String by project
-val kotlin_version: String by project
-val logback_version: String by project
-val postgres_version: String by project
-
 plugins {
-  kotlin("jvm") version "2.3.0"
-  id("io.ktor.plugin") version "3.4.0"
-  id("org.jetbrains.kotlin.plugin.serialization") version "2.3.0"
+  alias(libs.plugins.kotlin.jvm)
+  alias(libs.plugins.ktor)
+  alias(libs.plugins.kotlin.serialization)
 }
 
 group = "pl.dev.bkwiatkowski"
@@ -22,27 +16,27 @@ kotlin {
 }
 
 dependencies {
-  implementation("org.openfolder:kotlin-asyncapi-ktor:3.1.3")
-  implementation("io.ktor:ktor-server-caching-headers")
-  implementation("io.ktor:ktor-server-default-headers")
-  implementation("io.ktor:ktor-server-core")
-  implementation("io.ktor:ktor-server-openapi")
-  implementation("io.ktor:ktor-server-routing-openapi")
-  implementation("io.ktor:ktor-server-swagger")
-  implementation("io.ktor:ktor-server-auth")
-  implementation("io.ktor:ktor-server-auth-jwt")
-  implementation("com.kborowy:firebase-auth-provider:1.6.0")
-  implementation("io.ktor:ktor-server-content-negotiation")
-  implementation("io.ktor:ktor-serialization-kotlinx-json")
-  implementation("org.postgresql:postgresql:$postgres_version")
-  implementation("com.h2database:h2:$h2_version")
-  implementation("io.insert-koin:koin-ktor:$koin_version")
-  implementation("io.insert-koin:koin-logger-slf4j:$koin_version")
-  implementation("io.ktor:ktor-server-websockets")
-  implementation("io.github.flaxoos:ktor-server-rate-limiting:2.2.1")
-  implementation("io.ktor:ktor-server-netty")
-  implementation("ch.qos.logback:logback-classic:$logback_version")
-  implementation("io.ktor:ktor-server-config-yaml")
-  testImplementation("io.ktor:ktor-server-test-host")
-  testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+  implementation(libs.kotlin.asyncapi.ktor)
+  implementation(libs.ktor.server.caching.headers)
+  implementation(libs.ktor.server.default.headers)
+  implementation(libs.ktor.server.core)
+  implementation(libs.ktor.server.openapi)
+  implementation(libs.ktor.server.routing.openapi)
+  implementation(libs.ktor.server.swagger)
+  implementation(libs.ktor.server.auth)
+  implementation(libs.ktor.server.auth.jwt)
+  implementation(libs.firebase.auth.provider)
+  implementation(libs.ktor.server.content.negotiation)
+  implementation(libs.ktor.serialization.kotlinx.json)
+  implementation(libs.postgresql)
+  implementation(libs.h2)
+  implementation(libs.koin.ktor)
+  implementation(libs.koin.logger.slf4j)
+  implementation(libs.ktor.server.websockets)
+  implementation(libs.ktor.server.rate.limiting)
+  implementation(libs.ktor.server.netty)
+  implementation(libs.logback.classic)
+  implementation(libs.ktor.server.config.yaml)
+  testImplementation(libs.ktor.server.test.host)
+  testImplementation(libs.kotlin.test.junit)
 }

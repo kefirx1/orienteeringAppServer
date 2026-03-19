@@ -1,0 +1,40 @@
+[versions]
+kotlin = "2.3.0"
+ktor = "3.4.0"
+logback = "1.4.14"
+postgres = "42.7.9"
+h2 = "2.3.232"
+koin = "4.1.2-Beta1"
+kotlinAsyncapiKtor = "3.1.3"
+firebaseAuthProvider = "1.6.0"
+ktorServerRateLimiting = "2.2.1"
+
+[libraries]
+kotlin-asyncapi-ktor = { module = "org.openfolder:kotlin-asyncapi-ktor", version.ref = "kotlinAsyncapiKtor" }
+ktor-server-caching-headers = { module = "io.ktor:ktor-server-caching-headers", version.ref = "ktor" }
+ktor-server-default-headers = { module = "io.ktor:ktor-server-default-headers", version.ref = "ktor" }
+ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
+ktor-server-openapi = { module = "io.ktor:ktor-server-openapi", version.ref = "ktor" }
+ktor-server-routing-openapi = { module = "io.ktor:ktor-server-routing-openapi", version.ref = "ktor" }
+ktor-server-swagger = { module = "io.ktor:ktor-server-swagger", version.ref = "ktor" }
+ktor-server-auth = { module = "io.ktor:ktor-server-auth", version.ref = "ktor" }
+ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt", version.ref = "ktor" }
+firebase-auth-provider = { module = "com.kborowy:firebase-auth-provider", version.ref = "firebaseAuthProvider" }
+ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+postgresql = { module = "org.postgresql:postgresql", version.ref = "postgres" }
+h2 = { module = "com.h2database:h2", version.ref = "h2" }
+koin-ktor = { module = "io.insert-koin:koin-ktor", version.ref = "koin" }
+koin-logger-slf4j = { module = "io.insert-koin:koin-logger-slf4j", version.ref = "koin" }
+ktor-server-websockets = { module = "io.ktor:ktor-server-websockets", version.ref = "ktor" }
+ktor-server-rate-limiting = { module = "io.github.flaxoos:ktor-server-rate-limiting", version.ref = "ktorServerRateLimiting" }
+ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+ktor-server-config-yaml = { module = "io.ktor:ktor-server-config-yaml", version.ref = "ktor" }
+ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

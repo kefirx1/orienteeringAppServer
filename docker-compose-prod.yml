@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  postgres_db:
+    image: postgres:15
+    container_name: orienteering-app-prod
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata_prod:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    container_name: orienteering-app-be-prod
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres_db
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      JWT_SECRET: ${JWT_SECRET}
+    restart: always
+
+  frontend:
+    container_name: orienteering-app-fe-prod
+    build:
+      context: ../frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  pgdata_prod:

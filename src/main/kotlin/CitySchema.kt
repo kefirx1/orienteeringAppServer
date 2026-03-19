@@ -19,8 +19,8 @@ class CityService(private val connection: Connection) {
   }
 
   init {
-    val statement = connection.createStatement()
-    statement.executeUpdate(CREATE_TABLE_CITIES)
+    //val statement = connection.createStatement()
+    //statement.executeUpdate(CREATE_TABLE_CITIES)
   }
 
   private var newCityId = 0

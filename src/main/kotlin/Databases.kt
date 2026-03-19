@@ -1,40 +1,15 @@
 package pl.dev.bkwiatkowski
 
-import com.asyncapi.kotlinasyncapi.context.service.AsyncApiExtension
-import com.asyncapi.kotlinasyncapi.ktor.AsyncApiPlugin
-import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
-import com.kborowy.authprovider.firebase.firebase
-import io.github.flaxoos.ktor.server.plugins.ratelimiter.*
-import io.github.flaxoos.ktor.server.plugins.ratelimiter.implementations.*
 import io.ktor.http.*
-import io.ktor.http.content.*
-import io.ktor.openapi.*
-import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
-import io.ktor.server.plugins.cachingheaders.*
-import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.plugins.defaultheaders.*
-import io.ktor.server.plugins.openapi.*
-import io.ktor.server.plugins.swagger.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.server.websocket.*
-import io.ktor.websocket.*
-import java.io.File
 import java.sql.Connection
 import java.sql.DriverManager
-import java.time.Duration
-import kotlin.time.Duration.Companion.seconds
-import org.koin.dsl.module
-import org.koin.ktor.plugin.Koin
-import org.koin.logger.slf4jLogger
 
 fun Application.configureDatabases() {
-  val dbConnection: Connection = connectToPostgres(embedded = true)
+  val dbConnection: Connection = connectToPostgres()
   val cityService = CityService(dbConnection)
 
   routing {
@@ -95,17 +70,17 @@ fun Application.configureDatabases() {
  * @return [Connection] that represent connection to the database. Please, don't forget to close this connection when
  * your application shuts down by calling [Connection.close]
  * */
-fun Application.connectToPostgres(embedded: Boolean): Connection {
+fun Application.connectToPostgres(): Connection {
   Class.forName("org.postgresql.Driver")
-  if (embedded) {
-    log.info("Using embedded H2 database for testing; replace this flag to use postgres")
-    return DriverManager.getConnection("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", "root", "")
-  } else {
-    val url = environment.config.property("postgres.url").getString()
-    log.info("Connecting to postgres database at $url")
-    val user = environment.config.property("postgres.user").getString()
-    val password = environment.config.property("postgres.password").getString()
 
-    return DriverManager.getConnection(url, user, password)
-  }
+  val host = environment.config.property("postgres.host").getString()
+  val port = environment.config.property("postgres.port").getString()
+  val database = environment.config.property("postgres.database").getString()
+  val user = environment.config.property("postgres.user").getString()
+  val password = environment.config.property("postgres.password").getString()
+
+  val url = "jdbc:postgresql://$host:$port/$database"
+  log.info("Connecting to postgres database at $url")
+
+  return DriverManager.getConnection(url, user, password)
 }
