@@ -9,6 +9,7 @@ version = "0.0.1"
 
 application {
   mainClass = "io.ktor.server.netty.EngineMain"
+  applicationDefaultJvmArgs = listOf("--enable-native-access=ALL-UNNAMED")
 }
 
 kotlin {
@@ -19,7 +20,7 @@ dependencies {
   implementation(libs.kotlin.asyncapi.ktor)
   implementation(libs.ktor.server.caching.headers)
   implementation(libs.ktor.server.default.headers)
-  implementation(libs.ktor.server.core)
+  implementation(libs.ktor.server.call.logging)
   implementation(libs.ktor.server.openapi)
   implementation(libs.ktor.server.routing.openapi)
   implementation(libs.ktor.server.swagger)
@@ -37,6 +38,10 @@ dependencies {
   implementation(libs.ktor.server.netty)
   implementation(libs.logback.classic)
   implementation(libs.ktor.server.config.yaml)
+  implementation(libs.exposed.jdbc)
+  implementation(libs.exposed.dao)
+  implementation(libs.exposed.java.time)
+  implementation(libs.hikari.cp)
   testImplementation(libs.ktor.server.test.host)
   testImplementation(libs.kotlin.test.junit)
 }
