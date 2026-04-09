@@ -28,6 +28,7 @@ dependencies {
   implementation(libs.ktor.server.auth.jwt)
   implementation(libs.firebase.auth.provider)
   implementation(libs.ktor.server.content.negotiation)
+  implementation(libs.ktor.server.cors)
   implementation(libs.ktor.serialization.kotlinx.json)
   implementation(libs.postgresql)
   implementation(libs.h2)

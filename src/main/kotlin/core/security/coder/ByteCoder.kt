@@ -12,7 +12,6 @@ interface ByteCoder {
 
 class Base64ByteCoder : ByteCoder {
   override fun encode(bytes: ByteArray): Either<DomainError, String> = either {
-    println("encode")
     Base64.getEncoder().encodeToString(bytes)
   }
 

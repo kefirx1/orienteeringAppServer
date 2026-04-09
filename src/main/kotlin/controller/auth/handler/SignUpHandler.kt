@@ -33,7 +33,7 @@ class SignUpHandler(
     if (validationResult is ValidationState.Invalid) {
       call.respond(
         status = HttpStatusCode.Conflict,
-        message = validationResult.errorMessage
+        message = validationResult.message
       )
       return
     }

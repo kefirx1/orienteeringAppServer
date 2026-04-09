@@ -1,7 +1,6 @@
 package pl.dev.bkwiatkowski.controller.auth
 
-import io.ktor.server.application.*
-import io.ktor.server.auth.authenticate
+import io.ktor.server.auth.*
 import io.ktor.server.routing.*
 import pl.dev.bkwiatkowski.controller.auth.handler.AuthenticateHandler
 import pl.dev.bkwiatkowski.controller.auth.handler.SignInHandler
@@ -14,7 +13,7 @@ class AuthController(
   private val signInHandler: SignInHandler,
 ) : Controller {
 
-  override fun Routing.registerRoutes() {
+  override fun Route.registerRoutes() {
     authenticate {
       get("authenticate") {
         authenticateHandler.handle(call)

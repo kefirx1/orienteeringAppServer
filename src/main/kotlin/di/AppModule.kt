@@ -61,7 +61,8 @@ fun appModule(config: ApplicationConfig) = module {
     ValidateAdminPanelUserRequestUCImpl(
       usernameValidator = get(),
       passwordValidator = get(),
-      emailValidator = get()
+      emailValidator = get(),
+      adminPanelUserRepository = get()
     )
   }
 

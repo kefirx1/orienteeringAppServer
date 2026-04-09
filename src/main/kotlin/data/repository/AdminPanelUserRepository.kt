@@ -14,6 +14,7 @@ import pl.dev.bkwiatkowski.domain.model.AdminPanelUser
 
 interface AdminPanelUserRepository {
   suspend fun getUserByUsername(username: String): Either<DomainError, AdminPanelUser>
+  suspend fun getUserByEmail(email: String): Either<DomainError, AdminPanelUser>
   suspend fun insertUser(user: AdminPanelUser): Either<DomainError, Unit>
 }
 
@@ -32,7 +33,13 @@ class AdminPanelUserRepositoryImpl(
   override suspend fun getUserByUsername(username: String): Either<DomainError, AdminPanelUser> = either {
     database.getRight().dbQuery {
       AdminPanelUserDAO.find { AdminPanelUserTable.username eq username }.singleOrNull()?.toDomain()
-    } ?: raise(DomainError.Custom(e = NullPointerException("User not found")))
+    } ?: raise(error = DomainError.Custom(e = NullPointerException("User not found")))
+  }
+
+  override suspend fun getUserByEmail(email: String): Either<DomainError, AdminPanelUser> = either {
+    database.getRight().dbQuery {
+      AdminPanelUserDAO.find { AdminPanelUserTable.email eq email }.singleOrNull()?.toDomain()
+    } ?: raise(error = DomainError.Custom(e = NullPointerException("User not found")))
   }
 
   override suspend fun insertUser(user: AdminPanelUser): Either<DomainError, Unit> = either {

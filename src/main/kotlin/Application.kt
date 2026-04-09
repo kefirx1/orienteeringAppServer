@@ -25,6 +25,5 @@ fun Application.module() {
   routingPlugin.configure(application = this)
 
   configureHTTP()
-  configureSockets()
   configureAdministration()
 }

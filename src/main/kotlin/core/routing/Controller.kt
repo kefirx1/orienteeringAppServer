@@ -1,7 +1,7 @@
 package pl.dev.bkwiatkowski.core.routing
 
-import io.ktor.server.routing.Routing
+import io.ktor.server.routing.*
 
 interface Controller {
-  fun Routing.registerRoutes()
+  fun Route.registerRoutes()
 }

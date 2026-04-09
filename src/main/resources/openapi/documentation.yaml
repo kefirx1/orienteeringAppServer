@@ -1,0 +1,101 @@
+openapi: "3.0.3"
+info:
+  title: "OrienteeringAppServer API"
+  version: "0.0.1"
+  description: "API documentation for OrienteeringAppServer"
+servers:
+  - url: http://localhost:8080
+    description: "Local development server"
+  - url: https://orienteeringapp.pl
+    description: "Production server"
+paths:
+  /api/auth/signup:
+    post:
+      summary: "User Sign Up"
+      description: "Registers a new user"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignUpRequestDto"
+      responses:
+        "200":
+          description: "Successful operation"
+        "400":
+          description: "Bad Request - Invalid payload"
+        "409":
+          description: "Conflict - Invalid data or user already exists"
+        "500":
+          description: "Internal Server Error"
+  /api/auth/signin:
+    post:
+      summary: "User Sign In"
+      description: "Authenticates a user and returns a token"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignInRequestDto"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignInResponseDto"
+        "400":
+          description: "Bad Request - Invalid payload"
+        "409":
+          description: "Conflict - Invalid credentials"
+        "500":
+          description: "Internal Server Error"
+  /api/authenticate:
+    get:
+      summary: "Authenticate User"
+      description: "Checks if the current user is authenticated"
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: "Successful operation"
+        "401":
+          description: "Unauthorized"
+components:
+  schemas:
+    SignUpRequestDto:
+      type: object
+      required:
+        - username
+        - password
+        - email
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        email:
+          type: string
+    SignInRequestDto:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    SignInResponseDto:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
