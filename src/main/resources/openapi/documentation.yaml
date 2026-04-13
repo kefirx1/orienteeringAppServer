@@ -6,8 +6,6 @@ info:
 servers:
   - url: http://localhost:8080
     description: "Local development server"
-  - url: https://orienteeringapp.pl
-    description: "Production server"
 paths:
   /api/auth/signup:
     post:
@@ -24,10 +22,22 @@ paths:
           description: "Successful operation"
         "400":
           description: "Bad Request - Invalid payload"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "409":
           description: "Conflict - Invalid data or user already exists"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /api/auth/signin:
     post:
       summary: "User Sign In"
@@ -47,10 +57,28 @@ paths:
                 $ref: "#/components/schemas/SignInResponseDto"
         "400":
           description: "Bad Request - Invalid payload"
-        "409":
-          description: "Conflict - Invalid credentials"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized - Invalid credentials"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Not Found - User does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /api/authenticate:
     get:
       summary: "Authenticate User"
@@ -64,6 +92,13 @@ paths:
           description: "Unauthorized"
 components:
   schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        businessCode:
+          type: string
+        message:
+          type: string
     SignUpRequestDto:
       type: object
       required:
