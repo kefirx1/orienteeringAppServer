@@ -5,12 +5,16 @@ ktor:
   deployment:
     host: "0.0.0.0"
     port: 8080
+cors:
+  hosts:
+    - ${CORS_HOSTS}
 jwt:
   domain: ${JWT_ISSUER}
   audience: "jwt-audience"
   realm: "orienteeringApp"
   secret: ${JWT_SECRET}
-  expiresInMinutes: 30
+  expiresInMinutes: 6
+  refreshExpiresInDays: 30
 postgres:
   host: ${DB_HOST}
   port: "5432"

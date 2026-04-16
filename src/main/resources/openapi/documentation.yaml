@@ -55,6 +55,11 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SignInResponseDto"
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: "HttpOnly refresh token cookie"
         "400":
           description: "Bad Request - Invalid payload"
           content:
@@ -69,6 +74,68 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "404":
           description: "Not Found - User does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/auth/refresh:
+    post:
+      summary: "Refresh Token"
+      description: "Refreshes user authentication using a refresh token from an HttpOnly cookie"
+      parameters:
+        - name: refreshToken
+          in: cookie
+          required: true
+          schema:
+            type: string
+          description: "HttpOnly refresh token"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignInResponseDto"
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: "New HttpOnly refresh token cookie"
+        "400":
+          description: "Bad Request - Missing refresh token cookie"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized - Invalid or expired refresh token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/auth/logout:
+    post:
+      summary: "User Logout"
+      description: "Logs out the user by revoking all their refresh tokens"
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: "Successful operation"
+        "401":
+          description: "Unauthorized"
           content:
             application/json:
               schema:
@@ -126,9 +193,13 @@ components:
       type: object
       required:
         - token
+        - expiresInSec
       properties:
         token:
           type: string
+        expiresInSec:
+          type: integer
+          format: int64
   securitySchemes:
     bearerAuth:
       type: http

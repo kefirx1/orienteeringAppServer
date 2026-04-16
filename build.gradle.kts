@@ -43,6 +43,7 @@ dependencies {
   implementation(libs.exposed.dao)
   implementation(libs.exposed.java.time)
   implementation(libs.hikari.cp)
+  implementation(libs.ktor.server.core)
   testImplementation(libs.ktor.server.test.host)
   testImplementation(libs.kotlin.test.junit)
 }

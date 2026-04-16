@@ -7,6 +7,7 @@ import pl.dev.bkwiatkowski.plugins.FrameworksPlugin
 import pl.dev.bkwiatkowski.plugins.MonitoringPlugin
 import pl.dev.bkwiatkowski.plugins.RoutingPlugin
 import pl.dev.bkwiatkowski.plugins.SecurityPlugin
+import pl.dev.bkwiatkowski.plugins.HTTPPlugin
 
 fun main(args: Array<String>) {
   EngineMain.main(args)
@@ -24,6 +25,8 @@ fun Application.module() {
   val routingPlugin: RoutingPlugin by inject()
   routingPlugin.configure(application = this)
 
-  configureHTTP()
+  val httpPlugin: HTTPPlugin by inject()
+  httpPlugin.configure(application = this)
+
   configureAdministration()
 }

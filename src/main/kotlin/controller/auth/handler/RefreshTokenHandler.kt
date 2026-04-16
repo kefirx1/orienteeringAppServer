@@ -2,29 +2,26 @@ package pl.dev.bkwiatkowski.controller.auth.handler
 
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.request.*
 import io.ktor.server.response.*
-import pl.dev.bkwiatkowski.controller.auth.dto.request.SignInRequestDto
 import pl.dev.bkwiatkowski.controller.auth.dto.response.SignInResponseDto
 import pl.dev.bkwiatkowski.core.EnvironmentConfig
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.TokenClaim
 import pl.dev.bkwiatkowski.core.security.token.TokenProvider
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
-import pl.dev.bkwiatkowski.domain.model.SaltedHash
-import pl.dev.bkwiatkowski.domain.usecase.GetAdminPanelUserUC
+import pl.dev.bkwiatkowski.domain.usecase.RevokeAllUserRefreshTokensUC
 import pl.dev.bkwiatkowski.domain.usecase.SaveRefreshTokenUC
-import pl.dev.bkwiatkowski.domain.usecase.VerifyAdminPanelUserAuthenticationUC
+import pl.dev.bkwiatkowski.domain.usecase.VerifyAndRevokeRefreshTokenUC
 
-class SignInHandler(
-  private val getAdminPanelUserUC: GetAdminPanelUserUC,
-  private val verifyAdminPanelUserAuthenticationUC: VerifyAdminPanelUserAuthenticationUC,
+class RefreshTokenHandler(
   private val tokenProvider: TokenProvider,
   private val environmentConfig: EnvironmentConfig,
+  private val verifyAndRevokeRefreshTokenUC: VerifyAndRevokeRefreshTokenUC,
+  private val revokeAllUserRefreshTokensUC: RevokeAllUserRefreshTokensUC,
   private val saveRefreshTokenUC: SaveRefreshTokenUC
 ) {
   suspend fun handle(call: ApplicationCall) {
-    val request = runCatching { call.receiveNullable<SignInRequestDto>() }.getOrNull() ?: run {
+    val refreshToken = runCatching { call.request.cookies[REFRESH_TOKEN_COOKIE_NAME] }.getOrNull() ?: run {
       call.respond(
         status = HttpStatusCode.BadRequest,
         message = ErrorResponse(
@@ -35,47 +32,71 @@ class SignInHandler(
       return
     }
 
-    val user = getAdminPanelUserUC(
-      params = GetAdminPanelUserUC.Params(
-        username = request.username,
-      ),
-    ).getRightOrElse {
-      call.respond(
-        status = HttpStatusCode.NotFound,
-        message = ErrorResponse(
-          businessCode = "USER_NOT_FOUND",
-          message = "User does not exist"
-        )
-      )
-      return
-    }
+    println(refreshToken)
 
-    val result = verifyAdminPanelUserAuthenticationUC(
-      params = VerifyAdminPanelUserAuthenticationUC.Params(
-        username = request.username,
-        password = request.password,
-        saltedHash = SaltedHash(
-          hash = user.password,
-          salt = user.salt,
-        ),
-      ),
-    ).getRightOrElse {
-      call.respond(
-        status = HttpStatusCode.InternalServerError,
-        message = ErrorResponse(
-          businessCode = "AUTHENTICATION_ERROR",
-          message = "Failed to verify authentication"
-        )
-      )
-      return
-    }
-
-    if (result == VerifyAdminPanelUserAuthenticationUC.Result.InvalidCredentials) {
+    val userIdString = tokenProvider.verifyRefreshToken(refreshToken).getRightOrElse {
       call.respond(
         status = HttpStatusCode.Unauthorized,
         message = ErrorResponse(
-          businessCode = "INVALID_CREDENTIALS",
-          message = "Invalid username or password"
+          businessCode = "INVALID_REFRESH_TOKEN",
+          message = "Refresh token is invalid or expired"
+        )
+      )
+      return
+    }
+    println(1)
+
+    val userId = userIdString.toIntOrNull() ?: run {
+      call.respond(
+        status = HttpStatusCode.Unauthorized,
+        message = ErrorResponse(
+          businessCode = "INVALID_REFRESH_TOKEN",
+          message = "Invalid token payload"
+        )
+      )
+      return
+    }
+    println(2)
+    
+    val verificationResult = verifyAndRevokeRefreshTokenUC(
+      params = VerifyAndRevokeRefreshTokenUC.Params(
+        token = refreshToken,
+      )
+    ).getRightOrElse {
+      call.respond(
+        status = HttpStatusCode.Unauthorized,
+        message = ErrorResponse(
+          businessCode = "INVALID_REFRESH_TOKEN",
+          message = "Refresh token invalid or expired."
+        )
+      )
+      return
+    }
+    println(3)
+
+    if (verificationResult.isReused) {
+      revokeAllUserRefreshTokensUC(
+        params = RevokeAllUserRefreshTokensUC.Params(
+          userId = userId
+        )
+      )
+
+      call.respond(
+        status = HttpStatusCode.Unauthorized,
+        message = ErrorResponse(
+          businessCode = "TOKEN_REUSED",
+          message = "Refresh token reused outside of grace period. All sessions have been revoked."
+        )
+      )
+      return
+    }
+
+    if (userId != verificationResult.userId) {
+      call.respond(
+        status = HttpStatusCode.Unauthorized,
+        message = ErrorResponse(
+          businessCode = "INVALID_REFRESH_TOKEN",
+          message = "Token mismatch"
         )
       )
       return
@@ -84,7 +105,7 @@ class SignInHandler(
     val token = tokenProvider.generate(
       TokenClaim(
         name = USER_ID_CLAIM,
-        value = user.id.toString(),
+        value = userId.toString(),
       )
     ).getRightOrElse {
       call.respond(
@@ -97,10 +118,10 @@ class SignInHandler(
       return
     }
 
-    val refreshToken = tokenProvider.generateRefreshToken(
+    val newRefreshToken = tokenProvider.generateRefreshToken(
       TokenClaim(
         name = USER_ID_CLAIM,
-        value = user.id.toString(),
+        value = userId.toString(),
       )
     ).getRightOrElse {
       call.respond(
@@ -113,10 +134,12 @@ class SignInHandler(
       return
     }
 
+    println("new refresh token: $newRefreshToken")
+
     saveRefreshTokenUC(
       params = SaveRefreshTokenUC.Params(
-        userId = user.id, 
-        token = refreshToken
+        userId = userId, 
+        token = newRefreshToken
       )
     ).getRightOrElse {
       call.respond(
@@ -131,7 +154,7 @@ class SignInHandler(
 
     call.response.cookies.append(
       name = REFRESH_TOKEN_COOKIE_NAME,
-      value = refreshToken,
+      value = newRefreshToken,
       maxAge = environmentConfig.jwtRefreshExpiresIn.inWholeSeconds,
       httpOnly = true,
       secure = true,

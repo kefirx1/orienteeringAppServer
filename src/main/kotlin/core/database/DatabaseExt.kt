@@ -7,11 +7,15 @@ import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import pl.dev.bkwiatkowski.core.DomainError
+import pl.dev.bkwiatkowski.core.Either
+import pl.dev.bkwiatkowski.core.either
 
-suspend fun <T> Database.dbQuery(block: suspend () -> T): T =
+suspend fun <T> Database.dbQuery(block: suspend () -> T): Either<DomainError, T> = either {
   withContext(Dispatchers.IO) {
     suspendTransaction(db = this@dbQuery) { block() }
   }
+}
 
 inline fun <reified T: Table> Database.initTable(table: T) {
   transaction(this) {

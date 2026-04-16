@@ -6,6 +6,7 @@ import org.koin.dsl.module
 import pl.dev.bkwiatkowski.plugins.RoutingPlugin
 import pl.dev.bkwiatkowski.controller.auth.AuthController
 import pl.dev.bkwiatkowski.controller.auth.handler.AuthenticateHandler
+import pl.dev.bkwiatkowski.controller.auth.handler.RefreshTokenHandler
 import pl.dev.bkwiatkowski.controller.auth.handler.SignInHandler
 import pl.dev.bkwiatkowski.controller.auth.handler.SignUpHandler
 import pl.dev.bkwiatkowski.core.routing.Controller
@@ -25,6 +26,8 @@ import pl.dev.bkwiatkowski.core.validation.DefaultTextValidator
 import pl.dev.bkwiatkowski.core.validation.TextValidator
 import pl.dev.bkwiatkowski.data.repository.AdminPanelUserRepository
 import pl.dev.bkwiatkowski.data.repository.AdminPanelUserRepositoryImpl
+import pl.dev.bkwiatkowski.data.repository.RefreshTokenRepository
+import pl.dev.bkwiatkowski.data.repository.RefreshTokenRepositoryImpl
 import pl.dev.bkwiatkowski.domain.usecase.GenerateAdminPanelUserPasswordHashUC
 import pl.dev.bkwiatkowski.domain.usecase.GenerateAdminPanelUserPasswordHashUCImpl
 import pl.dev.bkwiatkowski.domain.usecase.AddNewAdminPanelUserUC
@@ -35,8 +38,16 @@ import pl.dev.bkwiatkowski.domain.usecase.VerifyAdminPanelUserAuthenticationUC
 import pl.dev.bkwiatkowski.domain.usecase.VerifyAdminPanelUserAuthenticationUCImpl
 import pl.dev.bkwiatkowski.domain.usecase.ValidateAdminPanelUserRequestUC
 import pl.dev.bkwiatkowski.domain.usecase.ValidateAdminPanelUserRequestUCImpl
+import pl.dev.bkwiatkowski.domain.usecase.SaveRefreshTokenUC
+import pl.dev.bkwiatkowski.domain.usecase.SaveRefreshTokenUCImpl
+import pl.dev.bkwiatkowski.domain.usecase.VerifyAndRevokeRefreshTokenUC
+import pl.dev.bkwiatkowski.domain.usecase.VerifyAndRevokeRefreshTokenUCImpl
+import pl.dev.bkwiatkowski.domain.usecase.RevokeAllUserRefreshTokensUC
+import pl.dev.bkwiatkowski.domain.usecase.RevokeAllUserRefreshTokensUCImpl
 import pl.dev.bkwiatkowski.plugins.MonitoringPlugin
 import pl.dev.bkwiatkowski.plugins.SecurityPlugin
+import pl.dev.bkwiatkowski.controller.auth.handler.LogoutHandler
+import pl.dev.bkwiatkowski.plugins.HTTPPlugin
 
 fun appModule(config: ApplicationConfig) = module {
   single<ApplicationConfig> { config }
@@ -54,6 +65,8 @@ fun appModule(config: ApplicationConfig) = module {
   single<TokenProvider> { JwtTokenProvider(config = get()) }
 
   single<AdminPanelUserRepository> { AdminPanelUserRepositoryImpl(databaseProvider = get()) }
+  
+  single<RefreshTokenRepository> { RefreshTokenRepositoryImpl(databaseProvider = get()) }
 
   factory<TextValidator> { DefaultTextValidator() }
 
@@ -75,7 +88,7 @@ fun appModule(config: ApplicationConfig) = module {
 
   factory<GetAdminPanelUserUC> {
     GetAdminPanelUserUCImpl(
-      adminPanelUserRepository = get()
+      adminPanelUserRepository = get(),
     )
   }
 
@@ -83,7 +96,7 @@ fun appModule(config: ApplicationConfig) = module {
     GenerateAdminPanelUserPasswordHashUCImpl(
       saltGenerator = get(),
       hashGenerator = get(),
-      byteCoder = get()
+      byteCoder = get(),
     )
   }
 
@@ -93,6 +106,27 @@ fun appModule(config: ApplicationConfig) = module {
       byteCoder = get(),
     )
   }
+  
+  factory<SaveRefreshTokenUC> {
+    SaveRefreshTokenUCImpl(
+      refreshTokenRepository = get(),
+      environmentConfig = get(),
+    )
+  }
+  
+  factory<VerifyAndRevokeRefreshTokenUC> {
+    VerifyAndRevokeRefreshTokenUCImpl(
+      refreshTokenRepository = get(),
+    )
+  }
+  
+  factory<RevokeAllUserRefreshTokensUC> {
+    RevokeAllUserRefreshTokensUCImpl(
+      refreshTokenRepository = get(),
+    )
+  }
+
+  single { HTTPPlugin(environmentConfig = get()) }
 
   single { SecurityPlugin(environmentConfig = get()) }
 
@@ -111,7 +145,25 @@ fun appModule(config: ApplicationConfig) = module {
     SignInHandler(
       getAdminPanelUserUC = get(),
       verifyAdminPanelUserAuthenticationUC = get(),
-      tokenProvider = get()
+      tokenProvider = get(),
+      environmentConfig = get(),
+      saveRefreshTokenUC = get(),
+    )
+  }
+  
+  single {
+    RefreshTokenHandler(
+      tokenProvider = get(),
+      environmentConfig = get(),
+      verifyAndRevokeRefreshTokenUC = get(),
+      revokeAllUserRefreshTokensUC = get(),
+      saveRefreshTokenUC = get(),
+    )
+  }
+  
+  single {
+    LogoutHandler(
+      revokeAllUserRefreshTokensUC = get(),
     )
   }
 
@@ -120,6 +172,8 @@ fun appModule(config: ApplicationConfig) = module {
       authenticateHandler = get(),
       signUpHandler = get(),
       signInHandler = get(),
+      refreshTokenHandler = get(),
+      logoutHandler = get(),
     )
   } bind Controller::class
 
