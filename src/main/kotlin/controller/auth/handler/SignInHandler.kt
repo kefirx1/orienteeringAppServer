@@ -11,6 +11,7 @@ import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.TokenClaim
 import pl.dev.bkwiatkowski.core.security.token.TokenProvider
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
+import pl.dev.bkwiatkowski.core.security.token.USER_ROLE_CLAIM
 import pl.dev.bkwiatkowski.domain.model.SaltedHash
 import pl.dev.bkwiatkowski.domain.usecase.GetAdminPanelUserUC
 import pl.dev.bkwiatkowski.domain.usecase.SaveRefreshTokenUC
@@ -85,6 +86,10 @@ class SignInHandler(
       TokenClaim(
         name = USER_ID_CLAIM,
         value = user.id.toString(),
+      ),
+      TokenClaim(
+        name = USER_ROLE_CLAIM,
+        value = user.role.name,
       )
     ).getRightOrElse {
       call.respond(
@@ -101,6 +106,10 @@ class SignInHandler(
       TokenClaim(
         name = USER_ID_CLAIM,
         value = user.id.toString(),
+      ),
+      TokenClaim(
+        name = USER_ROLE_CLAIM,
+        value = user.role.name,
       )
     ).getRightOrElse {
       call.respond(
@@ -143,7 +152,8 @@ class SignInHandler(
       status = HttpStatusCode.OK,
       message = SignInResponseDto(
         token = token,
-        expiresInSec = environmentConfig.jwtExpiresIn.inWholeSeconds
+        expiresInSec = environmentConfig.jwtExpiresIn.inWholeSeconds,
+        role = user.role,
       )
     )
   }

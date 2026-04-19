@@ -59,6 +59,7 @@ class SignUpHandler(
         username = request.username,
         email = request.email,
         password = request.password,
+        role = request.role,
       ),
     ).fold(
       onRight = {

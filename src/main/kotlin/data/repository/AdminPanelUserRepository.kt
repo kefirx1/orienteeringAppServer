@@ -13,6 +13,7 @@ import pl.dev.bkwiatkowski.data.mapper.toDomain
 import pl.dev.bkwiatkowski.domain.model.AdminPanelUser
 
 interface AdminPanelUserRepository {
+  suspend fun getUserById(id: Int): Either<DomainError, AdminPanelUser>
   suspend fun getUserByUsername(username: String): Either<DomainError, AdminPanelUser>
   suspend fun getUserByEmail(email: String): Either<DomainError, AdminPanelUser>
   suspend fun insertUser(user: AdminPanelUser): Either<DomainError, Unit>
@@ -28,6 +29,13 @@ class AdminPanelUserRepositoryImpl(
     either {
       database.getRight().initTable(table = AdminPanelUserTable)
     }
+  }
+
+  override suspend fun getUserById(id: Int): Either<DomainError, AdminPanelUser> = either {
+    database.getRight().dbQuery {
+      AdminPanelUserDAO.findById(id)?.toDomain()
+        ?: raise(error = DomainError.Custom(e = NullPointerException("User not found")))
+    }.getRight()
   }
 
   override suspend fun getUserByUsername(username: String): Either<DomainError, AdminPanelUser> = either {
@@ -51,6 +59,7 @@ class AdminPanelUserRepositoryImpl(
         email = user.email
         password = user.password
         salt = user.salt
+        role = user.role
       }
     }.getRight()
   }

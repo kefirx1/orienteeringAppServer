@@ -6,4 +6,9 @@ data class AdminPanelUser(
   val email: String,
   val password: String,
   val salt: String,
-)
+  val role: Role,
+) {
+  enum class Role {
+    USER, ADMIN
+  }
+}

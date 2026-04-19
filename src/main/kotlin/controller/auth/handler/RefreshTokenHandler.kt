@@ -9,6 +9,8 @@ import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.TokenClaim
 import pl.dev.bkwiatkowski.core.security.token.TokenProvider
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
+import pl.dev.bkwiatkowski.core.security.token.USER_ROLE_CLAIM
+import pl.dev.bkwiatkowski.domain.usecase.GetAdminPanelUserByIdUC
 import pl.dev.bkwiatkowski.domain.usecase.RevokeAllUserRefreshTokensUC
 import pl.dev.bkwiatkowski.domain.usecase.SaveRefreshTokenUC
 import pl.dev.bkwiatkowski.domain.usecase.VerifyAndRevokeRefreshTokenUC
@@ -18,7 +20,8 @@ class RefreshTokenHandler(
   private val environmentConfig: EnvironmentConfig,
   private val verifyAndRevokeRefreshTokenUC: VerifyAndRevokeRefreshTokenUC,
   private val revokeAllUserRefreshTokensUC: RevokeAllUserRefreshTokensUC,
-  private val saveRefreshTokenUC: SaveRefreshTokenUC
+  private val saveRefreshTokenUC: SaveRefreshTokenUC,
+  private val getAdminPanelUserByIdUC: GetAdminPanelUserByIdUC
 ) {
   suspend fun handle(call: ApplicationCall) {
     val refreshToken = runCatching { call.request.cookies[REFRESH_TOKEN_COOKIE_NAME] }.getOrNull() ?: run {
@@ -102,10 +105,27 @@ class RefreshTokenHandler(
       return
     }
 
+    val user = getAdminPanelUserByIdUC(
+      params = GetAdminPanelUserByIdUC.Params(id = userId)
+    ).getRightOrElse {
+      call.respond(
+        status = HttpStatusCode.Unauthorized,
+        message = ErrorResponse(
+          businessCode = "USER_NOT_FOUND",
+          message = "User not found"
+        )
+      )
+      return
+    }
+
     val token = tokenProvider.generate(
       TokenClaim(
         name = USER_ID_CLAIM,
         value = userId.toString(),
+      ),
+      TokenClaim(
+        name = USER_ROLE_CLAIM,
+        value = user.role.name,
       )
     ).getRightOrElse {
       call.respond(
@@ -122,6 +142,10 @@ class RefreshTokenHandler(
       TokenClaim(
         name = USER_ID_CLAIM,
         value = userId.toString(),
+      ),
+      TokenClaim(
+        name = USER_ROLE_CLAIM,
+        value = user.role.name,
       )
     ).getRightOrElse {
       call.respond(
@@ -166,7 +190,8 @@ class RefreshTokenHandler(
       status = HttpStatusCode.OK,
       message = SignInResponseDto(
         token = token,
-        expiresInSec = environmentConfig.jwtExpiresIn.inWholeSeconds
+        expiresInSec = environmentConfig.jwtExpiresIn.inWholeSeconds,
+        role = user.role,
       )
     )
   }

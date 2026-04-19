@@ -34,6 +34,8 @@ import pl.dev.bkwiatkowski.domain.usecase.AddNewAdminPanelUserUC
 import pl.dev.bkwiatkowski.domain.usecase.AddNewAdminPanelUserUCImpl
 import pl.dev.bkwiatkowski.domain.usecase.GetAdminPanelUserUC
 import pl.dev.bkwiatkowski.domain.usecase.GetAdminPanelUserUCImpl
+import pl.dev.bkwiatkowski.domain.usecase.GetAdminPanelUserByIdUC
+import pl.dev.bkwiatkowski.domain.usecase.GetAdminPanelUserByIdUCImpl
 import pl.dev.bkwiatkowski.domain.usecase.VerifyAdminPanelUserAuthenticationUC
 import pl.dev.bkwiatkowski.domain.usecase.VerifyAdminPanelUserAuthenticationUCImpl
 import pl.dev.bkwiatkowski.domain.usecase.ValidateAdminPanelUserRequestUC
@@ -88,6 +90,12 @@ fun appModule(config: ApplicationConfig) = module {
 
   factory<GetAdminPanelUserUC> {
     GetAdminPanelUserUCImpl(
+      adminPanelUserRepository = get(),
+    )
+  }
+
+  factory<GetAdminPanelUserByIdUC> {
+    GetAdminPanelUserByIdUCImpl(
       adminPanelUserRepository = get(),
     )
   }
@@ -158,6 +166,7 @@ fun appModule(config: ApplicationConfig) = module {
       verifyAndRevokeRefreshTokenUC = get(),
       revokeAllUserRefreshTokensUC = get(),
       saveRefreshTokenUC = get(),
+      getAdminPanelUserByIdUC = get(),
     )
   }
   

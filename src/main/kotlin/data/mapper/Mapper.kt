@@ -8,5 +8,6 @@ fun AdminPanelUserDAO.toDomain() = AdminPanelUser(
   username = username,
   email = email,
   password = password,
-  salt = salt
+  salt = salt,
+  role = role
 )

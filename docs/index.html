@@ -713,7 +713,7 @@
   }
 };
             defs["SignInResponseDto"] = {
-  "required" : [ "expiresInSec", "token" ],
+  "required" : [ "expiresInSec", "role", "token" ],
   "type" : "object",
   "properties" : {
     "token" : {
@@ -722,6 +722,10 @@
     "expiresInSec" : {
       "type" : "integer",
       "format" : "int64"
+    },
+    "role" : {
+      "type" : "string",
+      "enum" : [ "USER", "ADMIN" ]
     }
   }
 };
@@ -737,6 +741,11 @@
     },
     "email" : {
       "type" : "string"
+    },
+    "role" : {
+      "type" : "string",
+      "enum" : [ "USER", "ADMIN" ],
+      "default" : "USER"
     }
   }
 };
@@ -1158,9 +1167,8 @@ public class DefaultApiExample {
     public static void main(String[] args) {
         
         DefaultApi apiInstance = new DefaultApi();
-        String refreshToken = refreshToken_example; // String | HttpOnly refresh token
         try {
-            SignInResponseDto result = apiInstance.apiAuthRefreshPost(refreshToken);
+            SignInResponseDto result = apiInstance.apiAuthRefreshPost();
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DefaultApi#apiAuthRefreshPost");
@@ -1177,9 +1185,8 @@ public class DefaultApiExample {
 
     public static void main(String[] args) {
         DefaultApi apiInstance = new DefaultApi();
-        String refreshToken = refreshToken_example; // String | HttpOnly refresh token
         try {
-            SignInResponseDto result = apiInstance.apiAuthRefreshPost(refreshToken);
+            SignInResponseDto result = apiInstance.apiAuthRefreshPost();
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DefaultApi#apiAuthRefreshPost");
@@ -1193,13 +1200,12 @@ public class DefaultApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-Default-apiAuthRefreshPost-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">String *refreshToken = refreshToken_example; // HttpOnly refresh token
-
+                              <pre class="prettyprint"><code class="language-cpp">
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
 // Refresh Token
-[apiInstance apiAuthRefreshPostWith:refreshToken
-              completionHandler: ^(SignInResponseDto output, NSError* error) {
+[apiInstance apiAuthRefreshPostWithCompletionHandler: 
+              ^(SignInResponseDto output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -1214,8 +1220,6 @@ DefaultApi *apiInstance = [[DefaultApi alloc] init];
                               <pre class="prettyprint"><code class="language-js">var OrienteeringAppServerApi = require('orienteering_app_server_api');
 
 var api = new OrienteeringAppServerApi.DefaultApi()
-var refreshToken = refreshToken_example; // {{String}} HttpOnly refresh token
-
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
@@ -1223,7 +1227,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.apiAuthRefreshPost(refreshToken, callback);
+api.apiAuthRefreshPost(callback);
 </code></pre>
                             </div>
 
@@ -1245,12 +1249,11 @@ namespace Example
         {
 
             var apiInstance = new DefaultApi();
-            var refreshToken = refreshToken_example;  // String | HttpOnly refresh token
 
             try
             {
                 // Refresh Token
-                SignInResponseDto result = apiInstance.apiAuthRefreshPost(refreshToken);
+                SignInResponseDto result = apiInstance.apiAuthRefreshPost();
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -1268,10 +1271,9 @@ namespace Example
 require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new Swagger\Client\ApiDefaultApi();
-$refreshToken = refreshToken_example; // String | HttpOnly refresh token
 
 try {
-    $result = $api_instance->apiAuthRefreshPost($refreshToken);
+    $result = $api_instance->apiAuthRefreshPost();
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling DefaultApi->apiAuthRefreshPost: ', $e->getMessage(), PHP_EOL;
@@ -1285,10 +1287,9 @@ use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::DefaultApi;
 
 my $api_instance = WWW::SwaggerClient::DefaultApi->new();
-my $refreshToken = refreshToken_example; # String | HttpOnly refresh token
 
 eval { 
-    my $result = $api_instance->apiAuthRefreshPost(refreshToken => $refreshToken);
+    my $result = $api_instance->apiAuthRefreshPost();
     print Dumper($result);
 };
 if ($@) {
@@ -1305,11 +1306,10 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.DefaultApi()
-refreshToken = refreshToken_example # String | HttpOnly refresh token
 
 try: 
     # Refresh Token
-    api_response = api_instance.api_auth_refresh_post(refreshToken)
+    api_response = api_instance.api_auth_refresh_post()
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling DefaultApi->apiAuthRefreshPost: %s\n" % e)</code></pre>

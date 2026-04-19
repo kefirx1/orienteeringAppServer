@@ -12,4 +12,5 @@ class AdminPanelUserDAO(id: EntityID<Int>) : IntEntity(id) {
   var email by AdminPanelUserTable.email
   var password by AdminPanelUserTable.password
   var salt by AdminPanelUserTable.salt
+  var role by AdminPanelUserTable.role
 }

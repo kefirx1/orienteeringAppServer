@@ -10,6 +10,7 @@ interface TokenProvider {
 }
 
 const val USER_ID_CLAIM = "userId"
+const val USER_ROLE_CLAIM = "role"
 const val TOKEN_TYPE_CLAIM = "type"
 
 enum class TokenType(val value: String) {

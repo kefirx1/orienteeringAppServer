@@ -88,13 +88,6 @@ paths:
     post:
       summary: "Refresh Token"
       description: "Refreshes user authentication using a refresh token from an HttpOnly cookie"
-      parameters:
-        - name: refreshToken
-          in: cookie
-          required: true
-          schema:
-            type: string
-          description: "HttpOnly refresh token"
       responses:
         "200":
           description: "Successful operation"
@@ -179,6 +172,10 @@ components:
           type: string
         email:
           type: string
+        role:
+          type: string
+          enum: [USER, ADMIN]
+          default: USER
     SignInRequestDto:
       type: object
       required:
@@ -194,12 +191,16 @@ components:
       required:
         - token
         - expiresInSec
+        - role
       properties:
         token:
           type: string
         expiresInSec:
           type: integer
           format: int64
+        role:
+          type: string
+          enum: [USER, ADMIN]
   securitySchemes:
     bearerAuth:
       type: http

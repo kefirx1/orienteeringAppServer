@@ -17,6 +17,7 @@ interface AddNewAdminPanelUserUC : UseCase<AddNewAdminPanelUserUC.Params, Unit> 
     val username: String,
     val email: String,
     val password: String,
+    val role: AdminPanelUser.Role = AdminPanelUser.Role.USER,
   ): UseCase.Params
 }
 
@@ -34,6 +35,7 @@ class AddNewAdminPanelUserUCImpl(
       email = params.email,
       password = hashedPassword.hash,
       salt = hashedPassword.salt,
+      role = params.role,
     )
 
     adminPanelUserRepository.insertUser(user = newUser)
