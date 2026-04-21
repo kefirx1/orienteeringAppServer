@@ -35,8 +35,6 @@ class RefreshTokenHandler(
       return
     }
 
-    println(refreshToken)
-
     val userIdString = tokenProvider.verifyRefreshToken(refreshToken).getRightOrElse {
       call.respond(
         status = HttpStatusCode.Unauthorized,
@@ -47,7 +45,6 @@ class RefreshTokenHandler(
       )
       return
     }
-    println(1)
 
     val userId = userIdString.toIntOrNull() ?: run {
       call.respond(
@@ -59,7 +56,6 @@ class RefreshTokenHandler(
       )
       return
     }
-    println(2)
     
     val verificationResult = verifyAndRevokeRefreshTokenUC(
       params = VerifyAndRevokeRefreshTokenUC.Params(
@@ -75,7 +71,6 @@ class RefreshTokenHandler(
       )
       return
     }
-    println(3)
 
     if (verificationResult.isReused) {
       revokeAllUserRefreshTokensUC(
@@ -157,8 +152,6 @@ class RefreshTokenHandler(
       )
       return
     }
-
-    println("new refresh token: $newRefreshToken")
 
     saveRefreshTokenUC(
       params = SaveRefreshTokenUC.Params(

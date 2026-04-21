@@ -50,6 +50,8 @@ import pl.dev.bkwiatkowski.plugins.MonitoringPlugin
 import pl.dev.bkwiatkowski.plugins.SecurityPlugin
 import pl.dev.bkwiatkowski.controller.auth.handler.LogoutHandler
 import pl.dev.bkwiatkowski.plugins.HTTPPlugin
+import pl.dev.bkwiatkowski.controller.settings.SettingsController
+import pl.dev.bkwiatkowski.controller.settings.handler.SettingsHandler
 
 fun appModule(config: ApplicationConfig) = module {
   single<ApplicationConfig> { config }
@@ -184,6 +186,12 @@ fun appModule(config: ApplicationConfig) = module {
       refreshTokenHandler = get(),
       logoutHandler = get(),
     )
+  } bind Controller::class
+
+  single { SettingsHandler(getAdminPanelUserByIdUC = get()) }
+
+  single {
+    SettingsController(settingsHandler = get())
   } bind Controller::class
 
   single { RoutingPlugin(controllers = getAll()) }
