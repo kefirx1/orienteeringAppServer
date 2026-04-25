@@ -12,7 +12,7 @@ interface AddMapUC : UseCase<AddMapUC.Params, Int> {
   data class Params(
     val name: String,
     val description: String,
-    val imageUri: String,
+    val imageData: String,
     val waypoints: List<MapWaypoint>,
   ) : UseCase.Params
 }
@@ -24,7 +24,7 @@ class AddMapUCImpl(
     val newMap = MapData(
       name = params.name,
       description = params.description,
-      imageUri = params.imageUri,
+      imageData = params.imageData,
       mapWaypoints = params.waypoints,
     )
 

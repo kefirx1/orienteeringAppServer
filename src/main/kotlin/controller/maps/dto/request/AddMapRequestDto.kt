@@ -7,7 +7,7 @@ import pl.dev.bkwiatkowski.controller.maps.dto.request.WaypointRequestDto
 data class AddMapRequestDto(
   val name: String,
   val description: String,
-  val imageUri: String,
+  val imageData: String,
   val waypoints: List<WaypointRequestDto> = emptyList(),
 )
 

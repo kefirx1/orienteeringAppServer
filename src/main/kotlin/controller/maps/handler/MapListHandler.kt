@@ -18,7 +18,7 @@ class MapListHandler(
             id = map.id,
             name = map.name,
             description = map.description,
-            imageUri = map.imageUri,
+            imageData = map.imageData,
           )
         }
         call.respond(

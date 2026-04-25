@@ -6,12 +6,22 @@ import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.request.*
 import org.slf4j.event.*
 
+private const val MAX_LOG_LENGTH = 300
+
+private fun truncateBody(body: String): String {
+  return if (body.length > MAX_LOG_LENGTH) {
+    body.substring(0, MAX_LOG_LENGTH) + "... [truncated, total length: ${body.length}]"
+  } else {
+    body
+  }
+}
+
 val ResponseBodyLoggingPlugin = createApplicationPlugin(name = "ResponseBodyLoggingPlugin") {
 
   fun PipelineCall.getMessage(body: String): String =
     "Response [${this.request.httpMethod.value} ${this.request.path()}]" +
         " -> status=${this.response.status()}" +
-        " body=$body"
+        " body=${truncateBody(body)}"
 
   onCallRespond { call ->
     transformBody { data ->

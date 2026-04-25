@@ -30,7 +30,7 @@ class MapDetailHandler(
           id = map.id,
           name = map.name,
           description = map.description,
-          imageUri = map.imageUri,
+          imageData = map.imageData,
           waypoints = map.mapWaypoints.map { waypoint ->
             WaypointResponseDto(
               id = waypoint.id,

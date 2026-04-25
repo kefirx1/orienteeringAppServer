@@ -10,5 +10,5 @@ class MapDAO(id: EntityID<Int>) : IntEntity(id) {
 
   var name by MapTable.name
   var description by MapTable.description
-  var imageUri by MapTable.imageUri
+  var imageData by MapTable.imageData
 }

@@ -196,7 +196,7 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
     post:
       summary: "Create New Map"
-      description: "Creates a new orienteering map with waypoints"
+      description: "Creates a new orienteering map with waypoints and base64 encoded image data"
       requestBody:
         required: true
         content:
@@ -353,7 +353,7 @@ components:
         - id
         - name
         - description
-        - imageUri
+        - imageData
       properties:
         id:
           type: integer
@@ -361,29 +361,31 @@ components:
           type: string
         description:
           type: string
-        imageUri:
+        imageData:
           type: string
+          description: "Base64 encoded image data"
     MapDetailResponseDto:
-      type: object
-      required:
-        - id
-        - name
-        - description
-        - imageUri
-        - waypoints
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        description:
-          type: string
-        imageUri:
-          type: string
-        waypoints:
-          type: array
-          items:
-            $ref: "#/components/schemas/WaypointResponseDto"
+       type: object
+       required:
+         - id
+         - name
+         - description
+         - imageData
+         - waypoints
+       properties:
+         id:
+           type: integer
+         name:
+           type: string
+         description:
+           type: string
+         imageData:
+           type: string
+           description: "Base64 encoded image data"
+         waypoints:
+           type: array
+           items:
+             $ref: "#/components/schemas/WaypointResponseDto"
     WaypointResponseDto:
       type: object
       required:
@@ -403,22 +405,23 @@ components:
           type: number
           format: float
     AddMapRequestDto:
-      type: object
-      required:
-        - name
-        - description
-        - imageUri
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-        imageUri:
-          type: string
-        waypoints:
-          type: array
-          items:
-            $ref: "#/components/schemas/WaypointRequestDto"
+       type: object
+       required:
+         - name
+         - description
+         - imageData
+       properties:
+         name:
+           type: string
+         description:
+           type: string
+         imageData:
+           type: string
+           description: "Base64 encoded image data (required)"
+         waypoints:
+           type: array
+           items:
+             $ref: "#/components/schemas/WaypointRequestDto"
     WaypointRequestDto:
       type: object
       required:

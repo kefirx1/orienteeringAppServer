@@ -7,7 +7,7 @@ data class MapDetailResponseDto(
   val id: Int,
   val name: String,
   val description: String,
-  val imageUri: String,
+  val imageData: String,
   val waypoints: List<WaypointResponseDto>,
 )
 

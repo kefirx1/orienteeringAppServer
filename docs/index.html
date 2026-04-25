@@ -690,7 +690,7 @@
     // Script section to load models into a JS Var
     var defs = {}
             defs["AddMapRequestDto"] = {
-  "required" : [ "description", "imageUri", "name" ],
+  "required" : [ "description", "imageData", "name" ],
   "type" : "object",
   "properties" : {
     "name" : {
@@ -699,8 +699,9 @@
     "description" : {
       "type" : "string"
     },
-    "imageUri" : {
-      "type" : "string"
+    "imageData" : {
+      "type" : "string",
+      "description" : "Base64 encoded image data (required)"
     },
     "waypoints" : {
       "type" : "array",
@@ -731,7 +732,7 @@
   }
 };
             defs["MapDetailResponseDto"] = {
-  "required" : [ "description", "id", "imageUri", "name", "waypoints" ],
+  "required" : [ "description", "id", "imageData", "name", "waypoints" ],
   "type" : "object",
   "properties" : {
     "id" : {
@@ -743,8 +744,9 @@
     "description" : {
       "type" : "string"
     },
-    "imageUri" : {
-      "type" : "string"
+    "imageData" : {
+      "type" : "string",
+      "description" : "Base64 encoded image data"
     },
     "waypoints" : {
       "type" : "array",
@@ -755,7 +757,7 @@
   }
 };
             defs["MapListResponseDto"] = {
-  "required" : [ "description", "id", "imageUri", "name" ],
+  "required" : [ "description", "id", "imageData", "name" ],
   "type" : "object",
   "properties" : {
     "id" : {
@@ -767,8 +769,9 @@
     "description" : {
       "type" : "string"
     },
-    "imageUri" : {
-      "type" : "string"
+    "imageData" : {
+      "type" : "string",
+      "description" : "Base64 encoded image data"
     }
   }
 };
@@ -3995,7 +3998,7 @@ except ApiException as e:
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <p></p>
-                        <p class="marked">Creates a new orienteering map with waypoints</p>
+                        <p class="marked">Creates a new orienteering map with waypoints and base64 encoded image data</p>
                         <p></p>
                         <br />
                         <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/api/maps</span></code></pre>

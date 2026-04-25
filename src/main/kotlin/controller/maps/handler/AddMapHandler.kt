@@ -36,7 +36,7 @@ class AddMapHandler(
       params = AddMapUC.Params(
         name = request.name,
         description = request.description,
-        imageUri = request.imageUri,
+        imageData = request.imageData,
         waypoints = waypoints,
       )
     ).fold(

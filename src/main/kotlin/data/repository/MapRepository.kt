@@ -58,7 +58,7 @@ class MapRepositoryImpl(
       val newMap = MapDAO.new {
         name = map.name
         description = map.description
-        imageUri = map.imageUri
+        imageData = map.imageData
       }
 
       map.mapWaypoints.forEach { waypoint ->

@@ -27,7 +27,7 @@ fun MapDAO.toDomain(mapWaypoints: List<MapWaypoint>) = MapData(
   id = id.value,
   name = name,
   description = description,
-  imageUri = imageUri,
+  imageData = imageData,
   mapWaypoints = mapWaypoints,
 )
 
