@@ -123,7 +123,7 @@ paths:
       summary: "User Logout"
       description: "Logs out the user by revoking all their refresh tokens"
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       responses:
         "200":
           description: "Successful operation"
@@ -144,7 +144,7 @@ paths:
       summary: "Authenticate User"
       description: "Checks if the current user is authenticated"
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       responses:
         "200":
           description: "Successful operation"
@@ -155,7 +155,7 @@ paths:
       summary: "Get Settings"
       description: "Returns basic settings for the authenticated user"
       security:
-        - bearerAuth: []
+        - bearerAuth: [ ]
       responses:
         "200":
           description: "User settings"
@@ -171,6 +171,120 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "404":
           description: "Not Found - User does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/maps:
+    get:
+      summary: "Get All Maps"
+      description: "Retrieves a list of all available maps with basic information"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MapListResponseDto"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      summary: "Create New Map"
+      description: "Creates a new orienteering map with waypoints"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddMapRequestDto"
+      responses:
+        "201":
+          description: "Map created successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateMapResponseDto"
+        "400":
+          description: "Bad Request - Invalid payload"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/maps/{id}:
+    get:
+      summary: "Get Map Details"
+      description: "Retrieves complete information about a specific map including all waypoints"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: "Map ID"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MapDetailResponseDto"
+        "400":
+          description: "Bad Request - Invalid map ID"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Not Found - Map does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      summary: "Delete Map"
+      description: "Deletes a map and all its associated waypoints"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: "Map ID"
+      responses:
+        "200":
+          description: "Map deleted successfully"
+        "400":
+          description: "Bad Request - Invalid map ID"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Not Found - Map does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
           content:
             application/json:
               schema:
@@ -199,7 +313,7 @@ components:
           type: string
         role:
           type: string
-          enum: [USER, ADMIN]
+          enum: [ USER, ADMIN ]
           default: USER
     SignInRequestDto:
       type: object
@@ -225,7 +339,7 @@ components:
           format: int64
         role:
           type: string
-          enum: [USER, ADMIN]
+          enum: [ USER, ADMIN ]
     SettingsResponseDto:
       type: object
       required:
@@ -233,6 +347,100 @@ components:
       properties:
         username:
           type: string
+    MapListResponseDto:
+      type: object
+      required:
+        - id
+        - name
+        - description
+        - imageUri
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        imageUri:
+          type: string
+    MapDetailResponseDto:
+      type: object
+      required:
+        - id
+        - name
+        - description
+        - imageUri
+        - waypoints
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        imageUri:
+          type: string
+        waypoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/WaypointResponseDto"
+    WaypointResponseDto:
+      type: object
+      required:
+        - id
+        - label
+        - coordinateX
+        - coordinateY
+      properties:
+        id:
+          type: integer
+        label:
+          type: string
+        coordinateX:
+          type: number
+          format: float
+        coordinateY:
+          type: number
+          format: float
+    AddMapRequestDto:
+      type: object
+      required:
+        - name
+        - description
+        - imageUri
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        imageUri:
+          type: string
+        waypoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/WaypointRequestDto"
+    WaypointRequestDto:
+      type: object
+      required:
+        - label
+        - coordinateX
+        - coordinateY
+      properties:
+        label:
+          type: string
+        coordinateX:
+          type: number
+          format: float
+        coordinateY:
+          type: number
+          format: float
+    CreateMapResponseDto:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
   securitySchemes:
     bearerAuth:
       type: http

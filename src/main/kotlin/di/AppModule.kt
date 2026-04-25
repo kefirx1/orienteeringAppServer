@@ -52,6 +52,21 @@ import pl.dev.bkwiatkowski.controller.auth.handler.LogoutHandler
 import pl.dev.bkwiatkowski.plugins.HTTPPlugin
 import pl.dev.bkwiatkowski.controller.settings.SettingsController
 import pl.dev.bkwiatkowski.controller.settings.handler.SettingsHandler
+import pl.dev.bkwiatkowski.data.repository.MapRepository
+import pl.dev.bkwiatkowski.data.repository.MapRepositoryImpl
+import pl.dev.bkwiatkowski.domain.usecase.GetAllMapsUC
+import pl.dev.bkwiatkowski.domain.usecase.GetAllMapsUCImpl
+import pl.dev.bkwiatkowski.domain.usecase.GetMapByIdUC
+import pl.dev.bkwiatkowski.domain.usecase.GetMapByIdUCImpl
+import pl.dev.bkwiatkowski.domain.usecase.AddMapUC
+import pl.dev.bkwiatkowski.domain.usecase.AddMapUCImpl
+import pl.dev.bkwiatkowski.domain.usecase.DeleteMapUC
+import pl.dev.bkwiatkowski.domain.usecase.DeleteMapUCImpl
+import pl.dev.bkwiatkowski.controller.maps.MapController
+import pl.dev.bkwiatkowski.controller.maps.handler.MapListHandler
+import pl.dev.bkwiatkowski.controller.maps.handler.MapDetailHandler
+import pl.dev.bkwiatkowski.controller.maps.handler.AddMapHandler
+import pl.dev.bkwiatkowski.controller.maps.handler.DeleteMapHandler
 
 fun appModule(config: ApplicationConfig) = module {
   single<ApplicationConfig> { config }
@@ -69,8 +84,10 @@ fun appModule(config: ApplicationConfig) = module {
   single<TokenProvider> { JwtTokenProvider(config = get()) }
 
   single<AdminPanelUserRepository> { AdminPanelUserRepositoryImpl(databaseProvider = get()) }
-  
+
   single<RefreshTokenRepository> { RefreshTokenRepositoryImpl(databaseProvider = get()) }
+
+  single<MapRepository> { MapRepositoryImpl(databaseProvider = get()) }
 
   factory<TextValidator> { DefaultTextValidator() }
 
@@ -123,20 +140,44 @@ fun appModule(config: ApplicationConfig) = module {
       environmentConfig = get(),
     )
   }
-  
+
   factory<VerifyAndRevokeRefreshTokenUC> {
     VerifyAndRevokeRefreshTokenUCImpl(
       refreshTokenRepository = get(),
     )
   }
   
-  factory<RevokeAllUserRefreshTokensUC> {
-    RevokeAllUserRefreshTokensUCImpl(
-      refreshTokenRepository = get(),
-    )
-  }
+   factory<RevokeAllUserRefreshTokensUC> {
+     RevokeAllUserRefreshTokensUCImpl(
+       refreshTokenRepository = get(),
+     )
+   }
 
-  single { HTTPPlugin(environmentConfig = get()) }
+   factory<GetAllMapsUC> {
+     GetAllMapsUCImpl(
+       mapRepository = get(),
+     )
+   }
+
+   factory<GetMapByIdUC> {
+     GetMapByIdUCImpl(
+       mapRepository = get(),
+     )
+   }
+
+   factory<AddMapUC> {
+     AddMapUCImpl(
+       mapRepository = get(),
+     )
+   }
+
+   factory<DeleteMapUC> {
+     DeleteMapUCImpl(
+       mapRepository = get(),
+     )
+   }
+
+   single { HTTPPlugin(environmentConfig = get()) }
 
   single { SecurityPlugin(environmentConfig = get()) }
 
@@ -192,6 +233,23 @@ fun appModule(config: ApplicationConfig) = module {
 
   single {
     SettingsController(settingsHandler = get())
+  } bind Controller::class
+
+  single { MapListHandler(getAllMapsUC = get()) }
+
+  single { MapDetailHandler(getMapByIdUC = get()) }
+
+  single { AddMapHandler(addMapUC = get()) }
+
+  single { DeleteMapHandler(deleteMapUC = get()) }
+
+  single {
+    MapController(
+      mapListHandler = get(),
+      mapDetailHandler = get(),
+      addMapHandler = get(),
+      deleteMapHandler = get(),
+    )
   } bind Controller::class
 
   single { RoutingPlugin(controllers = getAll()) }
