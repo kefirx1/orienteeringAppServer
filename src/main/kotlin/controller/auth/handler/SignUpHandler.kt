@@ -6,6 +6,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import pl.dev.bkwiatkowski.controller.auth.dto.request.SignUpRequestDto
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
+import pl.dev.bkwiatkowski.core.either
 import pl.dev.bkwiatkowski.core.validation.ValidationState
 import pl.dev.bkwiatkowski.domain.usecase.AddNewAdminPanelUserUC
 import pl.dev.bkwiatkowski.domain.usecase.ValidateAdminPanelUserRequestUC
@@ -15,7 +16,9 @@ class SignUpHandler(
   private val validateAdminPanelUserRequestUC: ValidateAdminPanelUserRequestUC,
 ) {
   suspend fun handle(call: ApplicationCall) {
-    val request = runCatching { call.receiveNullable<SignUpRequestDto>() }.getOrNull() ?: run {
+    val request = either {
+      call.receiveNullable<SignUpRequestDto>()
+    }.getRightOrNull() ?: run {
       call.respond(
         status = HttpStatusCode.BadRequest,
         message = ErrorResponse(

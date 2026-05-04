@@ -689,8 +689,39 @@
   <script>
     // Script section to load models into a JS Var
     var defs = {}
+            defs["AddEventRequestDto"] = {
+  "required" : [ "description", "mapId", "name", "startDateTime", "startLocationX", "startLocationY" ],
+  "type" : "object",
+  "properties" : {
+    "mapId" : {
+      "type" : "integer",
+      "description" : "ID of the map associated with this event"
+    },
+    "name" : {
+      "type" : "string"
+    },
+    "description" : {
+      "type" : "string"
+    },
+    "startDateTime" : {
+      "type" : "string",
+      "description" : "ISO 8601 format date-time",
+      "format" : "date-time"
+    },
+    "startLocationX" : {
+      "type" : "number",
+      "description" : "X coordinate of the event start location",
+      "format" : "float"
+    },
+    "startLocationY" : {
+      "type" : "number",
+      "description" : "Y coordinate of the event start location",
+      "format" : "float"
+    }
+  }
+};
             defs["AddMapRequestDto"] = {
-  "required" : [ "description", "imageData", "name" ],
+  "required" : [ "canPlayManually", "description", "imageData", "name" ],
   "type" : "object",
   "properties" : {
     "name" : {
@@ -703,11 +734,24 @@
       "type" : "string",
       "description" : "Base64 encoded image data (required)"
     },
+    "canPlayManually" : {
+      "type" : "boolean",
+      "description" : "Whether the map can be played manually"
+    },
     "waypoints" : {
       "type" : "array",
       "items" : {
         "$ref" : "#/components/schemas/WaypointRequestDto"
       }
+    }
+  }
+};
+            defs["CreateEventResponseDto"] = {
+  "required" : [ "id" ],
+  "type" : "object",
+  "properties" : {
+    "id" : {
+      "type" : "integer"
     }
   }
 };
@@ -731,8 +775,80 @@
     }
   }
 };
+            defs["EventDetailResponseDto"] = {
+  "required" : [ "createdAt", "description", "id", "map", "name", "startDate", "startLocationX", "startLocationY" ],
+  "type" : "object",
+  "properties" : {
+    "id" : {
+      "type" : "integer"
+    },
+    "map" : {
+      "$ref" : "#/components/schemas/MapDto"
+    },
+    "name" : {
+      "type" : "string"
+    },
+    "description" : {
+      "type" : "string"
+    },
+    "createdAt" : {
+      "type" : "string",
+      "description" : "ISO 8601 format date-time",
+      "format" : "date-time"
+    },
+    "startDate" : {
+      "type" : "string",
+      "description" : "ISO 8601 format date-time",
+      "format" : "date-time"
+    },
+    "startLocationX" : {
+      "type" : "number",
+      "format" : "float"
+    },
+    "startLocationY" : {
+      "type" : "number",
+      "format" : "float"
+    }
+  }
+};
+            defs["EventListResponseDto"] = {
+  "required" : [ "createdAt", "description", "id", "map", "name", "startDate", "startLocationX", "startLocationY" ],
+  "type" : "object",
+  "properties" : {
+    "id" : {
+      "type" : "integer"
+    },
+    "map" : {
+      "$ref" : "#/components/schemas/MapDto"
+    },
+    "name" : {
+      "type" : "string"
+    },
+    "description" : {
+      "type" : "string"
+    },
+    "createdAt" : {
+      "type" : "string",
+      "description" : "ISO 8601 format date-time",
+      "format" : "date-time"
+    },
+    "startDate" : {
+      "type" : "string",
+      "description" : "ISO 8601 format date-time",
+      "format" : "date-time"
+    },
+    "startLocationX" : {
+      "type" : "number",
+      "format" : "float"
+    },
+    "startLocationY" : {
+      "type" : "number",
+      "format" : "float"
+    }
+  }
+};
             defs["MapDetailResponseDto"] = {
-  "required" : [ "description", "id", "imageData", "name", "waypoints" ],
+  "required" : [ "canPlayManually", "description", "id", "imageData", "name", "waypoints" ],
   "type" : "object",
   "properties" : {
     "id" : {
@@ -747,6 +863,10 @@
     "imageData" : {
       "type" : "string",
       "description" : "Base64 encoded image data"
+    },
+    "canPlayManually" : {
+      "type" : "boolean",
+      "description" : "Whether the map can be played manually"
     },
     "waypoints" : {
       "type" : "array",
@@ -756,8 +876,8 @@
     }
   }
 };
-            defs["MapListResponseDto"] = {
-  "required" : [ "description", "id", "imageData", "name" ],
+            defs["MapDto"] = {
+  "required" : [ "canPlayManually", "description", "id", "imageData", "name" ],
   "type" : "object",
   "properties" : {
     "id" : {
@@ -772,6 +892,32 @@
     "imageData" : {
       "type" : "string",
       "description" : "Base64 encoded image data"
+    },
+    "canPlayManually" : {
+      "type" : "boolean"
+    }
+  }
+};
+            defs["MapListResponseDto"] = {
+  "required" : [ "canPlayManually", "description", "id", "imageData", "name" ],
+  "type" : "object",
+  "properties" : {
+    "id" : {
+      "type" : "integer"
+    },
+    "name" : {
+      "type" : "string"
+    },
+    "description" : {
+      "type" : "string"
+    },
+    "imageData" : {
+      "type" : "string",
+      "description" : "Base64 encoded image data"
+    },
+    "canPlayManually" : {
+      "type" : "boolean",
+      "description" : "Whether the map can be played manually"
     }
   }
 };
@@ -901,6 +1047,18 @@
                     </li>
                     <li data-group="Default" data-name="apiAuthenticateGet" class="">
                       <a href="#api-Default-apiAuthenticateGet">apiAuthenticateGet</a>
+                    </li>
+                    <li data-group="Default" data-name="apiEventsGet" class="">
+                      <a href="#api-Default-apiEventsGet">apiEventsGet</a>
+                    </li>
+                    <li data-group="Default" data-name="apiEventsIdDelete" class="">
+                      <a href="#api-Default-apiEventsIdDelete">apiEventsIdDelete</a>
+                    </li>
+                    <li data-group="Default" data-name="apiEventsIdGet" class="">
+                      <a href="#api-Default-apiEventsIdGet">apiEventsIdGet</a>
+                    </li>
+                    <li data-group="Default" data-name="apiEventsPost" class="">
+                      <a href="#api-Default-apiEventsPost">apiEventsPost</a>
                     </li>
                     <li data-group="Default" data-name="apiMapsGet" class="">
                       <a href="#api-Default-apiMapsGet">apiMapsGet</a>
@@ -2848,6 +3006,1690 @@ except ApiException as e:
                         </article>
                       </div>
                       <hr>
+                    <div id="api-Default-apiEventsGet">
+                      <article id="api-Default-apiEventsGet-0" data-group="User" data-name="apiEventsGet" data-version="0">
+                        <div class="pull-left">
+                          <h1>apiEventsGet</h1>
+                          <p>Get All Events</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Retrieves a list of events. Regular users see only their own events, admins see all events. Returns an empty list if the user has no events</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/events</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Default-apiEventsGet-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsGet-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsGet-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiEventsGet-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Default-apiEventsGet-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsGet-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiEventsGet-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Default-apiEventsGet-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsGet-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsGet-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsGet-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Default-apiEventsGet-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+"http://localhost:8080/api/events"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Default-apiEventsGet-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.DefaultApi;
+
+import java.io.File;
+import java.util.*;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        DefaultApi apiInstance = new DefaultApi();
+        try {
+            array[EventListResponseDto] result = apiInstance.apiEventsGet();
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#apiEventsGet");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Default-apiEventsGet-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        DefaultApi apiInstance = new DefaultApi();
+        try {
+            array[EventListResponseDto] result = apiInstance.apiEventsGet();
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#apiEventsGet");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Default-apiEventsGet-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Default-apiEventsGet-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+
+DefaultApi *apiInstance = [[DefaultApi alloc] init];
+
+// Get All Events
+[apiInstance apiEventsGetWithCompletionHandler: 
+              ^(array[EventListResponseDto] output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsGet-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var OrienteeringAppServerApi = require('orienteering_app_server_api');
+var defaultClient = OrienteeringAppServerApi.ApiClient.instance;
+
+
+var api = new OrienteeringAppServerApi.DefaultApi()
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.apiEventsGet(callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Default-apiEventsGet-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Default-apiEventsGet-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class apiEventsGetExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new DefaultApi();
+
+            try
+            {
+                // Get All Events
+                array[EventListResponseDto] result = apiInstance.apiEventsGet();
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling DefaultApi.apiEventsGet: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsGet-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiDefaultApi();
+
+try {
+    $result = $api_instance->apiEventsGet();
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling DefaultApi->apiEventsGet: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsGet-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::DefaultApi;
+
+
+my $api_instance = WWW::SwaggerClient::DefaultApi->new();
+
+eval { 
+    my $result = $api_instance->apiEventsGet();
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling DefaultApi->apiEventsGet: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsGet-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.DefaultApi()
+
+try: 
+    # Get All Events
+    api_response = api_instance.api_events_get()
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling DefaultApi->apiEventsGet: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Successful operation </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsGet-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsGet-200-schema">
+                                  <div id='responses-apiEventsGet-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Successful operation",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "type" : "array",
+        "items" : {
+          "$ref" : "#/components/schemas/EventListResponseDto"
+        },
+        "x-content-type" : "application/json"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsGet-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsGet-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsGet-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Default-apiEventsIdDelete">
+                      <article id="api-Default-apiEventsIdDelete-0" data-group="User" data-name="apiEventsIdDelete" data-version="0">
+                        <div class="pull-left">
+                          <h1>apiEventsIdDelete</h1>
+                          <p>Delete Event</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Deletes an event. Users can only delete their own events, admins can delete any event</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="delete"><code><span class="pln">/api/events/{id}</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Default-apiEventsIdDelete-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdDelete-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdDelete-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiEventsIdDelete-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Default-apiEventsIdDelete-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdDelete-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiEventsIdDelete-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Default-apiEventsIdDelete-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdDelete-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdDelete-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdDelete-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Default-apiEventsIdDelete-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X DELETE\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+"http://localhost:8080/api/events/{id}"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Default-apiEventsIdDelete-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.DefaultApi;
+
+import java.io.File;
+import java.util.*;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        DefaultApi apiInstance = new DefaultApi();
+        Integer id = 56; // Integer | Event ID
+        try {
+            apiInstance.apiEventsIdDelete(id);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#apiEventsIdDelete");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Default-apiEventsIdDelete-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        DefaultApi apiInstance = new DefaultApi();
+        Integer id = 56; // Integer | Event ID
+        try {
+            apiInstance.apiEventsIdDelete(id);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#apiEventsIdDelete");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Default-apiEventsIdDelete-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Default-apiEventsIdDelete-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+Integer *id = 56; // Event ID
+
+DefaultApi *apiInstance = [[DefaultApi alloc] init];
+
+// Delete Event
+[apiInstance apiEventsIdDeleteWith:id
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsIdDelete-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var OrienteeringAppServerApi = require('orienteering_app_server_api');
+var defaultClient = OrienteeringAppServerApi.ApiClient.instance;
+
+
+var api = new OrienteeringAppServerApi.DefaultApi()
+var id = 56; // {{Integer}} Event ID
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.apiEventsIdDelete(id, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Default-apiEventsIdDelete-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Default-apiEventsIdDelete-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class apiEventsIdDeleteExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new DefaultApi();
+            var id = 56;  // Integer | Event ID
+
+            try
+            {
+                // Delete Event
+                apiInstance.apiEventsIdDelete(id);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling DefaultApi.apiEventsIdDelete: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsIdDelete-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiDefaultApi();
+$id = 56; // Integer | Event ID
+
+try {
+    $api_instance->apiEventsIdDelete($id);
+} catch (Exception $e) {
+    echo 'Exception when calling DefaultApi->apiEventsIdDelete: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsIdDelete-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::DefaultApi;
+
+
+my $api_instance = WWW::SwaggerClient::DefaultApi->new();
+my $id = 56; # Integer | Event ID
+
+eval { 
+    $api_instance->apiEventsIdDelete(id => $id);
+};
+if ($@) {
+    warn "Exception when calling DefaultApi->apiEventsIdDelete: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsIdDelete-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.DefaultApi()
+id = 56 # Integer | Event ID
+
+try: 
+    # Delete Event
+    api_instance.api_events_id_delete(id)
+except ApiException as e:
+    print("Exception when calling DefaultApi->apiEventsIdDelete: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_apiEventsIdDelete_id">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Integer
+                                                  </span>
+                                  
+                                                      <div class="inner description">
+                                                          Event ID
+                                                      </div>
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Event deleted successfully </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                            <h3> Status: 400 - Bad Request - Invalid event ID </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdDelete-400-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdDelete-400-schema">
+                                  <div id='responses-apiEventsIdDelete-400-schema-400' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Bad Request - Invalid event ID",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdDelete-400-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdDelete-400-schema-400');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdDelete-400-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 401 - Unauthorized </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdDelete-401-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdDelete-401-schema">
+                                  <div id='responses-apiEventsIdDelete-401-schema-401' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Unauthorized",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdDelete-401-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdDelete-401-schema-401');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdDelete-401-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 404 - Not Found - Event does not exist </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdDelete-404-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdDelete-404-schema">
+                                  <div id='responses-apiEventsIdDelete-404-schema-404' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Not Found - Event does not exist",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdDelete-404-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdDelete-404-schema-404');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdDelete-404-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 500 - Internal Server Error </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdDelete-500-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdDelete-500-schema">
+                                  <div id='responses-apiEventsIdDelete-500-schema-500' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Internal Server Error",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdDelete-500-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdDelete-500-schema-500');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdDelete-500-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Default-apiEventsIdGet">
+                      <article id="api-Default-apiEventsIdGet-0" data-group="User" data-name="apiEventsIdGet" data-version="0">
+                        <div class="pull-left">
+                          <h1>apiEventsIdGet</h1>
+                          <p>Get Event Details</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Retrieves detailed information about a specific event</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/events/{id}</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Default-apiEventsIdGet-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdGet-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdGet-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiEventsIdGet-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Default-apiEventsIdGet-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdGet-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiEventsIdGet-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Default-apiEventsIdGet-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdGet-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdGet-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdGet-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Default-apiEventsIdGet-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+"http://localhost:8080/api/events/{id}"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Default-apiEventsIdGet-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.DefaultApi;
+
+import java.io.File;
+import java.util.*;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        DefaultApi apiInstance = new DefaultApi();
+        Integer id = 56; // Integer | Event ID
+        try {
+            EventDetailResponseDto result = apiInstance.apiEventsIdGet(id);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#apiEventsIdGet");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Default-apiEventsIdGet-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        DefaultApi apiInstance = new DefaultApi();
+        Integer id = 56; // Integer | Event ID
+        try {
+            EventDetailResponseDto result = apiInstance.apiEventsIdGet(id);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#apiEventsIdGet");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Default-apiEventsIdGet-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Default-apiEventsIdGet-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+Integer *id = 56; // Event ID
+
+DefaultApi *apiInstance = [[DefaultApi alloc] init];
+
+// Get Event Details
+[apiInstance apiEventsIdGetWith:id
+              completionHandler: ^(EventDetailResponseDto output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsIdGet-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var OrienteeringAppServerApi = require('orienteering_app_server_api');
+var defaultClient = OrienteeringAppServerApi.ApiClient.instance;
+
+
+var api = new OrienteeringAppServerApi.DefaultApi()
+var id = 56; // {{Integer}} Event ID
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.apiEventsIdGet(id, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Default-apiEventsIdGet-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Default-apiEventsIdGet-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class apiEventsIdGetExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new DefaultApi();
+            var id = 56;  // Integer | Event ID
+
+            try
+            {
+                // Get Event Details
+                EventDetailResponseDto result = apiInstance.apiEventsIdGet(id);
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling DefaultApi.apiEventsIdGet: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsIdGet-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiDefaultApi();
+$id = 56; // Integer | Event ID
+
+try {
+    $result = $api_instance->apiEventsIdGet($id);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling DefaultApi->apiEventsIdGet: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsIdGet-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::DefaultApi;
+
+
+my $api_instance = WWW::SwaggerClient::DefaultApi->new();
+my $id = 56; # Integer | Event ID
+
+eval { 
+    my $result = $api_instance->apiEventsIdGet(id => $id);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling DefaultApi->apiEventsIdGet: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsIdGet-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.DefaultApi()
+id = 56 # Integer | Event ID
+
+try: 
+    # Get Event Details
+    api_response = api_instance.api_events_id_get(id)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling DefaultApi->apiEventsIdGet: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_apiEventsIdGet_id">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Integer
+                                                  </span>
+                                  
+                                                      <div class="inner description">
+                                                          Event ID
+                                                      </div>
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Successful operation </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdGet-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdGet-200-schema">
+                                  <div id='responses-apiEventsIdGet-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Successful operation",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/EventDetailResponseDto"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdGet-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdGet-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdGet-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 400 - Bad Request - Invalid event ID </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdGet-400-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdGet-400-schema">
+                                  <div id='responses-apiEventsIdGet-400-schema-400' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Bad Request - Invalid event ID",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdGet-400-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdGet-400-schema-400');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdGet-400-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 401 - Unauthorized </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdGet-401-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdGet-401-schema">
+                                  <div id='responses-apiEventsIdGet-401-schema-401' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Unauthorized",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdGet-401-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdGet-401-schema-401');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdGet-401-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 404 - Not Found - Event does not exist </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdGet-404-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdGet-404-schema">
+                                  <div id='responses-apiEventsIdGet-404-schema-404' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Not Found - Event does not exist",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdGet-404-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdGet-404-schema-404');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdGet-404-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 500 - Internal Server Error </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdGet-500-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdGet-500-schema">
+                                  <div id='responses-apiEventsIdGet-500-schema-500' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Internal Server Error",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdGet-500-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdGet-500-schema-500');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdGet-500-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Default-apiEventsPost">
+                      <article id="api-Default-apiEventsPost-0" data-group="User" data-name="apiEventsPost" data-version="0">
+                        <div class="pull-left">
+                          <h1>apiEventsPost</h1>
+                          <p>Create New Event</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Creates a new event assigned to the authenticated user</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/api/events</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Default-apiEventsPost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsPost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsPost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiEventsPost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Default-apiEventsPost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsPost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiEventsPost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Default-apiEventsPost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsPost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsPost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsPost-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Default-apiEventsPost-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+-H "Content-Type: application/json"\
+"http://localhost:8080/api/events"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Default-apiEventsPost-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.DefaultApi;
+
+import java.io.File;
+import java.util.*;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        DefaultApi apiInstance = new DefaultApi();
+        AddEventRequestDto body = ; // AddEventRequestDto | 
+        try {
+            CreateEventResponseDto result = apiInstance.apiEventsPost(body);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#apiEventsPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Default-apiEventsPost-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        DefaultApi apiInstance = new DefaultApi();
+        AddEventRequestDto body = ; // AddEventRequestDto | 
+        try {
+            CreateEventResponseDto result = apiInstance.apiEventsPost(body);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#apiEventsPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Default-apiEventsPost-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Default-apiEventsPost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+AddEventRequestDto *body = ; // 
+
+DefaultApi *apiInstance = [[DefaultApi alloc] init];
+
+// Create New Event
+[apiInstance apiEventsPostWith:body
+              completionHandler: ^(CreateEventResponseDto output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsPost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var OrienteeringAppServerApi = require('orienteering_app_server_api');
+var defaultClient = OrienteeringAppServerApi.ApiClient.instance;
+
+
+var api = new OrienteeringAppServerApi.DefaultApi()
+var body = ; // {{AddEventRequestDto}} 
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.apiEventsPost(body, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Default-apiEventsPost-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Default-apiEventsPost-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class apiEventsPostExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new DefaultApi();
+            var body = new AddEventRequestDto(); // AddEventRequestDto | 
+
+            try
+            {
+                // Create New Event
+                CreateEventResponseDto result = apiInstance.apiEventsPost(body);
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling DefaultApi.apiEventsPost: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsPost-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiDefaultApi();
+$body = ; // AddEventRequestDto | 
+
+try {
+    $result = $api_instance->apiEventsPost($body);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling DefaultApi->apiEventsPost: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsPost-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::DefaultApi;
+
+
+my $api_instance = WWW::SwaggerClient::DefaultApi->new();
+my $body = WWW::SwaggerClient::Object::AddEventRequestDto->new(); # AddEventRequestDto | 
+
+eval { 
+    my $result = $api_instance->apiEventsPost(body => $body);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling DefaultApi->apiEventsPost: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsPost-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.DefaultApi()
+body =  # AddEventRequestDto | 
+
+try: 
+    # Create New Event
+    api_response = api_instance.api_events_post(body)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling DefaultApi->apiEventsPost: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+
+
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body <span style="color:red;">*</span></td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/AddEventRequestDto"
+      }
+    }
+  },
+  "required" : true
+};
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_apiEventsPost_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_apiEventsPost_body"></div>
+                                </td>
+                                </tr>
+                            </table>
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 201 - Event created successfully </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsPost-201-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsPost-201-schema">
+                                  <div id='responses-apiEventsPost-201-schema-201' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Event created successfully",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/CreateEventResponseDto"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsPost-201-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsPost-201-schema-201');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsPost-201-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 400 - Bad Request - Invalid payload </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsPost-400-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsPost-400-schema">
+                                  <div id='responses-apiEventsPost-400-schema-400' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Bad Request - Invalid payload",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsPost-400-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsPost-400-schema-400');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsPost-400-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 401 - Unauthorized </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsPost-401-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsPost-401-schema">
+                                  <div id='responses-apiEventsPost-401-schema-401' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Unauthorized",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsPost-401-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsPost-401-schema-401');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsPost-401-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 500 - Internal Server Error </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsPost-500-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsPost-500-schema">
+                                  <div id='responses-apiEventsPost-500-schema-500' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Internal Server Error",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsPost-500-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsPost-500-schema-500');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsPost-500-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
                     <div id="api-Default-apiMapsGet">
                       <article id="api-Default-apiMapsGet-0" data-group="User" data-name="apiMapsGet" data-version="0">
                         <div class="pull-left">
@@ -2881,6 +4723,7 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Default-apiMapsGet-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
 -H "Accept: application/json"\
 "http://localhost:8080/api/maps"</code></pre>
                           </div>
@@ -2896,7 +4739,9 @@ import java.util.*;
 public class DefaultApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
         DefaultApi apiInstance = new DefaultApi();
         try {
             array[MapListResponseDto] result = apiInstance.apiMapsGet();
@@ -2931,7 +4776,8 @@ public class DefaultApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-Default-apiMapsGet-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
 // Get All Maps
@@ -2949,6 +4795,8 @@ DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
                             <div class="tab-pane" id="examples-Default-apiMapsGet-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var OrienteeringAppServerApi = require('orienteering_app_server_api');
+var defaultClient = OrienteeringAppServerApi.ApiClient.instance;
+
 
 var api = new OrienteeringAppServerApi.DefaultApi()
 var callback = function(error, data, response) {
@@ -2979,6 +4827,7 @@ namespace Example
         public void main()
         {
 
+
             var apiInstance = new DefaultApi();
 
             try
@@ -3001,6 +4850,7 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+
 $api_instance = new Swagger\Client\ApiDefaultApi();
 
 try {
@@ -3016,6 +4866,7 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::DefaultApi;
+
 
 my $api_instance = WWW::SwaggerClient::DefaultApi->new();
 
@@ -3034,6 +4885,7 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
 
 # create an instance of the API class
 api_instance = swagger_client.DefaultApi()
@@ -3104,6 +4956,54 @@ except ApiException as e:
                                     </script>
                                   </div>
                                   <input id='responses-apiMapsGet-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 401 - Unauthorized </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiMapsGet-401-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiMapsGet-401-schema">
+                                  <div id='responses-apiMapsGet-401-schema-401' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Unauthorized",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiMapsGet-401-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiMapsGet-401-schema-401');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiMapsGet-401-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 
@@ -3191,6 +5091,7 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Default-apiMapsIdDelete-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X DELETE\
+ -H "Authorization: Bearer [[accessToken]]"\
 -H "Accept: application/json"\
 "http://localhost:8080/api/maps/{id}"</code></pre>
                           </div>
@@ -3206,7 +5107,9 @@ import java.util.*;
 public class DefaultApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
         DefaultApi apiInstance = new DefaultApi();
         Integer id = 56; // Integer | Map ID
         try {
@@ -3241,7 +5144,8 @@ public class DefaultApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-Default-apiMapsIdDelete-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Integer *id = 56; // Map ID
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+Integer *id = 56; // Map ID
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
@@ -3257,6 +5161,8 @@ DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
                             <div class="tab-pane" id="examples-Default-apiMapsIdDelete-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var OrienteeringAppServerApi = require('orienteering_app_server_api');
+var defaultClient = OrienteeringAppServerApi.ApiClient.instance;
+
 
 var api = new OrienteeringAppServerApi.DefaultApi()
 var id = 56; // {{Integer}} Map ID
@@ -3289,6 +5195,7 @@ namespace Example
         public void main()
         {
 
+
             var apiInstance = new DefaultApi();
             var id = 56;  // Integer | Map ID
 
@@ -3311,6 +5218,7 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+
 $api_instance = new Swagger\Client\ApiDefaultApi();
 $id = 56; // Integer | Map ID
 
@@ -3326,6 +5234,7 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::DefaultApi;
+
 
 my $api_instance = WWW::SwaggerClient::DefaultApi->new();
 my $id = 56; # Integer | Map ID
@@ -3344,6 +5253,7 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
 
 # create an instance of the API class
 api_instance = swagger_client.DefaultApi()
@@ -3582,6 +5492,7 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Default-apiMapsIdGet-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
 -H "Accept: application/json"\
 "http://localhost:8080/api/maps/{id}"</code></pre>
                           </div>
@@ -3597,7 +5508,9 @@ import java.util.*;
 public class DefaultApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
         DefaultApi apiInstance = new DefaultApi();
         Integer id = 56; // Integer | Map ID
         try {
@@ -3634,7 +5547,8 @@ public class DefaultApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-Default-apiMapsIdGet-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Integer *id = 56; // Map ID
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+Integer *id = 56; // Map ID
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
@@ -3653,6 +5567,8 @@ DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
                             <div class="tab-pane" id="examples-Default-apiMapsIdGet-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var OrienteeringAppServerApi = require('orienteering_app_server_api');
+var defaultClient = OrienteeringAppServerApi.ApiClient.instance;
+
 
 var api = new OrienteeringAppServerApi.DefaultApi()
 var id = 56; // {{Integer}} Map ID
@@ -3685,6 +5601,7 @@ namespace Example
         public void main()
         {
 
+
             var apiInstance = new DefaultApi();
             var id = 56;  // Integer | Map ID
 
@@ -3708,6 +5625,7 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+
 $api_instance = new Swagger\Client\ApiDefaultApi();
 $id = 56; // Integer | Map ID
 
@@ -3724,6 +5642,7 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::DefaultApi;
+
 
 my $api_instance = WWW::SwaggerClient::DefaultApi->new();
 my $id = 56; # Integer | Map ID
@@ -3743,6 +5662,7 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
 
 # create an instance of the API class
 api_instance = swagger_client.DefaultApi()
@@ -3890,6 +5810,54 @@ except ApiException as e:
                                 </div>
                             </div>
 
+                            <h3> Status: 401 - Unauthorized </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiMapsIdGet-401-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiMapsIdGet-401-schema">
+                                  <div id='responses-apiMapsIdGet-401-schema-401' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Unauthorized",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiMapsIdGet-401-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiMapsIdGet-401-schema-401');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiMapsIdGet-401-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
                             <h3> Status: 404 - Not Found - Map does not exist </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
@@ -4022,6 +5990,7 @@ except ApiException as e:
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Default-apiMapsPost-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
 -H "Accept: application/json"\
 -H "Content-Type: application/json"\
 "http://localhost:8080/api/maps"</code></pre>
@@ -4038,7 +6007,9 @@ import java.util.*;
 public class DefaultApiExample {
 
     public static void main(String[] args) {
-        
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
         DefaultApi apiInstance = new DefaultApi();
         AddMapRequestDto body = ; // AddMapRequestDto | 
         try {
@@ -4075,7 +6046,8 @@ public class DefaultApiExample {
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
                             <div class="tab-pane" id="examples-Default-apiMapsPost-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">AddMapRequestDto *body = ; // 
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+AddMapRequestDto *body = ; // 
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
@@ -4094,6 +6066,8 @@ DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
                             <div class="tab-pane" id="examples-Default-apiMapsPost-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var OrienteeringAppServerApi = require('orienteering_app_server_api');
+var defaultClient = OrienteeringAppServerApi.ApiClient.instance;
+
 
 var api = new OrienteeringAppServerApi.DefaultApi()
 var body = ; // {{AddMapRequestDto}} 
@@ -4126,6 +6100,7 @@ namespace Example
         public void main()
         {
 
+
             var apiInstance = new DefaultApi();
             var body = new AddMapRequestDto(); // AddMapRequestDto | 
 
@@ -4149,6 +6124,7 @@ namespace Example
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
+
 $api_instance = new Swagger\Client\ApiDefaultApi();
 $body = ; // AddMapRequestDto | 
 
@@ -4165,6 +6141,7 @@ try {
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::DefaultApi;
+
 
 my $api_instance = WWW::SwaggerClient::DefaultApi->new();
 my $body = WWW::SwaggerClient::Object::AddMapRequestDto->new(); # AddMapRequestDto | 
@@ -4184,6 +6161,7 @@ import time
 import swagger_client
 from swagger_client.rest import ApiException
 from pprint import pprint
+
 
 # create an instance of the API class
 api_instance = swagger_client.DefaultApi()

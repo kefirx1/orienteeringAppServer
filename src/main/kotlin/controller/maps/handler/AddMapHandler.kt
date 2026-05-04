@@ -6,6 +6,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import pl.dev.bkwiatkowski.controller.maps.dto.request.AddMapRequestDto
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
+import pl.dev.bkwiatkowski.core.either
 import pl.dev.bkwiatkowski.domain.model.MapWaypoint
 import pl.dev.bkwiatkowski.domain.usecase.AddMapUC
 
@@ -13,7 +14,9 @@ class AddMapHandler(
   private val addMapUC: AddMapUC,
 ) {
   suspend fun handle(call: ApplicationCall) {
-    val request = runCatching { call.receiveNullable<AddMapRequestDto>() }.getOrNull() ?: run {
+    val request = either {
+      call.receiveNullable<AddMapRequestDto>()
+    }.getRightOrNull() ?: run {
       call.respond(
         status = HttpStatusCode.BadRequest,
         message = ErrorResponse(
@@ -37,6 +40,7 @@ class AddMapHandler(
         name = request.name,
         description = request.description,
         imageData = request.imageData,
+        canPlayManually = request.canPlayManually,
         waypoints = waypoints,
       )
     ).fold(

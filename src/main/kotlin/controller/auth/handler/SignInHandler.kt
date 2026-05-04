@@ -8,6 +8,7 @@ import pl.dev.bkwiatkowski.controller.auth.dto.request.SignInRequestDto
 import pl.dev.bkwiatkowski.controller.auth.dto.response.SignInResponseDto
 import pl.dev.bkwiatkowski.core.EnvironmentConfig
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
+import pl.dev.bkwiatkowski.core.either
 import pl.dev.bkwiatkowski.core.security.token.TokenClaim
 import pl.dev.bkwiatkowski.core.security.token.TokenProvider
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
@@ -25,7 +26,9 @@ class SignInHandler(
   private val saveRefreshTokenUC: SaveRefreshTokenUC
 ) {
   suspend fun handle(call: ApplicationCall) {
-    val request = runCatching { call.receiveNullable<SignInRequestDto>() }.getOrNull() ?: run {
+    val request = either {
+      call.receiveNullable<SignInRequestDto>()
+    }.getRightOrNull() ?: run {
       call.respond(
         status = HttpStatusCode.BadRequest,
         message = ErrorResponse(

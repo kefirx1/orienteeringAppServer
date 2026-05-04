@@ -6,6 +6,7 @@ import io.ktor.server.response.*
 import pl.dev.bkwiatkowski.controller.auth.dto.response.SignInResponseDto
 import pl.dev.bkwiatkowski.core.EnvironmentConfig
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
+import pl.dev.bkwiatkowski.core.either
 import pl.dev.bkwiatkowski.core.security.token.TokenClaim
 import pl.dev.bkwiatkowski.core.security.token.TokenProvider
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
@@ -24,7 +25,9 @@ class RefreshTokenHandler(
   private val getAdminPanelUserByIdUC: GetAdminPanelUserByIdUC
 ) {
   suspend fun handle(call: ApplicationCall) {
-    val refreshToken = runCatching { call.request.cookies[REFRESH_TOKEN_COOKIE_NAME] }.getOrNull() ?: run {
+    val refreshToken = either {
+      call.request.cookies[REFRESH_TOKEN_COOKIE_NAME]
+    }.getRightOrNull() ?: run {
       call.respond(
         status = HttpStatusCode.BadRequest,
         message = ErrorResponse(

@@ -19,6 +19,7 @@ class MapListHandler(
             name = map.name,
             description = map.description,
             imageData = map.imageData,
+            canPlayManually = map.canPlayManually,
           )
         }
         call.respond(

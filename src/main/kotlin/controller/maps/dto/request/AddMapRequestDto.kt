@@ -8,6 +8,7 @@ data class AddMapRequestDto(
   val name: String,
   val description: String,
   val imageData: String,
+  val canPlayManually: Boolean,
   val waypoints: List<WaypointRequestDto> = emptyList(),
 )
 

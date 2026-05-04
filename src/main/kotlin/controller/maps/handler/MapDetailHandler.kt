@@ -31,6 +31,7 @@ class MapDetailHandler(
           name = map.name,
           description = map.description,
           imageData = map.imageData,
+          canPlayManually = map.canPlayManually,
           waypoints = map.mapWaypoints.map { waypoint ->
             WaypointResponseDto(
               id = waypoint.id,

@@ -38,7 +38,10 @@ class MapRepositoryImpl(
 
   override suspend fun getAllMaps(): Either<DomainError, List<MapData>> = either {
     database.getRight().dbQuery {
-      MapDAO.all().map { it.toDomain(mapWaypoints = emptyList()) }
+      MapDAO.all().map { mapDao ->
+        val waypoints = MapWaypointDAO.find { MapWaypointTable.mapId eq mapDao.id.value }.map { it.toDomain() }
+        mapDao.toDomain(mapWaypoints = waypoints)
+      }
     }.getRight()
   }
 
@@ -59,6 +62,7 @@ class MapRepositoryImpl(
         name = map.name
         description = map.description
         imageData = map.imageData
+        canPlayManually = map.canPlayManually
       }
 
       map.mapWaypoints.forEach { waypoint ->

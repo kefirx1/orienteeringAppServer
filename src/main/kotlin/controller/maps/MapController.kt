@@ -1,5 +1,6 @@
 package pl.dev.bkwiatkowski.controller.maps
 
+import io.ktor.server.auth.*
 import io.ktor.server.routing.*
 import pl.dev.bkwiatkowski.controller.maps.handler.AddMapHandler
 import pl.dev.bkwiatkowski.controller.maps.handler.DeleteMapHandler
@@ -15,21 +16,23 @@ class MapController(
 ) : Controller {
 
   override fun Route.registerRoutes() {
-    route("/maps") {
-      get {
-        mapListHandler.handle(call)
-      }
+    authenticate {
+      route("/maps") {
+        get {
+          mapListHandler.handle(call)
+        }
 
-      post {
-        addMapHandler.handle(call)
-      }
+        post {
+          addMapHandler.handle(call)
+        }
 
-      get("{id}") {
-        mapDetailHandler.handle(call)
-      }
+        get("{id}") {
+          mapDetailHandler.handle(call)
+        }
 
-      delete("{id}") {
-        deleteMapHandler.handle(call)
+        delete("{id}") {
+          deleteMapHandler.handle(call)
+        }
       }
     }
   }

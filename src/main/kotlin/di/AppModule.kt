@@ -54,6 +54,8 @@ import pl.dev.bkwiatkowski.controller.settings.SettingsController
 import pl.dev.bkwiatkowski.controller.settings.handler.SettingsHandler
 import pl.dev.bkwiatkowski.data.repository.MapRepository
 import pl.dev.bkwiatkowski.data.repository.MapRepositoryImpl
+import pl.dev.bkwiatkowski.data.repository.EventRepository
+import pl.dev.bkwiatkowski.data.repository.EventRepositoryImpl
 import pl.dev.bkwiatkowski.domain.usecase.GetAllMapsUC
 import pl.dev.bkwiatkowski.domain.usecase.GetAllMapsUCImpl
 import pl.dev.bkwiatkowski.domain.usecase.GetMapByIdUC
@@ -62,11 +64,24 @@ import pl.dev.bkwiatkowski.domain.usecase.AddMapUC
 import pl.dev.bkwiatkowski.domain.usecase.AddMapUCImpl
 import pl.dev.bkwiatkowski.domain.usecase.DeleteMapUC
 import pl.dev.bkwiatkowski.domain.usecase.DeleteMapUCImpl
+import pl.dev.bkwiatkowski.domain.usecase.GetAllEventsUC
+import pl.dev.bkwiatkowski.domain.usecase.GetAllEventsUCImpl
+import pl.dev.bkwiatkowski.domain.usecase.GetEventByIdUC
+import pl.dev.bkwiatkowski.domain.usecase.GetEventByIdUCImpl
+import pl.dev.bkwiatkowski.domain.usecase.AddEventUC
+import pl.dev.bkwiatkowski.domain.usecase.AddEventUCImpl
+import pl.dev.bkwiatkowski.domain.usecase.DeleteEventUC
+import pl.dev.bkwiatkowski.domain.usecase.DeleteEventUCImpl
 import pl.dev.bkwiatkowski.controller.maps.MapController
 import pl.dev.bkwiatkowski.controller.maps.handler.MapListHandler
 import pl.dev.bkwiatkowski.controller.maps.handler.MapDetailHandler
 import pl.dev.bkwiatkowski.controller.maps.handler.AddMapHandler
 import pl.dev.bkwiatkowski.controller.maps.handler.DeleteMapHandler
+import pl.dev.bkwiatkowski.controller.events.EventController
+import pl.dev.bkwiatkowski.controller.events.handler.EventListHandler
+import pl.dev.bkwiatkowski.controller.events.handler.EventDetailHandler
+import pl.dev.bkwiatkowski.controller.events.handler.AddEventHandler
+import pl.dev.bkwiatkowski.controller.events.handler.DeleteEventHandler
 
 fun appModule(config: ApplicationConfig) = module {
   single<ApplicationConfig> { config }
@@ -88,6 +103,8 @@ fun appModule(config: ApplicationConfig) = module {
   single<RefreshTokenRepository> { RefreshTokenRepositoryImpl(databaseProvider = get()) }
 
   single<MapRepository> { MapRepositoryImpl(databaseProvider = get()) }
+
+  single<EventRepository> { EventRepositoryImpl(databaseProvider = get()) }
 
   factory<TextValidator> { DefaultTextValidator() }
 
@@ -133,7 +150,7 @@ fun appModule(config: ApplicationConfig) = module {
       byteCoder = get(),
     )
   }
-  
+
   factory<SaveRefreshTokenUC> {
     SaveRefreshTokenUCImpl(
       refreshTokenRepository = get(),
@@ -146,38 +163,63 @@ fun appModule(config: ApplicationConfig) = module {
       refreshTokenRepository = get(),
     )
   }
-  
-   factory<RevokeAllUserRefreshTokensUC> {
-     RevokeAllUserRefreshTokensUCImpl(
-       refreshTokenRepository = get(),
-     )
-   }
 
-   factory<GetAllMapsUC> {
-     GetAllMapsUCImpl(
-       mapRepository = get(),
-     )
-   }
+  factory<RevokeAllUserRefreshTokensUC> {
+    RevokeAllUserRefreshTokensUCImpl(
+      refreshTokenRepository = get(),
+    )
+  }
 
-   factory<GetMapByIdUC> {
-     GetMapByIdUCImpl(
-       mapRepository = get(),
-     )
-   }
+  factory<GetAllMapsUC> {
+    GetAllMapsUCImpl(
+      mapRepository = get(),
+    )
+  }
 
-   factory<AddMapUC> {
-     AddMapUCImpl(
-       mapRepository = get(),
-     )
-   }
+  factory<GetMapByIdUC> {
+    GetMapByIdUCImpl(
+      mapRepository = get(),
+    )
+  }
 
-   factory<DeleteMapUC> {
-     DeleteMapUCImpl(
-       mapRepository = get(),
-     )
-   }
+  factory<AddMapUC> {
+    AddMapUCImpl(
+      mapRepository = get(),
+    )
+  }
 
-   single { HTTPPlugin(environmentConfig = get()) }
+  factory<DeleteMapUC> {
+    DeleteMapUCImpl(
+      mapRepository = get(),
+    )
+  }
+
+  factory<GetAllEventsUC> {
+    GetAllEventsUCImpl(
+      eventRepository = get(),
+    )
+  }
+
+  factory<GetEventByIdUC> {
+    GetEventByIdUCImpl(
+      eventRepository = get(),
+    )
+  }
+
+  factory<AddEventUC> {
+    AddEventUCImpl(
+      eventRepository = get(),
+      mapRepository = get(),
+    )
+  }
+
+  factory<DeleteEventUC> {
+    DeleteEventUCImpl(
+      eventRepository = get(),
+    )
+  }
+
+  single { HTTPPlugin(environmentConfig = get()) }
 
   single { SecurityPlugin(environmentConfig = get()) }
 
@@ -185,11 +227,11 @@ fun appModule(config: ApplicationConfig) = module {
 
   single { AuthenticateHandler() }
 
-  single { 
+  single {
     SignUpHandler(
       addNewAdminPanelUserUC = get(),
       validateAdminPanelUserRequestUC = get()
-    ) 
+    )
   }
 
   single {
@@ -201,7 +243,7 @@ fun appModule(config: ApplicationConfig) = module {
       saveRefreshTokenUC = get(),
     )
   }
-  
+
   single {
     RefreshTokenHandler(
       tokenProvider = get(),
@@ -212,7 +254,7 @@ fun appModule(config: ApplicationConfig) = module {
       getAdminPanelUserByIdUC = get(),
     )
   }
-  
+
   single {
     LogoutHandler(
       revokeAllUserRefreshTokensUC = get(),
@@ -243,12 +285,29 @@ fun appModule(config: ApplicationConfig) = module {
 
   single { DeleteMapHandler(deleteMapUC = get()) }
 
+  single { EventListHandler(getAllEventsUC = get(), getAdminPanelUserByIdUC = get()) }
+
+  single { EventDetailHandler(getEventByIdUC = get()) }
+
+  single { AddEventHandler(addEventUC = get()) }
+
+  single { DeleteEventHandler(deleteEventUC = get(), getAdminPanelUserByIdUC = get()) }
+
   single {
     MapController(
       mapListHandler = get(),
       mapDetailHandler = get(),
       addMapHandler = get(),
       deleteMapHandler = get(),
+    )
+  } bind Controller::class
+
+  single {
+    EventController(
+      eventListHandler = get(),
+      eventDetailHandler = get(),
+      addEventHandler = get(),
+      deleteEventHandler = get(),
     )
   } bind Controller::class
 

@@ -5,5 +5,6 @@ data class MapData(
   val name: String,
   val description: String,
   val imageData: String,
+  val canPlayManually: Boolean,
   val mapWaypoints: List<MapWaypoint>,
 )

@@ -179,6 +179,8 @@ paths:
     get:
       summary: "Get All Maps"
       description: "Retrieves a list of all available maps with basic information"
+      security:
+        - bearerAuth: [ ]
       responses:
         "200":
           description: "Successful operation"
@@ -188,6 +190,12 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/MapListResponseDto"
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: "Internal Server Error"
           content:
@@ -197,6 +205,8 @@ paths:
     post:
       summary: "Create New Map"
       description: "Creates a new orienteering map with waypoints and base64 encoded image data"
+      security:
+        - bearerAuth: [ ]
       requestBody:
         required: true
         content:
@@ -226,6 +236,8 @@ paths:
     get:
       summary: "Get Map Details"
       description: "Retrieves complete information about a specific map including all waypoints"
+      security:
+        - bearerAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -246,6 +258,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "404":
           description: "Not Found - Map does not exist"
           content:
@@ -261,6 +279,8 @@ paths:
     delete:
       summary: "Delete Map"
       description: "Deletes a map and all its associated waypoints"
+      security:
+        - bearerAuth: [ ]
       parameters:
         - name: id
           in: path
@@ -279,6 +299,140 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "404":
           description: "Not Found - Map does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/events:
+     get:
+       summary: "Get All Events"
+       description: "Retrieves a list of events. Regular users see only their own events, admins see all events. Returns an empty list if the user has no events"
+       security:
+         - bearerAuth: [ ]
+       responses:
+         "200":
+           description: "Successful operation"
+           content:
+             application/json:
+               schema:
+                 type: array
+                 items:
+                   $ref: "#/components/schemas/EventListResponseDto"
+     post:
+       summary: "Create New Event"
+       description: "Creates a new event assigned to the authenticated user"
+       security:
+         - bearerAuth: [ ]
+       requestBody:
+         required: true
+         content:
+           application/json:
+             schema:
+               $ref: "#/components/schemas/AddEventRequestDto"
+       responses:
+         "201":
+           description: "Event created successfully"
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/CreateEventResponseDto"
+         "400":
+           description: "Bad Request - Invalid payload"
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/ErrorResponse"
+         "401":
+           description: "Unauthorized"
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/ErrorResponse"
+         "500":
+           description: "Internal Server Error"
+           content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/ErrorResponse"
+  /api/events/{id}:
+    get:
+      summary: "Get Event Details"
+      description: "Retrieves detailed information about a specific event"
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: "Event ID"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EventDetailResponseDto"
+        "400":
+          description: "Bad Request - Invalid event ID"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Not Found - Event does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      summary: "Delete Event"
+      description: "Deletes an event. Users can only delete their own events, admins can delete any event"
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: "Event ID"
+      responses:
+        "200":
+          description: "Event deleted successfully"
+        "400":
+          description: "Bad Request - Invalid event ID"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Not Found - Event does not exist"
           content:
             application/json:
               schema:
@@ -354,6 +508,7 @@ components:
         - name
         - description
         - imageData
+        - canPlayManually
       properties:
         id:
           type: integer
@@ -364,28 +519,35 @@ components:
         imageData:
           type: string
           description: "Base64 encoded image data"
+        canPlayManually:
+          type: boolean
+          description: "Whether the map can be played manually"
     MapDetailResponseDto:
-       type: object
-       required:
-         - id
-         - name
-         - description
-         - imageData
-         - waypoints
-       properties:
-         id:
-           type: integer
-         name:
-           type: string
-         description:
-           type: string
-         imageData:
-           type: string
-           description: "Base64 encoded image data"
-         waypoints:
-           type: array
-           items:
-             $ref: "#/components/schemas/WaypointResponseDto"
+      type: object
+      required:
+        - id
+        - name
+        - description
+        - imageData
+        - canPlayManually
+        - waypoints
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        imageData:
+          type: string
+          description: "Base64 encoded image data"
+        canPlayManually:
+          type: boolean
+          description: "Whether the map can be played manually"
+        waypoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/WaypointResponseDto"
     WaypointResponseDto:
       type: object
       required:
@@ -405,23 +567,27 @@ components:
           type: number
           format: float
     AddMapRequestDto:
-       type: object
-       required:
-         - name
-         - description
-         - imageData
-       properties:
-         name:
-           type: string
-         description:
-           type: string
-         imageData:
-           type: string
-           description: "Base64 encoded image data (required)"
-         waypoints:
-           type: array
-           items:
-             $ref: "#/components/schemas/WaypointRequestDto"
+      type: object
+      required:
+        - name
+        - description
+        - imageData
+        - canPlayManually
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        imageData:
+          type: string
+          description: "Base64 encoded image data (required)"
+        canPlayManually:
+          type: boolean
+          description: "Whether the map can be played manually"
+        waypoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/WaypointRequestDto"
     WaypointRequestDto:
       type: object
       required:
@@ -438,6 +604,130 @@ components:
           type: number
           format: float
     CreateMapResponseDto:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+    AddEventRequestDto:
+      type: object
+      required:
+        - mapId
+        - name
+        - description
+        - startDateTime
+        - startLocationX
+        - startLocationY
+      properties:
+        mapId:
+          type: integer
+          description: "ID of the map associated with this event"
+        name:
+          type: string
+        description:
+          type: string
+        startDateTime:
+          type: string
+          format: date-time
+          description: "ISO 8601 format date-time"
+        startLocationX:
+          type: number
+          format: float
+          description: "X coordinate of the event start location"
+        startLocationY:
+          type: number
+          format: float
+          description: "Y coordinate of the event start location"
+    EventListResponseDto:
+      type: object
+      required:
+        - id
+        - map
+        - name
+        - description
+        - createdAt
+        - startDate
+        - startLocationX
+        - startLocationY
+      properties:
+        id:
+          type: integer
+        map:
+          $ref: "#/components/schemas/MapDto"
+        name:
+          type: string
+        description:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+          description: "ISO 8601 format date-time"
+        startDate:
+          type: string
+          format: date-time
+          description: "ISO 8601 format date-time"
+        startLocationX:
+          type: number
+          format: float
+        startLocationY:
+          type: number
+          format: float
+    EventDetailResponseDto:
+      type: object
+      required:
+        - id
+        - map
+        - name
+        - description
+        - createdAt
+        - startDate
+        - startLocationX
+        - startLocationY
+      properties:
+        id:
+          type: integer
+        map:
+          $ref: "#/components/schemas/MapDto"
+        name:
+          type: string
+        description:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+          description: "ISO 8601 format date-time"
+        startDate:
+          type: string
+          format: date-time
+          description: "ISO 8601 format date-time"
+        startLocationX:
+          type: number
+          format: float
+        startLocationY:
+          type: number
+          format: float
+    MapDto:
+      type: object
+      required:
+        - id
+        - name
+        - description
+        - imageData
+        - canPlayManually
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        imageData:
+          type: string
+          description: "Base64 encoded image data"
+        canPlayManually:
+          type: boolean
+    CreateEventResponseDto:
       type: object
       required:
         - id
