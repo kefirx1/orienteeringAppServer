@@ -47,6 +47,10 @@ class EventListHandler(
     ).fold(
       onRight = { events ->
         val response = events.map { event ->
+          val creatorUsername = getAdminPanelUserByIdUC(
+            params = GetAdminPanelUserByIdUC.Params(id = event.userId)
+          ).getRightOrNull()?.username ?: "unknown"
+
           EventListResponseDto(
             id = event.id,
             map = MapDto(
@@ -61,6 +65,7 @@ class EventListHandler(
             startDate = event.startDate,
             startLocationX = event.startLocationX,
             startLocationY = event.startLocationY,
+            createdByUsername = creatorUsername,
           )
         }
         call.respond(

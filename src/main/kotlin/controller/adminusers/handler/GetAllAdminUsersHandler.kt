@@ -1,18 +1,19 @@
-package pl.dev.bkwiatkowski.controller.maps.handler
+package pl.dev.bkwiatkowski.controller.adminusers.handler
 
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
+import pl.dev.bkwiatkowski.controller.adminusers.dto.response.toResponseDto
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
 import pl.dev.bkwiatkowski.core.security.token.USER_ROLE_CLAIM
 import pl.dev.bkwiatkowski.domain.model.AdminPanelUser
-import pl.dev.bkwiatkowski.domain.usecase.DeleteMapUC
+import pl.dev.bkwiatkowski.domain.usecase.GetAllAdminPanelUsersUC
 
-class DeleteMapHandler(
-  private val deleteMapUC: DeleteMapUC,
+class GetAllAdminUsersHandler(
+  private val getAllAdminPanelUsersUC: GetAllAdminPanelUsersUC,
 ) {
   suspend fun handle(call: ApplicationCall) {
     val principal = call.principal<JWTPrincipal>()
@@ -35,37 +36,29 @@ class DeleteMapHandler(
         status = HttpStatusCode.Forbidden,
         message = ErrorResponse(
           businessCode = "FORBIDDEN",
-          message = "Only admins can delete maps"
+          message = "Only admins can access this resource"
         )
       )
       return
     }
 
-    val mapId = call.parameters["id"]?.toIntOrNull()
-    if (mapId == null) {
-      call.respond(
-        status = HttpStatusCode.BadRequest,
-        message = ErrorResponse(
-          businessCode = "INVALID_ID",
-          message = "Invalid map ID"
-        )
-      )
-      return
-    }
-
-    deleteMapUC(params = DeleteMapUC.Params(mapId = mapId)).fold(
-      onRight = {
-        call.respond(HttpStatusCode.OK)
-      },
-      onLeft = {
-        call.respond(
-          status = HttpStatusCode.NotFound,
-          message = ErrorResponse(
-            businessCode = "MAP_NOT_FOUND",
-            message = "Map not found"
+    getAllAdminPanelUsersUC(params = GetAllAdminPanelUsersUC.Params)
+      .fold(
+        onRight = { users ->
+          call.respond(
+            status = HttpStatusCode.OK,
+            message = users.map { it.toResponseDto() },
           )
-        )
-      }
-    )
+        },
+        onLeft = {
+          call.respond(
+            status = HttpStatusCode.InternalServerError,
+            message = ErrorResponse(
+              businessCode = "FETCH_FAILED",
+              message = "Failed to fetch users"
+            )
+          )
+        }
+      )
   }
 }

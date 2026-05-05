@@ -1,4 +1,4 @@
-package pl.dev.bkwiatkowski.controller.maps.handler
+package pl.dev.bkwiatkowski.controller.adminusers.handler
 
 import io.ktor.http.*
 import io.ktor.server.application.*
@@ -9,10 +9,10 @@ import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
 import pl.dev.bkwiatkowski.core.security.token.USER_ROLE_CLAIM
 import pl.dev.bkwiatkowski.domain.model.AdminPanelUser
-import pl.dev.bkwiatkowski.domain.usecase.DeleteMapUC
+import pl.dev.bkwiatkowski.domain.usecase.DeleteAdminPanelUserUC
 
-class DeleteMapHandler(
-  private val deleteMapUC: DeleteMapUC,
+class DeleteAdminUserHandler(
+  private val deleteAdminPanelUserUC: DeleteAdminPanelUserUC,
 ) {
   suspend fun handle(call: ApplicationCall) {
     val principal = call.principal<JWTPrincipal>()
@@ -35,37 +35,49 @@ class DeleteMapHandler(
         status = HttpStatusCode.Forbidden,
         message = ErrorResponse(
           businessCode = "FORBIDDEN",
-          message = "Only admins can delete maps"
+          message = "Only admins can access this resource"
         )
       )
       return
     }
 
-    val mapId = call.parameters["id"]?.toIntOrNull()
-    if (mapId == null) {
+    val targetUserId = call.parameters["id"]?.toIntOrNull()
+    if (targetUserId == null) {
       call.respond(
         status = HttpStatusCode.BadRequest,
         message = ErrorResponse(
           businessCode = "INVALID_ID",
-          message = "Invalid map ID"
+          message = "Invalid user ID"
         )
       )
       return
     }
 
-    deleteMapUC(params = DeleteMapUC.Params(mapId = mapId)).fold(
-      onRight = {
-        call.respond(HttpStatusCode.OK)
-      },
-      onLeft = {
-        call.respond(
-          status = HttpStatusCode.NotFound,
-          message = ErrorResponse(
-            businessCode = "MAP_NOT_FOUND",
-            message = "Map not found"
-          )
+    if (targetUserId == userId) {
+      call.respond(
+        status = HttpStatusCode.BadRequest,
+        message = ErrorResponse(
+          businessCode = "CANNOT_DELETE_SELF",
+          message = "You cannot delete your own account"
         )
-      }
-    )
+      )
+      return
+    }
+
+    deleteAdminPanelUserUC(params = DeleteAdminPanelUserUC.Params(userId = targetUserId))
+      .fold(
+        onRight = {
+          call.respond(HttpStatusCode.OK)
+        },
+        onLeft = {
+          call.respond(
+            status = HttpStatusCode.NotFound,
+            message = ErrorResponse(
+              businessCode = "USER_NOT_FOUND",
+              message = "User with given ID does not exist"
+            )
+          )
+        }
+      )
   }
 }

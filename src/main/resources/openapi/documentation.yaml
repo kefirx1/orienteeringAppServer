@@ -226,6 +226,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: "Forbidden - Only admins can add maps"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: "Internal Server Error"
           content:
@@ -293,6 +305,18 @@ paths:
           description: "Map deleted successfully"
         "400":
           description: "Bad Request - Invalid map ID"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: "Forbidden - Only admins can delete maps"
           content:
             application/json:
               schema:
@@ -439,6 +463,123 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/admin/users:
+    get:
+      summary: "Get All Admin Panel Users"
+      description: "Returns a list of all admin panel users. **Requires ADMIN role.**"
+      security:
+        - bearerAuth: [ ]
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdminUserResponseDto"
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: "Forbidden - Only admins can access this resource"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      summary: "Add Admin Panel User"
+      description: "Creates a new admin panel user. **Requires ADMIN role.**"
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddAdminUserRequestDto"
+      responses:
+        "201":
+          description: "User created successfully"
+        "400":
+          description: "Bad Request - Invalid payload"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: "Forbidden - Only admins can access this resource"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: "Conflict - Validation failed or user already exists"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/admin/users/{id}:
+    delete:
+      summary: "Delete Admin Panel User"
+      description: "Deletes an admin panel user by ID. **Requires ADMIN role.** An admin cannot delete their own account."
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: "User ID"
+      responses:
+        "200":
+          description: "User deleted successfully"
+        "400":
+          description: "Bad Request - Invalid user ID or attempting to delete own account"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: "Forbidden - Only admins can access this resource"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Not Found - User does not exist"
           content:
             application/json:
               schema:
@@ -650,6 +791,7 @@ components:
         - startDate
         - startLocationX
         - startLocationY
+        - createdByUsername
       properties:
         id:
           type: integer
@@ -673,6 +815,9 @@ components:
         startLocationY:
           type: number
           format: float
+        createdByUsername:
+          type: string
+          description: "Username of the user who created the event"
     EventDetailResponseDto:
       type: object
       required:
@@ -734,6 +879,40 @@ components:
       properties:
         id:
           type: integer
+    AddAdminUserRequestDto:
+      type: object
+      required:
+        - username
+        - password
+        - email
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [ USER, ADMIN ]
+          default: USER
+    AdminUserResponseDto:
+      type: object
+      required:
+        - id
+        - username
+        - email
+        - role
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [ USER, ADMIN ]
   securitySchemes:
     bearerAuth:
       type: http

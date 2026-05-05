@@ -82,6 +82,14 @@ import pl.dev.bkwiatkowski.controller.events.handler.EventListHandler
 import pl.dev.bkwiatkowski.controller.events.handler.EventDetailHandler
 import pl.dev.bkwiatkowski.controller.events.handler.AddEventHandler
 import pl.dev.bkwiatkowski.controller.events.handler.DeleteEventHandler
+import pl.dev.bkwiatkowski.controller.adminusers.AdminUsersController
+import pl.dev.bkwiatkowski.controller.adminusers.handler.GetAllAdminUsersHandler
+import pl.dev.bkwiatkowski.controller.adminusers.handler.DeleteAdminUserHandler
+import pl.dev.bkwiatkowski.controller.adminusers.handler.AddAdminUserHandler
+import pl.dev.bkwiatkowski.domain.usecase.GetAllAdminPanelUsersUC
+import pl.dev.bkwiatkowski.domain.usecase.GetAllAdminPanelUsersUCImpl
+import pl.dev.bkwiatkowski.domain.usecase.DeleteAdminPanelUserUC
+import pl.dev.bkwiatkowski.domain.usecase.DeleteAdminPanelUserUCImpl
 
 fun appModule(config: ApplicationConfig) = module {
   single<ApplicationConfig> { config }
@@ -292,6 +300,33 @@ fun appModule(config: ApplicationConfig) = module {
   single { AddEventHandler(addEventUC = get()) }
 
   single { DeleteEventHandler(deleteEventUC = get(), getAdminPanelUserByIdUC = get()) }
+
+  factory<GetAllAdminPanelUsersUC> {
+    GetAllAdminPanelUsersUCImpl(adminPanelUserRepository = get())
+  }
+
+  factory<DeleteAdminPanelUserUC> {
+    DeleteAdminPanelUserUCImpl(adminPanelUserRepository = get())
+  }
+
+  single { GetAllAdminUsersHandler(getAllAdminPanelUsersUC = get()) }
+
+  single { DeleteAdminUserHandler(deleteAdminPanelUserUC = get()) }
+
+  single {
+    AddAdminUserHandler(
+      addNewAdminPanelUserUC = get(),
+      validateAdminPanelUserRequestUC = get(),
+    )
+  }
+
+  single {
+    AdminUsersController(
+      getAllAdminUsersHandler = get(),
+      deleteAdminUserHandler = get(),
+      addAdminUserHandler = get(),
+    )
+  } bind Controller::class
 
   single {
     MapController(

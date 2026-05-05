@@ -13,10 +13,12 @@ import pl.dev.bkwiatkowski.data.mapper.toDomain
 import pl.dev.bkwiatkowski.domain.model.AdminPanelUser
 
 interface AdminPanelUserRepository {
+  suspend fun getAllUsers(): Either<DomainError, List<AdminPanelUser>>
   suspend fun getUserById(id: Int): Either<DomainError, AdminPanelUser>
   suspend fun getUserByUsername(username: String): Either<DomainError, AdminPanelUser>
   suspend fun getUserByEmail(email: String): Either<DomainError, AdminPanelUser>
   suspend fun insertUser(user: AdminPanelUser): Either<DomainError, Unit>
+  suspend fun deleteUserById(id: Int): Either<DomainError, Unit>
 }
 
 class AdminPanelUserRepositoryImpl(
@@ -52,6 +54,12 @@ class AdminPanelUserRepositoryImpl(
     }.getRight()
   }
 
+  override suspend fun getAllUsers(): Either<DomainError, List<AdminPanelUser>> = either {
+    database.getRight().dbQuery {
+      AdminPanelUserDAO.all().map { it.toDomain() }
+    }.getRight()
+  }
+
   override suspend fun insertUser(user: AdminPanelUser): Either<DomainError, Unit> = either {
     database.getRight().dbQuery {
       AdminPanelUserDAO.new {
@@ -61,6 +69,14 @@ class AdminPanelUserRepositoryImpl(
         salt = user.salt
         role = user.role
       }
+    }.getRight()
+  }
+
+  override suspend fun deleteUserById(id: Int): Either<DomainError, Unit> = either {
+    database.getRight().dbQuery {
+      val user = AdminPanelUserDAO.findById(id)
+        ?: raise(error = DomainError.Custom(e = NullPointerException("User not found")))
+      user.delete()
     }.getRight()
   }
 

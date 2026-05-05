@@ -16,6 +16,7 @@ data class EventListResponseDto(
   val startDate: LocalDateTime,
   val startLocationX: Float,
   val startLocationY: Float,
+  val createdByUsername: String,
 )
 
 @Serializable
