@@ -6,6 +6,7 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 import pl.dev.bkwiatkowski.di.appModule
+import pl.dev.bkwiatkowski.core.serialization.LocalDateSerializer
 import pl.dev.bkwiatkowski.core.serialization.LocalDateTimeSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
@@ -18,6 +19,7 @@ class FrameworksPlugin {
         Json {
           serializersModule = SerializersModule {
             contextual(LocalDateTimeSerializer)
+            contextual(LocalDateSerializer)
           }
           isLenient = true
           ignoreUnknownKeys = true

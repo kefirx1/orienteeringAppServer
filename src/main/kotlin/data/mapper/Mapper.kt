@@ -4,10 +4,22 @@ import pl.dev.bkwiatkowski.data.dao.AdminPanelUserDAO
 import pl.dev.bkwiatkowski.data.dao.EventDAO
 import pl.dev.bkwiatkowski.data.dao.MapDAO
 import pl.dev.bkwiatkowski.data.dao.MapWaypointDAO
+import pl.dev.bkwiatkowski.data.dao.MobileUserDAO
 import pl.dev.bkwiatkowski.domain.model.AdminPanelUser
 import pl.dev.bkwiatkowski.domain.model.Event
 import pl.dev.bkwiatkowski.domain.model.MapData
 import pl.dev.bkwiatkowski.domain.model.MapWaypoint
+import pl.dev.bkwiatkowski.domain.model.MobileUser
+
+fun MobileUserDAO.toDomain() = MobileUser(
+  id = id.value,
+  username = username,
+  email = email,
+  password = password,
+  salt = salt,
+  phoneNumber = phoneNumber,
+  dateOfBirth = dateOfBirth,
+)
 
 fun AdminPanelUserDAO.toDomain() = AdminPanelUser(
   id = id.value,

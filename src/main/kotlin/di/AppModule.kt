@@ -93,6 +93,30 @@ import pl.dev.bkwiatkowski.domain.usecase.GetAllAdminPanelUsersUC
 import pl.dev.bkwiatkowski.domain.usecase.GetAllAdminPanelUsersUCImpl
 import pl.dev.bkwiatkowski.domain.usecase.DeleteAdminPanelUserUC
 import pl.dev.bkwiatkowski.domain.usecase.DeleteAdminPanelUserUCImpl
+import pl.dev.bkwiatkowski.controller.mobile.auth.MobileAuthController
+import pl.dev.bkwiatkowski.controller.mobile.auth.handler.MobileSignUpHandler
+import pl.dev.bkwiatkowski.controller.mobile.auth.handler.MobileSignInHandler
+import pl.dev.bkwiatkowski.controller.mobile.auth.handler.MobileRefreshTokenHandler
+import pl.dev.bkwiatkowski.data.repository.MobileUserRepository
+import pl.dev.bkwiatkowski.data.repository.MobileUserRepositoryImpl
+import pl.dev.bkwiatkowski.data.repository.MobileUserRefreshTokenRepository
+import pl.dev.bkwiatkowski.data.repository.MobileUserRefreshTokenRepositoryImpl
+import pl.dev.bkwiatkowski.domain.usecase.AddNewMobileUserUC
+import pl.dev.bkwiatkowski.domain.usecase.AddNewMobileUserUCImpl
+import pl.dev.bkwiatkowski.domain.usecase.GetMobileUserUC
+import pl.dev.bkwiatkowski.domain.usecase.GetMobileUserUCImpl
+import pl.dev.bkwiatkowski.domain.usecase.GetMobileUserByIdUC
+import pl.dev.bkwiatkowski.domain.usecase.GetMobileUserByIdUCImpl
+import pl.dev.bkwiatkowski.domain.usecase.ValidateMobileUserRegistrationUC
+import pl.dev.bkwiatkowski.domain.usecase.ValidateMobileUserRegistrationUCImpl
+import pl.dev.bkwiatkowski.domain.usecase.VerifyMobileUserAuthenticationUC
+import pl.dev.bkwiatkowski.domain.usecase.VerifyMobileUserAuthenticationUCImpl
+import pl.dev.bkwiatkowski.domain.usecase.SaveMobileUserRefreshTokenUC
+import pl.dev.bkwiatkowski.domain.usecase.SaveMobileUserRefreshTokenUCImpl
+import pl.dev.bkwiatkowski.domain.usecase.VerifyAndRevokeMobileUserRefreshTokenUC
+import pl.dev.bkwiatkowski.domain.usecase.VerifyAndRevokeMobileUserRefreshTokenUCImpl
+import pl.dev.bkwiatkowski.domain.usecase.RevokeAllMobileUserRefreshTokensUC
+import pl.dev.bkwiatkowski.domain.usecase.RevokeAllMobileUserRefreshTokensUCImpl
 
 fun appModule(config: ApplicationConfig) = module {
   single<ApplicationConfig> { config }
@@ -112,6 +136,10 @@ fun appModule(config: ApplicationConfig) = module {
   single<AdminPanelUserRepository> { AdminPanelUserRepositoryImpl(databaseProvider = get()) }
 
   single<RefreshTokenRepository> { RefreshTokenRepositoryImpl(databaseProvider = get()) }
+
+  single<MobileUserRepository> { MobileUserRepositoryImpl(databaseProvider = get()) }
+
+  single<MobileUserRefreshTokenRepository> { MobileUserRefreshTokenRepositoryImpl(databaseProvider = get()) }
 
   single<MapRepository> { MapRepositoryImpl(databaseProvider = get()) }
 
@@ -364,6 +392,92 @@ fun appModule(config: ApplicationConfig) = module {
       eventDetailHandler = get(),
       addEventHandler = get(),
       deleteEventHandler = get(),
+    )
+  } bind Controller::class
+
+  factory<AddNewMobileUserUC> {
+    AddNewMobileUserUCImpl(
+      mobileUserRepository = get(),
+      generateAdminPanelUserPasswordHashUC = get(),
+    )
+  }
+
+  factory<GetMobileUserUC> {
+    GetMobileUserUCImpl(mobileUserRepository = get())
+  }
+
+  factory<GetMobileUserByIdUC> {
+    GetMobileUserByIdUCImpl(mobileUserRepository = get())
+  }
+
+  factory<ValidateMobileUserRegistrationUC> {
+    ValidateMobileUserRegistrationUCImpl(
+      usernameValidator = get(),
+      passwordValidator = get(),
+      emailValidator = get(),
+      mobileUserRepository = get(),
+    )
+  }
+
+  factory<VerifyMobileUserAuthenticationUC> {
+    VerifyMobileUserAuthenticationUCImpl(
+      hashGenerator = get(),
+      byteCoder = get(),
+    )
+  }
+
+  factory<SaveMobileUserRefreshTokenUC> {
+    SaveMobileUserRefreshTokenUCImpl(
+      mobileUserRefreshTokenRepository = get(),
+      environmentConfig = get(),
+    )
+  }
+
+  factory<VerifyAndRevokeMobileUserRefreshTokenUC> {
+    VerifyAndRevokeMobileUserRefreshTokenUCImpl(
+      mobileUserRefreshTokenRepository = get(),
+    )
+  }
+
+  factory<RevokeAllMobileUserRefreshTokensUC> {
+    RevokeAllMobileUserRefreshTokensUCImpl(
+      mobileUserRefreshTokenRepository = get(),
+    )
+  }
+
+  single {
+    MobileSignUpHandler(
+      addNewMobileUserUC = get(),
+      validateMobileUserRegistrationUC = get(),
+    )
+  }
+
+  single {
+    MobileSignInHandler(
+      getMobileUserUC = get(),
+      verifyMobileUserAuthenticationUC = get(),
+      tokenProvider = get(),
+      environmentConfig = get(),
+      saveMobileUserRefreshTokenUC = get(),
+    )
+  }
+
+  single {
+    MobileRefreshTokenHandler(
+      tokenProvider = get(),
+      environmentConfig = get(),
+      verifyAndRevokeMobileUserRefreshTokenUC = get(),
+      revokeAllMobileUserRefreshTokensUC = get(),
+      saveMobileUserRefreshTokenUC = get(),
+      getMobileUserByIdUC = get(),
+    )
+  }
+
+  single {
+    MobileAuthController(
+      mobileSignUpHandler = get(),
+      mobileSignInHandler = get(),
+      mobileRefreshTokenHandler = get(),
     )
   } bind Controller::class
 
