@@ -11,6 +11,7 @@ import pl.dev.bkwiatkowski.data.dao.AdminPanelUserDAO
 import pl.dev.bkwiatkowski.data.entity.AdminPanelUserTable
 import pl.dev.bkwiatkowski.data.mapper.toDomain
 import pl.dev.bkwiatkowski.domain.model.AdminPanelUser
+import pl.dev.bkwiatkowski.domain.model.SaltedHash
 
 interface AdminPanelUserRepository {
   suspend fun getAllUsers(): Either<DomainError, List<AdminPanelUser>>
@@ -19,6 +20,7 @@ interface AdminPanelUserRepository {
   suspend fun getUserByEmail(email: String): Either<DomainError, AdminPanelUser>
   suspend fun insertUser(user: AdminPanelUser): Either<DomainError, Unit>
   suspend fun deleteUserById(id: Int): Either<DomainError, Unit>
+  suspend fun updateUserPassword(id: Int, saltedHash: SaltedHash): Either<DomainError, Unit>
 }
 
 class AdminPanelUserRepositoryImpl(
@@ -77,6 +79,15 @@ class AdminPanelUserRepositoryImpl(
       val user = AdminPanelUserDAO.findById(id)
         ?: raise(error = DomainError.Custom(e = NullPointerException("User not found")))
       user.delete()
+    }.getRight()
+  }
+
+  override suspend fun updateUserPassword(id: Int, saltedHash: SaltedHash): Either<DomainError, Unit> = either {
+    database.getRight().dbQuery {
+      val user = AdminPanelUserDAO.findById(id)
+        ?: raise(error = DomainError.Custom(e = NullPointerException("User not found")))
+      user.password = saltedHash.hash
+      user.salt = saltedHash.salt
     }.getRight()
   }
 

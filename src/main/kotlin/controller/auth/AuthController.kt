@@ -3,6 +3,7 @@ package pl.dev.bkwiatkowski.controller.auth
 import io.ktor.server.auth.*
 import io.ktor.server.routing.*
 import pl.dev.bkwiatkowski.controller.auth.handler.AuthenticateHandler
+import pl.dev.bkwiatkowski.controller.auth.handler.ChangePasswordHandler
 import pl.dev.bkwiatkowski.controller.auth.handler.LogoutHandler
 import pl.dev.bkwiatkowski.controller.auth.handler.RefreshTokenHandler
 import pl.dev.bkwiatkowski.controller.auth.handler.SignInHandler
@@ -15,6 +16,7 @@ class AuthController(
   private val signInHandler: SignInHandler,
   private val refreshTokenHandler: RefreshTokenHandler,
   private val logoutHandler: LogoutHandler,
+  private val changePasswordHandler: ChangePasswordHandler,
 ) : Controller {
 
   override fun Route.registerRoutes() {
@@ -26,6 +28,10 @@ class AuthController(
       route("/auth") {
         post("/logout") {
           logoutHandler.handle(call)
+        }
+
+        post("/change-password") {
+          changePasswordHandler.handle(call)
         }
       }
     }

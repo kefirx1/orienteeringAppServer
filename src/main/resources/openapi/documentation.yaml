@@ -139,6 +139,45 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /api/auth/change-password:
+    post:
+      summary: "Change User Password"
+      description: "Changes the password of the authenticated user. The user must provide their old password for verification."
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangePasswordRequestDto"
+      responses:
+        "200":
+          description: "Password changed successfully"
+        "400":
+          description: "Bad Request - Invalid payload or empty passwords"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized - Not authenticated"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: "Forbidden - Invalid old password or user not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /api/authenticate:
     get:
       summary: "Authenticate User"
@@ -334,56 +373,56 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
   /api/events:
-     get:
-       summary: "Get All Events"
-       description: "Retrieves a list of events. Regular users see only their own events, admins see all events. Returns an empty list if the user has no events"
-       security:
-         - bearerAuth: [ ]
-       responses:
-         "200":
-           description: "Successful operation"
-           content:
-             application/json:
-               schema:
-                 type: array
-                 items:
-                   $ref: "#/components/schemas/EventListResponseDto"
-     post:
-       summary: "Create New Event"
-       description: "Creates a new event assigned to the authenticated user"
-       security:
-         - bearerAuth: [ ]
-       requestBody:
-         required: true
-         content:
-           application/json:
-             schema:
-               $ref: "#/components/schemas/AddEventRequestDto"
-       responses:
-         "201":
-           description: "Event created successfully"
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/CreateEventResponseDto"
-         "400":
-           description: "Bad Request - Invalid payload"
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/ErrorResponse"
-         "401":
-           description: "Unauthorized"
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/ErrorResponse"
-         "500":
-           description: "Internal Server Error"
-           content:
-             application/json:
-               schema:
-                 $ref: "#/components/schemas/ErrorResponse"
+    get:
+      summary: "Get All Events"
+      description: "Retrieves a list of events. Regular users see only their own events, admins see all events. Returns an empty list if the user has no events"
+      security:
+        - bearerAuth: [ ]
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EventListResponseDto"
+    post:
+      summary: "Create New Event"
+      description: "Creates a new event assigned to the authenticated user"
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddEventRequestDto"
+      responses:
+        "201":
+          description: "Event created successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateEventResponseDto"
+        "400":
+          description: "Bad Request - Invalid payload"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /api/events/{id}:
     get:
       summary: "Get Event Details"
@@ -610,6 +649,18 @@ components:
           type: string
           enum: [ USER, ADMIN ]
           default: USER
+    ChangePasswordRequestDto:
+      type: object
+      required:
+        - oldPassword
+        - newPassword
+      properties:
+        oldPassword:
+          type: string
+          description: "The current password for verification"
+        newPassword:
+          type: string
+          description: "The new password for the user"
     SignInRequestDto:
       type: object
       required:

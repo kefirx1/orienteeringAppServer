@@ -6,6 +6,7 @@ import org.koin.dsl.module
 import pl.dev.bkwiatkowski.plugins.RoutingPlugin
 import pl.dev.bkwiatkowski.controller.auth.AuthController
 import pl.dev.bkwiatkowski.controller.auth.handler.AuthenticateHandler
+import pl.dev.bkwiatkowski.controller.auth.handler.ChangePasswordHandler
 import pl.dev.bkwiatkowski.controller.auth.handler.RefreshTokenHandler
 import pl.dev.bkwiatkowski.controller.auth.handler.SignInHandler
 import pl.dev.bkwiatkowski.controller.auth.handler.SignUpHandler
@@ -32,6 +33,8 @@ import pl.dev.bkwiatkowski.domain.usecase.GenerateAdminPanelUserPasswordHashUC
 import pl.dev.bkwiatkowski.domain.usecase.GenerateAdminPanelUserPasswordHashUCImpl
 import pl.dev.bkwiatkowski.domain.usecase.AddNewAdminPanelUserUC
 import pl.dev.bkwiatkowski.domain.usecase.AddNewAdminPanelUserUCImpl
+import pl.dev.bkwiatkowski.domain.usecase.ChangePasswordUC
+import pl.dev.bkwiatkowski.domain.usecase.ChangePasswordUCImpl
 import pl.dev.bkwiatkowski.domain.usecase.GetAdminPanelUserUC
 import pl.dev.bkwiatkowski.domain.usecase.GetAdminPanelUserUCImpl
 import pl.dev.bkwiatkowski.domain.usecase.GetAdminPanelUserByIdUC
@@ -152,6 +155,15 @@ fun appModule(config: ApplicationConfig) = module {
     )
   }
 
+  factory<ChangePasswordUC> {
+    ChangePasswordUCImpl(
+      adminPanelUserRepository = get(),
+      saltGenerator = get(),
+      hashGenerator = get(),
+      byteCoder = get(),
+    )
+  }
+
   factory<VerifyAdminPanelUserAuthenticationUC> {
     VerifyAdminPanelUserAuthenticationUCImpl(
       hashGenerator = get(),
@@ -263,21 +275,30 @@ fun appModule(config: ApplicationConfig) = module {
     )
   }
 
-  single {
-    LogoutHandler(
-      revokeAllUserRefreshTokensUC = get(),
-    )
-  }
+   single {
+     LogoutHandler(
+       revokeAllUserRefreshTokensUC = get(),
+     )
+   }
 
-  single {
-    AuthController(
-      authenticateHandler = get(),
-      signUpHandler = get(),
-      signInHandler = get(),
-      refreshTokenHandler = get(),
-      logoutHandler = get(),
-    )
-  } bind Controller::class
+   single {
+     ChangePasswordHandler(
+       changePasswordUC = get(),
+       getAdminPanelUserByIdUC = get(),
+       verifyAdminPanelUserAuthenticationUC = get(),
+     )
+   }
+
+   single {
+     AuthController(
+       authenticateHandler = get(),
+       signUpHandler = get(),
+       signInHandler = get(),
+       refreshTokenHandler = get(),
+       logoutHandler = get(),
+       changePasswordHandler = get(),
+     )
+   } bind Controller::class
 
   single { SettingsHandler(getAdminPanelUserByIdUC = get()) }
 
