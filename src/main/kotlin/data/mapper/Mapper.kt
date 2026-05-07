@@ -5,11 +5,13 @@ import pl.dev.bkwiatkowski.data.dao.EventDAO
 import pl.dev.bkwiatkowski.data.dao.MapDAO
 import pl.dev.bkwiatkowski.data.dao.MapWaypointDAO
 import pl.dev.bkwiatkowski.data.dao.MobileUserDAO
+import pl.dev.bkwiatkowski.data.dao.MobileUserEventProgressionDAO
 import pl.dev.bkwiatkowski.domain.model.AdminPanelUser
 import pl.dev.bkwiatkowski.domain.model.Event
 import pl.dev.bkwiatkowski.domain.model.MapData
 import pl.dev.bkwiatkowski.domain.model.MapWaypoint
 import pl.dev.bkwiatkowski.domain.model.MobileUser
+import pl.dev.bkwiatkowski.domain.model.MobileUserEventProgression
 
 fun MobileUserDAO.toDomain() = MobileUser(
   id = id.value,
@@ -19,6 +21,16 @@ fun MobileUserDAO.toDomain() = MobileUser(
   salt = salt,
   phoneNumber = phoneNumber,
   dateOfBirth = dateOfBirth,
+)
+
+fun MobileUserEventProgressionDAO.toDomain() = MobileUserEventProgression(
+  id = id.value,
+  userId = userId,
+  eventId = eventId,
+  startedAt = startedAt,
+  finishedAt = finishedAt,
+  visitedWaypointsCount = visitedWaypointsCount,
+  isLiveTracking = isLiveTracking,
 )
 
 fun AdminPanelUserDAO.toDomain() = AdminPanelUser(

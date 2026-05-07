@@ -117,6 +117,8 @@ import pl.dev.bkwiatkowski.domain.usecase.VerifyAndRevokeMobileUserRefreshTokenU
 import pl.dev.bkwiatkowski.domain.usecase.VerifyAndRevokeMobileUserRefreshTokenUCImpl
 import pl.dev.bkwiatkowski.domain.usecase.RevokeAllMobileUserRefreshTokensUC
 import pl.dev.bkwiatkowski.domain.usecase.RevokeAllMobileUserRefreshTokensUCImpl
+import pl.dev.bkwiatkowski.data.repository.MobileUserEventProgressionRepository
+import pl.dev.bkwiatkowski.data.repository.MobileUserEventProgressionRepositoryImpl
 
 fun appModule(config: ApplicationConfig) = module {
   single<ApplicationConfig> { config }
@@ -144,6 +146,8 @@ fun appModule(config: ApplicationConfig) = module {
   single<MapRepository> { MapRepositoryImpl(databaseProvider = get()) }
 
   single<EventRepository> { EventRepositoryImpl(databaseProvider = get()) }
+
+  single<MobileUserEventProgressionRepository> { MobileUserEventProgressionRepositoryImpl(databaseProvider = get()) }
 
   factory<TextValidator> { DefaultTextValidator() }
 
