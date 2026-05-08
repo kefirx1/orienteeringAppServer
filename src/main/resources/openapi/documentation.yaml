@@ -426,7 +426,7 @@ paths:
   /api/events/{id}:
     get:
       summary: "Get Event Details"
-      description: "Retrieves detailed information about a specific event"
+      description: "Retrieves detailed information about a specific event. Access is restricted to event owner or admin users. **Requires authentication.**"
       security:
         - bearerAuth: [ ]
       parameters:
@@ -449,8 +449,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-        "401":
-          description: "Unauthorized"
+        "403":
+          description: "Forbidden - Not authenticated or no permission to view this event"
           content:
             application/json:
               schema:
@@ -490,6 +490,52 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "401":
           description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Not Found - Event does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/events/{eventId}/participants-progression:
+    get:
+      summary: "Get Event Participants Progression"
+      description: "Retrieves a list of all participants' progression data for a specific event, sorted by waypoints visited (descending), then by time spent (ascending), then by participation order. Access is restricted to event owner or admin users. **Requires authentication.**"
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: eventId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: "Event ID"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EventParticipantProgressionDto"
+        "400":
+          description: "Bad Request - Invalid event ID"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: "Forbidden - Not authenticated or no permission to view this event's participants"
           content:
             application/json:
               schema:
@@ -964,6 +1010,37 @@ components:
         role:
           type: string
           enum: [ USER, ADMIN ]
+    EventParticipantProgressionDto:
+      type: object
+      required:
+        - userId
+        - userName
+        - startedAt
+        - finishedAt
+        - visitedWaypointsCount
+        - isLiveTracking
+      properties:
+        userId:
+          type: integer
+          description: "Mobile user ID"
+        userName:
+          type: string
+          description: "Username of the participant"
+        startedAt:
+          type: string
+          format: date-time
+          description: "ISO 8601 format date-time when the event started"
+        finishedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "ISO 8601 format date-time when the event finished (nullable if still ongoing)"
+        visitedWaypointsCount:
+          type: integer
+          description: "Number of waypoints visited by the participant"
+        isLiveTracking:
+          type: boolean
+          description: "Whether the participant was in live tracking mode (true) or offline/replay mode (false)"
   securitySchemes:
     bearerAuth:
       type: http

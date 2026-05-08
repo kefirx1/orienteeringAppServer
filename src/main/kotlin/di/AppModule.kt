@@ -119,6 +119,9 @@ import pl.dev.bkwiatkowski.domain.usecase.RevokeAllMobileUserRefreshTokensUC
 import pl.dev.bkwiatkowski.domain.usecase.RevokeAllMobileUserRefreshTokensUCImpl
 import pl.dev.bkwiatkowski.data.repository.MobileUserEventProgressionRepository
 import pl.dev.bkwiatkowski.data.repository.MobileUserEventProgressionRepositoryImpl
+import pl.dev.bkwiatkowski.domain.usecase.GetEventParticipantsProgressionUC
+import pl.dev.bkwiatkowski.domain.usecase.GetEventParticipantsProgressionUCImpl
+import pl.dev.bkwiatkowski.controller.events.handler.EventParticipantsProgressionHandler
 
 fun appModule(config: ApplicationConfig) = module {
   single<ApplicationConfig> { config }
@@ -348,7 +351,7 @@ fun appModule(config: ApplicationConfig) = module {
 
   single { EventListHandler(getAllEventsUC = get(), getAdminPanelUserByIdUC = get()) }
 
-  single { EventDetailHandler(getEventByIdUC = get()) }
+  single { EventDetailHandler(getEventByIdUC = get(), getAdminPanelUserByIdUC = get()) }
 
   single { AddEventHandler(addEventUC = get()) }
 
@@ -390,12 +393,24 @@ fun appModule(config: ApplicationConfig) = module {
     )
   } bind Controller::class
 
+  single { DeleteEventHandler(deleteEventUC = get(), getAdminPanelUserByIdUC = get()) }
+
+  factory<GetEventParticipantsProgressionUC> {
+    GetEventParticipantsProgressionUCImpl(
+      progressionRepository = get(),
+      mobileUserRepository = get(),
+    )
+  }
+
+  single { EventParticipantsProgressionHandler(getEventParticipantsProgressionUC = get(), getEventByIdUC = get(), getAdminPanelUserByIdUC = get()) }
+
   single {
     EventController(
       eventListHandler = get(),
       eventDetailHandler = get(),
       addEventHandler = get(),
       deleteEventHandler = get(),
+      eventParticipantsProgressionHandler = get(),
     )
   } bind Controller::class
 
