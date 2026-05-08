@@ -18,6 +18,7 @@ interface AddEventUC : UseCase<AddEventUC.Params, Int> {
     val startDate: LocalDateTime,
     val startLocationX: Float,
     val startLocationY: Float,
+    val waypointIds: List<Int>,
   ) : UseCase.Params
 }
 
@@ -39,6 +40,6 @@ class AddEventUCImpl(
       startLocationY = params.startLocationY,
     )
 
-    eventRepository.insertEvent(event = newEvent).getRight()
+    eventRepository.insertEvent(event = newEvent, waypointIds = params.waypointIds).getRight()
   }
 }

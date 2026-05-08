@@ -877,6 +877,11 @@ components:
           type: number
           format: float
           description: "Y coordinate of the event start location"
+        waypointIds:
+          type: array
+          items:
+            type: integer
+          description: "List of waypoint IDs to include in this event"
     EventListResponseDto:
       type: object
       required:

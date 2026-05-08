@@ -8,7 +8,9 @@ import pl.dev.bkwiatkowski.core.database.dbQuery
 import pl.dev.bkwiatkowski.core.database.initTable
 import pl.dev.bkwiatkowski.core.either
 import pl.dev.bkwiatkowski.data.dao.EventDAO
+import pl.dev.bkwiatkowski.data.dao.EventWaypointDAO
 import pl.dev.bkwiatkowski.data.entity.EventTable
+import pl.dev.bkwiatkowski.data.entity.EventWaypointTable
 import pl.dev.bkwiatkowski.data.mapper.toDomain
 import pl.dev.bkwiatkowski.domain.model.Event
 import pl.dev.bkwiatkowski.data.dao.MapWaypointDAO
@@ -18,7 +20,7 @@ interface EventRepository {
   suspend fun getAllEventsByUserId(userId: Int): Either<DomainError, List<Event>>
   suspend fun getAllEvents(): Either<DomainError, List<Event>>
   suspend fun getEventById(id: Int): Either<DomainError, Event>
-  suspend fun insertEvent(event: Event): Either<DomainError, Int>
+  suspend fun insertEvent(event: Event, waypointIds: List<Int>): Either<DomainError, Int>
   suspend fun deleteEvent(id: Int): Either<DomainError, Unit>
 }
 
@@ -31,13 +33,17 @@ class EventRepositoryImpl(
   init {
     either {
       database.getRight().initTable(table = EventTable)
+      database.getRight().initTable(table = EventWaypointTable)
     }
   }
 
   override suspend fun getAllEventsByUserId(userId: Int): Either<DomainError, List<Event>> = either {
     database.getRight().dbQuery {
       EventDAO.find { EventTable.userId eq userId }.map { event ->
-        val waypoints = MapWaypointDAO.find { MapWaypointTable.mapId eq event.mapId }.map { it.toDomain() }
+        val waypointIds = EventWaypointDAO.find { EventWaypointTable.eventId eq event.id.value }.map { it.waypointId }.toList()
+        val waypoints = MapWaypointDAO.find { MapWaypointTable.mapId eq event.mapId }
+          .filter { it.id.value in waypointIds }
+          .map { it.toDomain() }
         event.toDomain(mapWaypoints = waypoints)
       }
     }.getRight()
@@ -46,7 +52,10 @@ class EventRepositoryImpl(
   override suspend fun getAllEvents(): Either<DomainError, List<Event>> = either {
     database.getRight().dbQuery {
       EventDAO.all().map { event ->
-        val waypoints = MapWaypointDAO.find { MapWaypointTable.mapId eq event.mapId }.map { it.toDomain() }
+        val waypointIds = EventWaypointDAO.find { EventWaypointTable.eventId eq event.id.value }.map { it.waypointId }.toList()
+        val waypoints = MapWaypointDAO.find { MapWaypointTable.mapId eq event.mapId }
+          .filter { it.id.value in waypointIds }
+          .map { it.toDomain() }
         event.toDomain(mapWaypoints = waypoints)
       }
     }.getRight()
@@ -57,12 +66,15 @@ class EventRepositoryImpl(
       val eventDao = EventDAO.findById(id)
         ?: raise(error = DomainError.Custom(e = NullPointerException("Event not found")))
 
-      val waypoints = MapWaypointDAO.find { MapWaypointTable.mapId eq eventDao.mapId }.map { it.toDomain() }
+      val waypointIds = EventWaypointDAO.find { EventWaypointTable.eventId eq eventDao.id.value }.map { it.waypointId }.toList()
+      val waypoints = MapWaypointDAO.find { MapWaypointTable.mapId eq eventDao.mapId }
+        .filter { it.id.value in waypointIds }
+        .map { it.toDomain() }
       eventDao.toDomain(mapWaypoints = waypoints)
     }.getRight()
   }
 
-  override suspend fun insertEvent(event: Event): Either<DomainError, Int> = either {
+  override suspend fun insertEvent(event: Event, waypointIds: List<Int>): Either<DomainError, Int> = either {
     database.getRight().dbQuery {
       val newEvent = EventDAO.new {
         mapId = event.map.id
@@ -75,6 +87,13 @@ class EventRepositoryImpl(
         startLocationY = event.startLocationY
       }
 
+      waypointIds.forEach { waypointId ->
+        EventWaypointDAO.new {
+          eventId = newEvent.id.value
+          this.waypointId = waypointId
+        }
+      }
+
       newEvent.id.value
     }.getRight()
   }
@@ -83,6 +102,8 @@ class EventRepositoryImpl(
     database.getRight().dbQuery {
       EventDAO.findById(id)?.delete()
         ?: raise(error = DomainError.Custom(e = NullPointerException("Event not found")))
+
+      EventWaypointDAO.find { EventWaypointTable.eventId eq id }.forEach { it.delete() }
     }.getRight()
   }
 }

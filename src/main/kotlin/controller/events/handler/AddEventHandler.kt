@@ -63,6 +63,7 @@ class AddEventHandler(
         startDate = request.startDateTime,
         startLocationX = request.startLocationX,
         startLocationY = request.startLocationY,
+        waypointIds = request.waypointIds,
       )
     ).fold(
       onRight = { eventId ->
