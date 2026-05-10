@@ -51,22 +51,23 @@ class EventListHandler(
             params = GetAdminPanelUserByIdUC.Params(id = event.userId)
           ).getRightOrNull()?.username ?: "unknown"
 
-          EventListResponseDto(
-            id = event.id,
-            map = MapDto(
-              id = event.map.id,
-              name = event.map.name,
-              description = event.map.description,
-              imageData = event.map.imageData,
-            ),
-            name = event.name,
-            description = event.description,
-            createdAt = event.createdAt,
-            startDate = event.startDate,
-            startLocationX = event.startLocationX,
-            startLocationY = event.startLocationY,
-            createdByUsername = creatorUsername,
-          )
+           EventListResponseDto(
+             id = event.id,
+             map = MapDto(
+               id = event.map.id,
+               name = event.map.name,
+               description = event.map.description,
+               imageData = event.map.imageData,
+             ),
+             name = event.name,
+             description = event.description,
+             createdAt = event.createdAt,
+             startDate = event.startDate,
+             startLocationX = event.startLocationX,
+             startLocationY = event.startLocationY,
+             createdByUsername = creatorUsername,
+             eventType = event.eventType,
+           )
         }
         call.respond(
           status = HttpStatusCode.OK,

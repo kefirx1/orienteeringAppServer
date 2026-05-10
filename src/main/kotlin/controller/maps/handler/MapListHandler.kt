@@ -14,14 +14,13 @@ class MapListHandler(
     getAllMapsUC(params = GetAllMapsUC.Params).fold(
       onRight = { maps ->
         val response = maps.map { map ->
-          MapListResponseDto(
-            id = map.id,
-            name = map.name,
-            description = map.description,
-            imageData = map.imageData,
-            canPlayManually = map.canPlayManually,
-          )
-        }
+           MapListResponseDto(
+             id = map.id,
+             name = map.name,
+             description = map.description,
+             imageData = map.imageData,
+           )
+         }
         call.respond(
           status = HttpStatusCode.OK,
           message = response,

@@ -1,14 +1,12 @@
 package pl.dev.bkwiatkowski.controller.maps.dto.request
 
 import kotlinx.serialization.Serializable
-import pl.dev.bkwiatkowski.controller.maps.dto.request.WaypointRequestDto
 
 @Serializable
 data class AddMapRequestDto(
   val name: String,
   val description: String,
   val imageData: String,
-  val canPlayManually: Boolean,
   val waypoints: List<WaypointRequestDto> = emptyList(),
 )
 

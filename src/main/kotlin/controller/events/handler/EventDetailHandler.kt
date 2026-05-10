@@ -75,21 +75,25 @@ class EventDetailHandler(
 
         call.respond(
           status = HttpStatusCode.OK,
-          message = EventDetailResponseDto(
-            id = event.id,
-            map = MapDto(
-              id = event.map.id,
-              name = event.map.name,
-              description = event.map.description,
-              imageData = event.map.imageData,
-            ),
-            name = event.name,
-            description = event.description,
-            createdAt = event.createdAt,
-            startDate = event.startDate,
-            startLocationX = event.startLocationX,
-            startLocationY = event.startLocationY,
-          ),
+           message = EventDetailResponseDto(
+             id = event.id,
+             map = MapDto(
+               id = event.map.id,
+               name = event.map.name,
+               description = event.map.description,
+               imageData = event.map.imageData,
+             ),
+             name = event.name,
+             description = event.description,
+             createdAt = event.createdAt,
+             startDate = event.startDate,
+             startLocationX = event.startLocationX,
+             startLocationY = event.startLocationY,
+             status = event.status,
+             finishedAt = event.finishedAt,
+             allowOfflineTracking = event.allowOfflineTracking,
+             eventType = event.eventType,
+           ),
         )
       },
       onLeft = {

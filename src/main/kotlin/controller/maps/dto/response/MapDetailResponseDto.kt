@@ -8,7 +8,6 @@ data class MapDetailResponseDto(
   val name: String,
   val description: String,
   val imageData: String,
-  val canPlayManually: Boolean,
   val waypoints: List<WaypointResponseDto>,
 )
 

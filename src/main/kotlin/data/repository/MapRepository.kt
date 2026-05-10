@@ -62,7 +62,6 @@ class MapRepositoryImpl(
         name = map.name
         description = map.description
         imageData = map.imageData
-        canPlayManually = map.canPlayManually
       }
 
       map.mapWaypoints.forEach { waypoint ->

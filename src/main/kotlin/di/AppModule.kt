@@ -75,6 +75,8 @@ import pl.dev.bkwiatkowski.domain.usecase.AddEventUC
 import pl.dev.bkwiatkowski.domain.usecase.AddEventUCImpl
 import pl.dev.bkwiatkowski.domain.usecase.DeleteEventUC
 import pl.dev.bkwiatkowski.domain.usecase.DeleteEventUCImpl
+import pl.dev.bkwiatkowski.domain.usecase.CompleteEventUC
+import pl.dev.bkwiatkowski.domain.usecase.CompleteEventUCImpl
 import pl.dev.bkwiatkowski.controller.maps.MapController
 import pl.dev.bkwiatkowski.controller.maps.handler.MapListHandler
 import pl.dev.bkwiatkowski.controller.maps.handler.MapDetailHandler
@@ -85,6 +87,7 @@ import pl.dev.bkwiatkowski.controller.events.handler.EventListHandler
 import pl.dev.bkwiatkowski.controller.events.handler.EventDetailHandler
 import pl.dev.bkwiatkowski.controller.events.handler.AddEventHandler
 import pl.dev.bkwiatkowski.controller.events.handler.DeleteEventHandler
+import pl.dev.bkwiatkowski.controller.events.handler.CompleteEventHandler
 import pl.dev.bkwiatkowski.controller.adminusers.AdminUsersController
 import pl.dev.bkwiatkowski.controller.adminusers.handler.GetAllAdminUsersHandler
 import pl.dev.bkwiatkowski.controller.adminusers.handler.DeleteAdminUserHandler
@@ -404,12 +407,19 @@ fun appModule(config: ApplicationConfig) = module {
 
   single { EventParticipantsProgressionHandler(getEventParticipantsProgressionUC = get(), getEventByIdUC = get(), getAdminPanelUserByIdUC = get()) }
 
+  factory<CompleteEventUC> {
+    CompleteEventUCImpl(eventRepository = get())
+  }
+
+  single { CompleteEventHandler(completeEventUC = get(), getEventByIdUC = get(), getAdminPanelUserByIdUC = get()) }
+
   single {
     EventController(
       eventListHandler = get(),
       eventDetailHandler = get(),
       addEventHandler = get(),
       deleteEventHandler = get(),
+      completeEventHandler = get(),
       eventParticipantsProgressionHandler = get(),
     )
   } bind Controller::class

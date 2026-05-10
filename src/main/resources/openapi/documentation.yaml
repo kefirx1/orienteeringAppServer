@@ -506,6 +506,45 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /api/events/complete:
+    post:
+      summary: "Complete Event"
+      description: "Marks an event as completed. Users can only complete their own events, admins can complete any event. **Requires authentication.**"
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompleteEventRequestDto"
+      responses:
+        "200":
+          description: "Event completed successfully"
+        "400":
+          description: "Bad Request - Invalid event ID"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: "Forbidden - Not authenticated or no permission to complete this event"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Not Found - Event does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /api/events/{eventId}/participants-progression:
     get:
       summary: "Get Event Participants Progression"
@@ -746,7 +785,6 @@ components:
         - name
         - description
         - imageData
-        - canPlayManually
       properties:
         id:
           type: integer
@@ -757,9 +795,6 @@ components:
         imageData:
           type: string
           description: "Base64 encoded image data"
-        canPlayManually:
-          type: boolean
-          description: "Whether the map can be played manually"
     MapDetailResponseDto:
       type: object
       required:
@@ -767,7 +802,6 @@ components:
         - name
         - description
         - imageData
-        - canPlayManually
         - waypoints
       properties:
         id:
@@ -779,9 +813,6 @@ components:
         imageData:
           type: string
           description: "Base64 encoded image data"
-        canPlayManually:
-          type: boolean
-          description: "Whether the map can be played manually"
         waypoints:
           type: array
           items:
@@ -810,7 +841,6 @@ components:
         - name
         - description
         - imageData
-        - canPlayManually
       properties:
         name:
           type: string
@@ -819,9 +849,6 @@ components:
         imageData:
           type: string
           description: "Base64 encoded image data (required)"
-        canPlayManually:
-          type: boolean
-          description: "Whether the map can be played manually"
         waypoints:
           type: array
           items:
@@ -842,84 +869,106 @@ components:
           type: number
           format: float
     CreateMapResponseDto:
-      type: object
-      required:
-        - id
-      properties:
-        id:
-          type: integer
+       type: object
+       required:
+         - id
+       properties:
+         id:
+           type: integer
+    CompleteEventRequestDto:
+       type: object
+       required:
+         - eventId
+       properties:
+         eventId:
+           type: integer
+           description: "ID of the event to complete"
     AddEventRequestDto:
-      type: object
-      required:
-        - mapId
-        - name
-        - description
-        - startDateTime
-        - startLocationX
-        - startLocationY
-      properties:
-        mapId:
-          type: integer
-          description: "ID of the map associated with this event"
-        name:
-          type: string
-        description:
-          type: string
-        startDateTime:
-          type: string
-          format: date-time
-          description: "ISO 8601 format date-time"
-        startLocationX:
-          type: number
-          format: float
-          description: "X coordinate of the event start location"
-        startLocationY:
-          type: number
-          format: float
-          description: "Y coordinate of the event start location"
-        waypointIds:
-          type: array
-          items:
-            type: integer
-          description: "List of waypoint IDs to include in this event"
+       type: object
+       required:
+         - mapId
+         - name
+         - description
+         - startDateTime
+         - startLocationX
+         - startLocationY
+       properties:
+         mapId:
+           type: integer
+           description: "ID of the map associated with this event"
+         name:
+           type: string
+         description:
+           type: string
+         startDateTime:
+           type: string
+           format: date-time
+           description: "ISO 8601 format date-time"
+         startLocationX:
+           type: number
+           format: float
+           description: "X coordinate of the event start location"
+         startLocationY:
+           type: number
+           format: float
+           description: "Y coordinate of the event start location"
+         waypointIds:
+           type: array
+           items:
+             type: integer
+           description: "List of waypoint IDs to include in this event"
+         allowOfflineTracking:
+           type: boolean
+           description: "Allow users to track the event offline even after it ends"
+           default: false
+         eventType:
+           type: string
+           enum: [ ONLINE, OFFLINE ]
+           description: "Event type - ONLINE (normal) or OFFLINE (continuous, auto-completed)"
+           default: ONLINE
     EventListResponseDto:
-      type: object
-      required:
-        - id
-        - map
-        - name
-        - description
-        - createdAt
-        - startDate
-        - startLocationX
-        - startLocationY
-        - createdByUsername
-      properties:
-        id:
-          type: integer
-        map:
-          $ref: "#/components/schemas/MapDto"
-        name:
-          type: string
-        description:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-          description: "ISO 8601 format date-time"
-        startDate:
-          type: string
-          format: date-time
-          description: "ISO 8601 format date-time"
-        startLocationX:
-          type: number
-          format: float
-        startLocationY:
-          type: number
-          format: float
-        createdByUsername:
-          type: string
-          description: "Username of the user who created the event"
+       type: object
+       required:
+         - id
+         - map
+         - name
+         - description
+         - createdAt
+         - startDate
+         - startLocationX
+         - startLocationY
+         - createdByUsername
+         - eventType
+       properties:
+         id:
+           type: integer
+         map:
+           $ref: "#/components/schemas/MapDto"
+         name:
+           type: string
+         description:
+           type: string
+         createdAt:
+           type: string
+           format: date-time
+           description: "ISO 8601 format date-time"
+         startDate:
+           type: string
+           format: date-time
+           description: "ISO 8601 format date-time"
+         startLocationX:
+           type: number
+           format: float
+         startLocationY:
+           type: number
+           format: float
+         createdByUsername:
+           type: string
+           description: "Username of the user who created the event"
+         eventType:
+           type: string
+           enum: [ ONLINE, OFFLINE ]
+           description: "Event type - ONLINE (normal) or OFFLINE (continuous)"
     EventDetailResponseDto:
       type: object
       required:
@@ -931,6 +980,8 @@ components:
         - startDate
         - startLocationX
         - startLocationY
+        - status
+        - eventType
       properties:
         id:
           type: integer
@@ -954,6 +1005,21 @@ components:
         startLocationY:
           type: number
           format: float
+        status:
+          type: string
+          enum: [ PLANNED, IN_PROGRESS, COMPLETED, CONTINUOUS ]
+          description: "Event status (PLANNED, IN_PROGRESS, COMPLETED, CONTINUOUS)"
+        finishedAt:
+          type: string
+          format: date-time
+          description: "ISO 8601 format date-time when event finished (nullable)"
+        allowOfflineTracking:
+          type: boolean
+          description: "Allow users to track the event offline even after it ends"
+        eventType:
+          type: string
+          enum: [ ONLINE, OFFLINE ]
+          description: "Event type - ONLINE (normal) or OFFLINE (continuous)"
     MapDto:
       type: object
       required:
@@ -961,7 +1027,6 @@ components:
         - name
         - description
         - imageData
-        - canPlayManually
       properties:
         id:
           type: integer
@@ -972,8 +1037,6 @@ components:
         imageData:
           type: string
           description: "Base64 encoded image data"
-        canPlayManually:
-          type: boolean
     CreateEventResponseDto:
       type: object
       required:

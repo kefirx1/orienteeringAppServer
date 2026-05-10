@@ -71,7 +71,6 @@ class AddMapHandler(
         name = request.name,
         description = request.description,
         imageData = request.imageData,
-        canPlayManually = request.canPlayManually,
         waypoints = waypoints,
       )
     ).fold(

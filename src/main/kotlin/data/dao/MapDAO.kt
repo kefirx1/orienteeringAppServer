@@ -11,5 +11,4 @@ class MapDAO(id: EntityID<Int>) : IntEntity(id) {
   var name by MapTable.name
   var description by MapTable.description
   var imageData by MapTable.imageData
-  var canPlayManually by MapTable.canPlayManually
 }

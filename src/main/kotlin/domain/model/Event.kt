@@ -12,4 +12,8 @@ data class Event(
   val startDate: LocalDateTime,
   val startLocationX: Float,
   val startLocationY: Float,
+  val status: EventStatus,
+  val finishedAt: LocalDateTime? = null,
+  val allowOfflineTracking: Boolean,
+  val eventType: EventType,
 )

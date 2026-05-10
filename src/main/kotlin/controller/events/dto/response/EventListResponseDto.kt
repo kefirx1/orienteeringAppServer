@@ -2,6 +2,7 @@ package pl.dev.bkwiatkowski.controller.events.dto.response
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Contextual
+import pl.dev.bkwiatkowski.domain.model.EventType
 import java.time.LocalDateTime
 
 @Serializable
@@ -17,6 +18,7 @@ data class EventListResponseDto(
   val startLocationX: Float,
   val startLocationY: Float,
   val createdByUsername: String,
+  val eventType: EventType,
 )
 
 @Serializable

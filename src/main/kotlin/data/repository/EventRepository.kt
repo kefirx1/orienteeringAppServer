@@ -13,6 +13,7 @@ import pl.dev.bkwiatkowski.data.entity.EventTable
 import pl.dev.bkwiatkowski.data.entity.EventWaypointTable
 import pl.dev.bkwiatkowski.data.mapper.toDomain
 import pl.dev.bkwiatkowski.domain.model.Event
+import pl.dev.bkwiatkowski.domain.model.EventStatus
 import pl.dev.bkwiatkowski.data.dao.MapWaypointDAO
 import pl.dev.bkwiatkowski.data.entity.MapWaypointTable
 
@@ -22,6 +23,7 @@ interface EventRepository {
   suspend fun getEventById(id: Int): Either<DomainError, Event>
   suspend fun insertEvent(event: Event, waypointIds: List<Int>): Either<DomainError, Int>
   suspend fun deleteEvent(id: Int): Either<DomainError, Unit>
+  suspend fun completeEvent(id: Int): Either<DomainError, Unit>
 }
 
 class EventRepositoryImpl(
@@ -85,6 +87,10 @@ class EventRepositoryImpl(
         startDate = event.startDate
         startLocationX = event.startLocationX
         startLocationY = event.startLocationY
+        status = event.status.value
+        allowOfflineTracking = event.allowOfflineTracking
+        eventType = event.eventType.value
+        finishedAt = event.finishedAt
       }
 
       waypointIds.forEach { waypointId ->
@@ -104,6 +110,15 @@ class EventRepositoryImpl(
         ?: raise(error = DomainError.Custom(e = NullPointerException("Event not found")))
 
       EventWaypointDAO.find { EventWaypointTable.eventId eq id }.forEach { it.delete() }
+    }.getRight()
+  }
+
+  override suspend fun completeEvent(id: Int): Either<DomainError, Unit> = either {
+    database.getRight().dbQuery {
+      val event = EventDAO.findById(id)
+        ?: raise(error = DomainError.Custom(e = NullPointerException("Event not found")))
+      event.status = EventStatus.COMPLETED.value
+      event.finishedAt = java.time.LocalDateTime.now()
     }.getRight()
   }
 }

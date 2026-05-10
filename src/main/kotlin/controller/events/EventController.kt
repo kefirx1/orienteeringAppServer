@@ -3,6 +3,7 @@ package pl.dev.bkwiatkowski.controller.events
 import io.ktor.server.auth.*
 import io.ktor.server.routing.*
 import pl.dev.bkwiatkowski.controller.events.handler.AddEventHandler
+import pl.dev.bkwiatkowski.controller.events.handler.CompleteEventHandler
 import pl.dev.bkwiatkowski.controller.events.handler.DeleteEventHandler
 import pl.dev.bkwiatkowski.controller.events.handler.EventDetailHandler
 import pl.dev.bkwiatkowski.controller.events.handler.EventListHandler
@@ -14,6 +15,7 @@ class EventController(
   private val eventDetailHandler: EventDetailHandler,
   private val addEventHandler: AddEventHandler,
   private val deleteEventHandler: DeleteEventHandler,
+  private val completeEventHandler: CompleteEventHandler,
   private val eventParticipantsProgressionHandler: EventParticipantsProgressionHandler,
 ) : Controller {
 
@@ -34,6 +36,10 @@ class EventController(
 
         get("{eventId}/participants-progression") {
           eventParticipantsProgressionHandler.handle(call)
+        }
+
+        post("/complete") {
+          completeEventHandler.handle(call)
         }
 
         delete("{id}") {

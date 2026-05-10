@@ -26,13 +26,12 @@ class MapDetailHandler(
 
     getMapByIdUC(params = GetMapByIdUC.Params(mapId = mapId)).fold(
       onRight = { map ->
-        val response = MapDetailResponseDto(
-          id = map.id,
-          name = map.name,
-          description = map.description,
-          imageData = map.imageData,
-          canPlayManually = map.canPlayManually,
-          waypoints = map.mapWaypoints.map { waypoint ->
+         val response = MapDetailResponseDto(
+           id = map.id,
+           name = map.name,
+           description = map.description,
+           imageData = map.imageData,
+           waypoints = map.mapWaypoints.map { waypoint ->
             WaypointResponseDto(
               id = waypoint.id,
               label = waypoint.label,

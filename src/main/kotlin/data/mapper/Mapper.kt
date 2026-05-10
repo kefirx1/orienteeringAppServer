@@ -8,6 +8,8 @@ import pl.dev.bkwiatkowski.data.dao.MobileUserDAO
 import pl.dev.bkwiatkowski.data.dao.MobileUserEventProgressionDAO
 import pl.dev.bkwiatkowski.domain.model.AdminPanelUser
 import pl.dev.bkwiatkowski.domain.model.Event
+import pl.dev.bkwiatkowski.domain.model.EventStatus
+import pl.dev.bkwiatkowski.domain.model.EventType
 import pl.dev.bkwiatkowski.domain.model.MapData
 import pl.dev.bkwiatkowski.domain.model.MapWaypoint
 import pl.dev.bkwiatkowski.domain.model.MobileUser
@@ -54,7 +56,6 @@ fun MapDAO.toDomain(mapWaypoints: List<MapWaypoint>) = MapData(
   name = name,
   description = description,
   imageData = imageData,
-  canPlayManually = canPlayManually,
   mapWaypoints = mapWaypoints,
 )
 
@@ -68,4 +69,16 @@ fun EventDAO.toDomain(mapWaypoints: List<MapWaypoint>) = Event(
   startDate = startDate,
   startLocationX = startLocationX,
   startLocationY = startLocationY,
+  status = when (status) {
+    "IN_PROGRESS" -> EventStatus.IN_PROGRESS
+    "COMPLETED" -> EventStatus.COMPLETED
+    "CONTINUOUS" -> EventStatus.CONTINUOUS
+    else -> EventStatus.PLANNED
+  },
+  finishedAt = finishedAt,
+  allowOfflineTracking = allowOfflineTracking,
+  eventType = when (eventType) {
+    "OFFLINE" -> EventType.OFFLINE
+    else -> EventType.ONLINE
+  },
 )
