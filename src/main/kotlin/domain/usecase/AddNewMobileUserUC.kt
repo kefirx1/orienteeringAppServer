@@ -6,7 +6,7 @@ import pl.dev.bkwiatkowski.core.UseCase
 import pl.dev.bkwiatkowski.core.either
 import pl.dev.bkwiatkowski.data.repository.MobileUserRepository
 import pl.dev.bkwiatkowski.domain.model.MobileUser
-import java.time.LocalDate
+import java.time.LocalDateTime
 
 interface AddNewMobileUserUC : UseCase<AddNewMobileUserUC.Params, Unit> {
   data class Params(
@@ -14,7 +14,7 @@ interface AddNewMobileUserUC : UseCase<AddNewMobileUserUC.Params, Unit> {
     val email: String,
     val password: String,
     val phoneNumber: String? = null,
-    val dateOfBirth: LocalDate? = null,
+    val dateOfBirth: LocalDateTime? = null,
   ) : UseCase.Params
 }
 

@@ -1,16 +1,16 @@
 package pl.dev.bkwiatkowski.plugins
 
-import io.ktor.serialization.kotlinx.json.json
+import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
-import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import org.koin.ktor.plugin.Koin
-import org.koin.logger.slf4jLogger
-import pl.dev.bkwiatkowski.di.appModule
-import pl.dev.bkwiatkowski.core.serialization.LocalDateSerializer
-import pl.dev.bkwiatkowski.core.serialization.LocalDateTimeSerializer
+import io.ktor.server.plugins.contentnegotiation.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
+import org.koin.ktor.plugin.Koin
+import org.koin.logger.slf4jLogger
+import pl.dev.bkwiatkowski.core.serialization.LocalDateSerializer
+import pl.dev.bkwiatkowski.core.serialization.LocalDateTimeSerializer
+import pl.dev.bkwiatkowski.di.appModule
 
 class FrameworksPlugin {
   fun configure(application: Application) {

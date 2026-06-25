@@ -21,7 +21,6 @@ class AddMapHandler(
   suspend fun handle(call: ApplicationCall) {
     val principal = call.principal<JWTPrincipal>()
     val userId = principal?.payload?.getClaim(USER_ID_CLAIM)?.asString()?.toIntOrNull()
-    val userRole = principal?.payload?.getClaim(USER_ROLE_CLAIM)?.asString()
 
     if (userId == null) {
       call.respond(
@@ -29,17 +28,6 @@ class AddMapHandler(
         message = ErrorResponse(
           businessCode = "UNAUTHORIZED",
           message = "User is not authenticated"
-        )
-      )
-      return
-    }
-
-    if (userRole != AdminPanelUser.Role.ADMIN.name) {
-      call.respond(
-        status = HttpStatusCode.Forbidden,
-        message = ErrorResponse(
-          businessCode = "FORBIDDEN",
-          message = "Only admins can add maps"
         )
       )
       return

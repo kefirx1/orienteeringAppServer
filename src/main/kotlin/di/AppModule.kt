@@ -125,6 +125,8 @@ import pl.dev.bkwiatkowski.data.repository.MobileUserEventProgressionRepositoryI
 import pl.dev.bkwiatkowski.domain.usecase.GetEventParticipantsProgressionUC
 import pl.dev.bkwiatkowski.domain.usecase.GetEventParticipantsProgressionUCImpl
 import pl.dev.bkwiatkowski.controller.events.handler.EventParticipantsProgressionHandler
+import pl.dev.bkwiatkowski.controller.mobile.settings.MobileSettingsController
+import pl.dev.bkwiatkowski.controller.mobile.settings.handler.MobileSettingsHandler
 
 fun appModule(config: ApplicationConfig) = module {
   single<ApplicationConfig> { config }
@@ -478,6 +480,10 @@ fun appModule(config: ApplicationConfig) = module {
     MobileSignUpHandler(
       addNewMobileUserUC = get(),
       validateMobileUserRegistrationUC = get(),
+      getMobileUserUC = get(),
+      tokenProvider = get(),
+      environmentConfig = get(),
+      saveMobileUserRefreshTokenUC = get(),
     )
   }
 
@@ -507,6 +513,14 @@ fun appModule(config: ApplicationConfig) = module {
       mobileSignUpHandler = get(),
       mobileSignInHandler = get(),
       mobileRefreshTokenHandler = get(),
+    )
+  } bind Controller::class
+
+  single { MobileSettingsHandler() }
+
+  single {
+    MobileSettingsController(
+      mobileSettingsHandler = get(),
     )
   } bind Controller::class
 

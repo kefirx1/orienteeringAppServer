@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 data class MobileSignInResponseDto(
   val accessToken: String,
   val refreshToken: String,
-  val expiresInSec: Long,
+  val accessTokenExpiresTimestamp: Long,
+  val refreshTokenExpiresTimestamp: Long,
 )

@@ -1,6 +1,6 @@
 package pl.dev.bkwiatkowski.domain.model
 
-import java.time.LocalDate
+import java.time.LocalDateTime
 
 data class MobileUser(
   val id: Int = 0,
@@ -9,5 +9,5 @@ data class MobileUser(
   val password: String,
   val salt: String,
   val phoneNumber: String?,
-  val dateOfBirth: LocalDate?,
+  val dateOfBirth: LocalDateTime?,
 )

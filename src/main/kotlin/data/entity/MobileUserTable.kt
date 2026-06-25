@@ -1,7 +1,7 @@
 package pl.dev.bkwiatkowski.data.entity
 
 import org.jetbrains.exposed.v1.core.dao.id.IntIdTable
-import org.jetbrains.exposed.v1.javatime.date
+import org.jetbrains.exposed.v1.javatime.datetime
 
 object MobileUserTable : IntIdTable(name = "mobile_users") {
   val username = varchar(name = "username", length = 255).uniqueIndex()
@@ -9,5 +9,5 @@ object MobileUserTable : IntIdTable(name = "mobile_users") {
   val password = varchar(name = "password", length = 255)
   val salt = varchar(name = "salt", length = 255)
   val phoneNumber = varchar(name = "phone_number", length = 32).nullable()
-  val dateOfBirth = date(name = "date_of_birth").nullable()
+  val dateOfBirth = datetime(name = "date_of_birth").nullable()
 }

@@ -7,6 +7,7 @@ import io.ktor.server.response.*
 import pl.dev.bkwiatkowski.controller.mobile.auth.dto.request.MobileRefreshTokenRequestDto
 import pl.dev.bkwiatkowski.controller.mobile.auth.dto.response.MobileSignInResponseDto
 import pl.dev.bkwiatkowski.core.EnvironmentConfig
+import java.time.Instant
 import pl.dev.bkwiatkowski.core.either
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.TokenClaim
@@ -154,12 +155,14 @@ class MobileRefreshTokenHandler(
       return
     }
 
+    val nowEpoch = Instant.now().epochSecond
     call.respond(
       status = HttpStatusCode.OK,
       message = MobileSignInResponseDto(
         accessToken = newAccessToken,
         refreshToken = newRefreshToken,
-        expiresInSec = environmentConfig.jwtExpiresIn.inWholeSeconds,
+        accessTokenExpiresTimestamp = nowEpoch + environmentConfig.jwtExpiresIn.inWholeSeconds,
+        refreshTokenExpiresTimestamp = nowEpoch + environmentConfig.jwtRefreshExpiresIn.inWholeSeconds,
       )
     )
   }

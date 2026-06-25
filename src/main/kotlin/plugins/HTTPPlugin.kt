@@ -52,6 +52,7 @@ class HTTPPlugin(
     application.routing {
       swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml")
       openAPI(path = "openapi", swaggerFile = "openapi/documentation.yaml")
+      swaggerUI(path = "swagger-mobile", swaggerFile = "openapi/mobile-documentation.yaml")
     }
   }
 }
