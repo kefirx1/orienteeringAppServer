@@ -136,6 +136,8 @@ paths:
       description: "Returns mobile client settings including current server time. Used for synchronizing client clock and retrieving configuration."
       tags:
         - "Mobile Settings"
+      security:
+        - bearerAuth: [ ]
       responses:
         "200":
           description: "Mobile settings retrieved successfully"
@@ -143,6 +145,83 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/MobileSettingsResponseDto"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/mobile/events:
+    get:
+      operationId: "getMobileEvents"
+      summary: "Get All Events (Mobile)"
+      description: "Retrieves a list of events for mobile users. Mobile users see events according to mobile authorization rules. Returns an empty list if none."
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - "Mobile Events"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MobileEventListResponseDto"
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/mobile/events/{id}:
+    get:
+      operationId: "getMobileEventById"
+      summary: "Get Event Details (Mobile)"
+      description: "Retrieves detailed information about a specific event for mobile users. **Requires authentication.**"
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - "Mobile Events"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: "Event ID"
+      responses:
+        "200":
+          description: "Successful operation"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MobileEventDetailResponseDto"
+        "400":
+          description: "Bad Request - Invalid event ID"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Not Found - Event does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: "Internal Server Error"
           content:
@@ -266,3 +345,119 @@ components:
           format: date-time
           description: "Server local time as LocalDateTime in ISO-8601 (no offset). Serialized as java.time.LocalDateTime."
           example: "2026-06-25T12:34:56"
+    MobileMapDto:
+      type: object
+      required:
+        - id
+        - name
+        - description
+        - imageData
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        imageData:
+          type: string
+          description: "Base64 encoded image data"
+    MobileEventListResponseDto:
+      type: object
+      required:
+        - id
+        - map
+        - name
+        - description
+        - createdAt
+        - startDate
+        - startLocationX
+        - startLocationY
+        - createdByUsername
+        - eventType
+      properties:
+        id:
+          type: integer
+        map:
+          $ref: "#/components/schemas/MobileMapDto"
+        name:
+          type: string
+        description:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+          description: "ISO 8601 format date-time"
+        startDate:
+          type: string
+          format: date-time
+          description: "ISO 8601 format date-time"
+        startLocationX:
+          type: number
+          format: float
+        startLocationY:
+          type: number
+          format: float
+        createdByUsername:
+          type: string
+          description: "Username of the user who created the event"
+        eventType:
+          type: string
+          enum: [ ONLINE, OFFLINE ]
+          description: "Event type - ONLINE (normal) or OFFLINE (continuous)"
+    MobileEventDetailResponseDto:
+      type: object
+      required:
+        - id
+        - map
+        - name
+        - description
+        - createdAt
+        - startDate
+        - startLocationX
+        - startLocationY
+        - status
+        - eventType
+      properties:
+        id:
+          type: integer
+        map:
+          $ref: "#/components/schemas/MobileMapDto"
+        name:
+          type: string
+        description:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+          description: "ISO 8601 format date-time"
+        startDate:
+          type: string
+          format: date-time
+          description: "ISO 8601 format date-time"
+        startLocationX:
+          type: number
+          format: float
+        startLocationY:
+          type: number
+          format: float
+        status:
+          type: string
+          enum: [ PLANNED, IN_PROGRESS, COMPLETED, CONTINUOUS ]
+          description: "Event status (PLANNED, IN_PROGRESS, COMPLETED, CONTINUOUS)"
+        finishedAt:
+          type: string
+          format: date-time
+          description: "ISO 8601 format date-time when event finished (nullable)"
+        allowOfflineTracking:
+          type: boolean
+          description: "Allow users to track the event offline even after it ends"
+        eventType:
+          type: string
+          enum: [ ONLINE, OFFLINE ]
+          description: "Event type - ONLINE (normal) or OFFLINE (continuous)"
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

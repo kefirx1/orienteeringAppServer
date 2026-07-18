@@ -3,18 +3,35 @@ package pl.dev.bkwiatkowski.di
 import io.ktor.server.config.*
 import org.koin.dsl.bind
 import org.koin.dsl.module
-import pl.dev.bkwiatkowski.plugins.RoutingPlugin
+import pl.dev.bkwiatkowski.controller.adminusers.AdminUsersController
+import pl.dev.bkwiatkowski.controller.adminusers.handler.AddAdminUserHandler
+import pl.dev.bkwiatkowski.controller.adminusers.handler.DeleteAdminUserHandler
+import pl.dev.bkwiatkowski.controller.adminusers.handler.GetAllAdminUsersHandler
 import pl.dev.bkwiatkowski.controller.auth.AuthController
-import pl.dev.bkwiatkowski.controller.auth.handler.AuthenticateHandler
-import pl.dev.bkwiatkowski.controller.auth.handler.ChangePasswordHandler
-import pl.dev.bkwiatkowski.controller.auth.handler.RefreshTokenHandler
-import pl.dev.bkwiatkowski.controller.auth.handler.SignInHandler
-import pl.dev.bkwiatkowski.controller.auth.handler.SignUpHandler
-import pl.dev.bkwiatkowski.core.routing.Controller
+import pl.dev.bkwiatkowski.controller.auth.handler.*
+import pl.dev.bkwiatkowski.controller.events.EventController
+import pl.dev.bkwiatkowski.controller.events.handler.*
+import pl.dev.bkwiatkowski.controller.maps.MapController
+import pl.dev.bkwiatkowski.controller.maps.handler.AddMapHandler
+import pl.dev.bkwiatkowski.controller.maps.handler.DeleteMapHandler
+import pl.dev.bkwiatkowski.controller.maps.handler.MapDetailHandler
+import pl.dev.bkwiatkowski.controller.maps.handler.MapListHandler
+import pl.dev.bkwiatkowski.controller.mobile.auth.MobileAuthController
+import pl.dev.bkwiatkowski.controller.mobile.auth.handler.MobileRefreshTokenHandler
+import pl.dev.bkwiatkowski.controller.mobile.auth.handler.MobileSignInHandler
+import pl.dev.bkwiatkowski.controller.mobile.auth.handler.MobileSignUpHandler
+import pl.dev.bkwiatkowski.controller.mobile.events.MobileEventController
+import pl.dev.bkwiatkowski.controller.mobile.events.handler.MobileEventDetailHandler
+import pl.dev.bkwiatkowski.controller.mobile.events.handler.MobileEventListHandler
+import pl.dev.bkwiatkowski.controller.mobile.settings.MobileSettingsController
+import pl.dev.bkwiatkowski.controller.mobile.settings.handler.MobileSettingsHandler
+import pl.dev.bkwiatkowski.controller.settings.SettingsController
+import pl.dev.bkwiatkowski.controller.settings.handler.SettingsHandler
 import pl.dev.bkwiatkowski.core.EnvironmentConfig
 import pl.dev.bkwiatkowski.core.EnvironmentConfigImpl
 import pl.dev.bkwiatkowski.core.database.DatabaseProvider
 import pl.dev.bkwiatkowski.core.database.PostgresProvider
+import pl.dev.bkwiatkowski.core.routing.Controller
 import pl.dev.bkwiatkowski.core.security.coder.Base64ByteCoder
 import pl.dev.bkwiatkowski.core.security.coder.ByteCoder
 import pl.dev.bkwiatkowski.core.security.hashing.HashGenerator
@@ -25,108 +42,12 @@ import pl.dev.bkwiatkowski.core.security.token.JwtTokenProvider
 import pl.dev.bkwiatkowski.core.security.token.TokenProvider
 import pl.dev.bkwiatkowski.core.validation.DefaultTextValidator
 import pl.dev.bkwiatkowski.core.validation.TextValidator
-import pl.dev.bkwiatkowski.data.repository.AdminPanelUserRepository
-import pl.dev.bkwiatkowski.data.repository.AdminPanelUserRepositoryImpl
-import pl.dev.bkwiatkowski.data.repository.RefreshTokenRepository
-import pl.dev.bkwiatkowski.data.repository.RefreshTokenRepositoryImpl
-import pl.dev.bkwiatkowski.domain.usecase.GenerateAdminPanelUserPasswordHashUC
-import pl.dev.bkwiatkowski.domain.usecase.GenerateAdminPanelUserPasswordHashUCImpl
-import pl.dev.bkwiatkowski.domain.usecase.AddNewAdminPanelUserUC
-import pl.dev.bkwiatkowski.domain.usecase.AddNewAdminPanelUserUCImpl
-import pl.dev.bkwiatkowski.domain.usecase.ChangePasswordUC
-import pl.dev.bkwiatkowski.domain.usecase.ChangePasswordUCImpl
-import pl.dev.bkwiatkowski.domain.usecase.GetAdminPanelUserUC
-import pl.dev.bkwiatkowski.domain.usecase.GetAdminPanelUserUCImpl
-import pl.dev.bkwiatkowski.domain.usecase.GetAdminPanelUserByIdUC
-import pl.dev.bkwiatkowski.domain.usecase.GetAdminPanelUserByIdUCImpl
-import pl.dev.bkwiatkowski.domain.usecase.VerifyAdminPanelUserAuthenticationUC
-import pl.dev.bkwiatkowski.domain.usecase.VerifyAdminPanelUserAuthenticationUCImpl
-import pl.dev.bkwiatkowski.domain.usecase.ValidateAdminPanelUserRequestUC
-import pl.dev.bkwiatkowski.domain.usecase.ValidateAdminPanelUserRequestUCImpl
-import pl.dev.bkwiatkowski.domain.usecase.SaveRefreshTokenUC
-import pl.dev.bkwiatkowski.domain.usecase.SaveRefreshTokenUCImpl
-import pl.dev.bkwiatkowski.domain.usecase.VerifyAndRevokeRefreshTokenUC
-import pl.dev.bkwiatkowski.domain.usecase.VerifyAndRevokeRefreshTokenUCImpl
-import pl.dev.bkwiatkowski.domain.usecase.RevokeAllUserRefreshTokensUC
-import pl.dev.bkwiatkowski.domain.usecase.RevokeAllUserRefreshTokensUCImpl
-import pl.dev.bkwiatkowski.plugins.MonitoringPlugin
-import pl.dev.bkwiatkowski.plugins.SecurityPlugin
-import pl.dev.bkwiatkowski.controller.auth.handler.LogoutHandler
+import pl.dev.bkwiatkowski.data.repository.*
+import pl.dev.bkwiatkowski.domain.usecase.*
 import pl.dev.bkwiatkowski.plugins.HTTPPlugin
-import pl.dev.bkwiatkowski.controller.settings.SettingsController
-import pl.dev.bkwiatkowski.controller.settings.handler.SettingsHandler
-import pl.dev.bkwiatkowski.data.repository.MapRepository
-import pl.dev.bkwiatkowski.data.repository.MapRepositoryImpl
-import pl.dev.bkwiatkowski.data.repository.EventRepository
-import pl.dev.bkwiatkowski.data.repository.EventRepositoryImpl
-import pl.dev.bkwiatkowski.domain.usecase.GetAllMapsUC
-import pl.dev.bkwiatkowski.domain.usecase.GetAllMapsUCImpl
-import pl.dev.bkwiatkowski.domain.usecase.GetMapByIdUC
-import pl.dev.bkwiatkowski.domain.usecase.GetMapByIdUCImpl
-import pl.dev.bkwiatkowski.domain.usecase.AddMapUC
-import pl.dev.bkwiatkowski.domain.usecase.AddMapUCImpl
-import pl.dev.bkwiatkowski.domain.usecase.DeleteMapUC
-import pl.dev.bkwiatkowski.domain.usecase.DeleteMapUCImpl
-import pl.dev.bkwiatkowski.domain.usecase.GetAllEventsUC
-import pl.dev.bkwiatkowski.domain.usecase.GetAllEventsUCImpl
-import pl.dev.bkwiatkowski.domain.usecase.GetEventByIdUC
-import pl.dev.bkwiatkowski.domain.usecase.GetEventByIdUCImpl
-import pl.dev.bkwiatkowski.domain.usecase.AddEventUC
-import pl.dev.bkwiatkowski.domain.usecase.AddEventUCImpl
-import pl.dev.bkwiatkowski.domain.usecase.DeleteEventUC
-import pl.dev.bkwiatkowski.domain.usecase.DeleteEventUCImpl
-import pl.dev.bkwiatkowski.domain.usecase.CompleteEventUC
-import pl.dev.bkwiatkowski.domain.usecase.CompleteEventUCImpl
-import pl.dev.bkwiatkowski.controller.maps.MapController
-import pl.dev.bkwiatkowski.controller.maps.handler.MapListHandler
-import pl.dev.bkwiatkowski.controller.maps.handler.MapDetailHandler
-import pl.dev.bkwiatkowski.controller.maps.handler.AddMapHandler
-import pl.dev.bkwiatkowski.controller.maps.handler.DeleteMapHandler
-import pl.dev.bkwiatkowski.controller.events.EventController
-import pl.dev.bkwiatkowski.controller.events.handler.EventListHandler
-import pl.dev.bkwiatkowski.controller.events.handler.EventDetailHandler
-import pl.dev.bkwiatkowski.controller.events.handler.AddEventHandler
-import pl.dev.bkwiatkowski.controller.events.handler.DeleteEventHandler
-import pl.dev.bkwiatkowski.controller.events.handler.CompleteEventHandler
-import pl.dev.bkwiatkowski.controller.adminusers.AdminUsersController
-import pl.dev.bkwiatkowski.controller.adminusers.handler.GetAllAdminUsersHandler
-import pl.dev.bkwiatkowski.controller.adminusers.handler.DeleteAdminUserHandler
-import pl.dev.bkwiatkowski.controller.adminusers.handler.AddAdminUserHandler
-import pl.dev.bkwiatkowski.domain.usecase.GetAllAdminPanelUsersUC
-import pl.dev.bkwiatkowski.domain.usecase.GetAllAdminPanelUsersUCImpl
-import pl.dev.bkwiatkowski.domain.usecase.DeleteAdminPanelUserUC
-import pl.dev.bkwiatkowski.domain.usecase.DeleteAdminPanelUserUCImpl
-import pl.dev.bkwiatkowski.controller.mobile.auth.MobileAuthController
-import pl.dev.bkwiatkowski.controller.mobile.auth.handler.MobileSignUpHandler
-import pl.dev.bkwiatkowski.controller.mobile.auth.handler.MobileSignInHandler
-import pl.dev.bkwiatkowski.controller.mobile.auth.handler.MobileRefreshTokenHandler
-import pl.dev.bkwiatkowski.data.repository.MobileUserRepository
-import pl.dev.bkwiatkowski.data.repository.MobileUserRepositoryImpl
-import pl.dev.bkwiatkowski.data.repository.MobileUserRefreshTokenRepository
-import pl.dev.bkwiatkowski.data.repository.MobileUserRefreshTokenRepositoryImpl
-import pl.dev.bkwiatkowski.domain.usecase.AddNewMobileUserUC
-import pl.dev.bkwiatkowski.domain.usecase.AddNewMobileUserUCImpl
-import pl.dev.bkwiatkowski.domain.usecase.GetMobileUserUC
-import pl.dev.bkwiatkowski.domain.usecase.GetMobileUserUCImpl
-import pl.dev.bkwiatkowski.domain.usecase.GetMobileUserByIdUC
-import pl.dev.bkwiatkowski.domain.usecase.GetMobileUserByIdUCImpl
-import pl.dev.bkwiatkowski.domain.usecase.ValidateMobileUserRegistrationUC
-import pl.dev.bkwiatkowski.domain.usecase.ValidateMobileUserRegistrationUCImpl
-import pl.dev.bkwiatkowski.domain.usecase.VerifyMobileUserAuthenticationUC
-import pl.dev.bkwiatkowski.domain.usecase.VerifyMobileUserAuthenticationUCImpl
-import pl.dev.bkwiatkowski.domain.usecase.SaveMobileUserRefreshTokenUC
-import pl.dev.bkwiatkowski.domain.usecase.SaveMobileUserRefreshTokenUCImpl
-import pl.dev.bkwiatkowski.domain.usecase.VerifyAndRevokeMobileUserRefreshTokenUC
-import pl.dev.bkwiatkowski.domain.usecase.VerifyAndRevokeMobileUserRefreshTokenUCImpl
-import pl.dev.bkwiatkowski.domain.usecase.RevokeAllMobileUserRefreshTokensUC
-import pl.dev.bkwiatkowski.domain.usecase.RevokeAllMobileUserRefreshTokensUCImpl
-import pl.dev.bkwiatkowski.data.repository.MobileUserEventProgressionRepository
-import pl.dev.bkwiatkowski.data.repository.MobileUserEventProgressionRepositoryImpl
-import pl.dev.bkwiatkowski.domain.usecase.GetEventParticipantsProgressionUC
-import pl.dev.bkwiatkowski.domain.usecase.GetEventParticipantsProgressionUCImpl
-import pl.dev.bkwiatkowski.controller.events.handler.EventParticipantsProgressionHandler
-import pl.dev.bkwiatkowski.controller.mobile.settings.MobileSettingsController
-import pl.dev.bkwiatkowski.controller.mobile.settings.handler.MobileSettingsHandler
+import pl.dev.bkwiatkowski.plugins.MonitoringPlugin
+import pl.dev.bkwiatkowski.plugins.RoutingPlugin
+import pl.dev.bkwiatkowski.plugins.SecurityPlugin
 
 fun appModule(config: ApplicationConfig) = module {
   single<ApplicationConfig> { config }
@@ -423,6 +344,17 @@ fun appModule(config: ApplicationConfig) = module {
       deleteEventHandler = get(),
       completeEventHandler = get(),
       eventParticipantsProgressionHandler = get(),
+    )
+  } bind Controller::class
+
+  single { MobileEventListHandler(getAllEventsUC = get(), getAdminPanelUserByIdUC = get()) }
+
+  single { MobileEventDetailHandler(getEventByIdUC = get()) }
+
+  single {
+    MobileEventController(
+      eventListHandler = get(),
+      eventDetailHandler = get(),
     )
   } bind Controller::class
 
