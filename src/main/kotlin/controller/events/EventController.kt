@@ -17,6 +17,7 @@ class EventController(
   private val deleteEventHandler: DeleteEventHandler,
   private val completeEventHandler: CompleteEventHandler,
   private val eventParticipantsProgressionHandler: EventParticipantsProgressionHandler,
+  private val createEventSessionHandler: pl.dev.bkwiatkowski.controller.events.handler.CreateEventSessionHandler,
 ) : Controller {
 
   override fun Route.registerRoutes() {
@@ -40,6 +41,10 @@ class EventController(
 
         post("/complete") {
           completeEventHandler.handle(call)
+        }
+
+        post("{id}/session") {
+          createEventSessionHandler.handle(call)
         }
 
         delete("{id}") {

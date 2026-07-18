@@ -5,16 +5,16 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
-import pl.dev.bkwiatkowski.controller.events.dto.response.EventDetailResponseDto
-import pl.dev.bkwiatkowski.controller.events.dto.response.EventSessionDto
-import pl.dev.bkwiatkowski.controller.events.dto.response.MapDto
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
 import pl.dev.bkwiatkowski.domain.model.AdminPanelUser
+import pl.dev.bkwiatkowski.domain.usecase.CreateEventSessionUC
 import pl.dev.bkwiatkowski.domain.usecase.GetAdminPanelUserByIdUC
 import pl.dev.bkwiatkowski.domain.usecase.GetEventByIdUC
+import pl.dev.bkwiatkowski.controller.events.dto.response.CreateEventSessionResponse
 
-class EventDetailHandler(
+class CreateEventSessionHandler(
+  private val createEventSessionUC: CreateEventSessionUC,
   private val getEventByIdUC: GetEventByIdUC,
   private val getAdminPanelUserByIdUC: GetAdminPanelUserByIdUC,
 ) {
@@ -58,54 +58,44 @@ class EventDetailHandler(
       return
     }
 
-    getEventByIdUC(params = GetEventByIdUC.Params(eventId = eventId)).fold(
-      onRight = { event ->
-        val isAdmin = user.role == AdminPanelUser.Role.ADMIN
-        val isEventOwner = event.userId == userId
+    val event = getEventByIdUC(params = GetEventByIdUC.Params(eventId = eventId)).getRightOrElse {
+      call.respond(
+        status = HttpStatusCode.NotFound,
+        message = ErrorResponse(
+          businessCode = "EVENT_NOT_FOUND",
+          message = "Event not found"
+        )
+      )
+      return
+    }
 
-        if (!isAdmin && !isEventOwner) {
-          call.respond(
-            status = HttpStatusCode.Forbidden,
-            message = ErrorResponse(
-              businessCode = "ACCESS_FORBIDDEN",
-              message = "You do not have permission to view this event"
-            )
-          )
-          return@fold
-        }
+    val isAdmin = user.role == AdminPanelUser.Role.ADMIN
+    val isEventOwner = event.userId == userId
 
+    if (!isAdmin && !isEventOwner) {
+      call.respond(
+        status = HttpStatusCode.Forbidden,
+        message = ErrorResponse(
+          businessCode = "ACCESS_FORBIDDEN",
+          message = "You do not have permission to open a session for this event"
+        )
+      )
+      return
+    }
+
+    createEventSessionUC(params = CreateEventSessionUC.Params(eventId = eventId)).fold(
+      onRight = { sessionId ->
         call.respond(
-          status = HttpStatusCode.OK,
-           message = EventDetailResponseDto(
-             id = event.id,
-             map = MapDto(
-               id = event.map.id,
-               name = event.map.name,
-               description = event.map.description,
-               imageData = event.map.imageData,
-             ),
-             name = event.name,
-             description = event.description,
-             createdAt = event.createdAt,
-             startDate = event.startDate,
-             startLocationX = event.startLocationX,
-             startLocationY = event.startLocationY,
-             status = event.status,
-             finishedAt = event.finishedAt,
-             allowOfflineTracking = event.allowOfflineTracking,
-             eventType = event.eventType,
-             session = event.session?.let { s ->
-               EventSessionDto(id = s.id, startedAt = s.startedAt)
-             }
-           ),
+          status = HttpStatusCode.Created,
+          message = CreateEventSessionResponse(sessionId = sessionId),
         )
       },
       onLeft = {
         call.respond(
-          status = HttpStatusCode.NotFound,
+          status = HttpStatusCode.InternalServerError,
           message = ErrorResponse(
-            businessCode = "EVENT_NOT_FOUND",
-            message = "Event not found"
+            businessCode = "SESSION_CREATION_ERROR",
+            message = "Failed to create session"
           )
         )
       }

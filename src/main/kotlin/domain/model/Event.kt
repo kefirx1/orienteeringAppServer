@@ -16,4 +16,5 @@ data class Event(
   val finishedAt: LocalDateTime? = null,
   val allowOfflineTracking: Boolean,
   val eventType: EventType,
+  val session: EventSession? = null,
 )

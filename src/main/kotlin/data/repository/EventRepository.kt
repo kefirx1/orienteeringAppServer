@@ -8,14 +8,18 @@ import pl.dev.bkwiatkowski.core.database.dbQuery
 import pl.dev.bkwiatkowski.core.database.initTable
 import pl.dev.bkwiatkowski.core.either
 import pl.dev.bkwiatkowski.data.dao.EventDAO
+import pl.dev.bkwiatkowski.data.dao.EventSessionDAO
 import pl.dev.bkwiatkowski.data.dao.EventWaypointDAO
+import pl.dev.bkwiatkowski.data.dao.MapWaypointDAO
+import pl.dev.bkwiatkowski.data.entity.EventSessionTable
 import pl.dev.bkwiatkowski.data.entity.EventTable
 import pl.dev.bkwiatkowski.data.entity.EventWaypointTable
+import pl.dev.bkwiatkowski.data.entity.MapWaypointTable
 import pl.dev.bkwiatkowski.data.mapper.toDomain
 import pl.dev.bkwiatkowski.domain.model.Event
+import pl.dev.bkwiatkowski.domain.model.EventSession
 import pl.dev.bkwiatkowski.domain.model.EventStatus
-import pl.dev.bkwiatkowski.data.dao.MapWaypointDAO
-import pl.dev.bkwiatkowski.data.entity.MapWaypointTable
+import java.util.*
 
 interface EventRepository {
   suspend fun getAllEventsByUserId(userId: Int): Either<DomainError, List<Event>>
@@ -24,6 +28,8 @@ interface EventRepository {
   suspend fun insertEvent(event: Event, waypointIds: List<Int>): Either<DomainError, Int>
   suspend fun deleteEvent(id: Int): Either<DomainError, Unit>
   suspend fun completeEvent(id: Int): Either<DomainError, Unit>
+  suspend fun createSessionForEvent(eventId: Int): Either<DomainError, String>
+  suspend fun getSessionByEventId(eventId: Int): Either<DomainError, pl.dev.bkwiatkowski.domain.model.EventSession?>
 }
 
 class EventRepositoryImpl(
@@ -36,6 +42,7 @@ class EventRepositoryImpl(
     either {
       database.getRight().initTable(table = EventTable)
       database.getRight().initTable(table = EventWaypointTable)
+      database.getRight().initTable(table = pl.dev.bkwiatkowski.data.entity.EventSessionTable)
     }
   }
 
@@ -72,7 +79,20 @@ class EventRepositoryImpl(
       val waypoints = MapWaypointDAO.find { MapWaypointTable.mapId eq eventDao.mapId }
         .filter { it.id.value in waypointIds }
         .map { it.toDomain() }
-      eventDao.toDomain(mapWaypoints = waypoints)
+      val event = eventDao.toDomain(mapWaypoints = waypoints)
+
+      // attach session if exists
+      val sessionDao = pl.dev.bkwiatkowski.data.dao.EventSessionDAO.find { pl.dev.bkwiatkowski.data.entity.EventSessionTable.eventId eq eventDao.id.value }.firstOrNull()
+      if (sessionDao != null) {
+        val session = pl.dev.bkwiatkowski.domain.model.EventSession(
+          id = sessionDao.sessionUuid,
+          eventId = sessionDao.eventId,
+          startedAt = sessionDao.startedAt,
+        )
+        event.copy(session = session)
+      } else {
+        event
+      }
     }.getRight()
   }
 
@@ -119,6 +139,36 @@ class EventRepositoryImpl(
         ?: raise(error = DomainError.Custom(e = NullPointerException("Event not found")))
       event.status = EventStatus.COMPLETED.value
       event.finishedAt = java.time.LocalDateTime.now()
+    }.getRight()
+  }
+
+  override suspend fun createSessionForEvent(eventId: Int): Either<DomainError, String> = either {
+    database.getRight().dbQuery {
+      val eventDao = EventDAO.findById(eventId) ?: raise(error = DomainError.Custom(e = NullPointerException("Event not found")))
+      val existing = EventSessionDAO.find { EventSessionTable.eventId eq eventId }.firstOrNull()
+      if (existing != null) raise(error = DomainError.Custom(e = IllegalStateException("Session for event already exists")))
+
+      val uuid = UUID.randomUUID().toString()
+      EventSessionDAO.new {
+        sessionUuid = uuid
+        this.eventId = eventDao.id.value
+        startedAt = java.time.LocalDateTime.now()
+      }
+
+      uuid
+    }.getRight()
+  }
+
+  override suspend fun getSessionByEventId(eventId: Int): Either<DomainError, EventSession?> = either {
+    database.getRight().dbQuery {
+      val sessionDao = EventSessionDAO.find { EventSessionTable.eventId eq eventId }.firstOrNull()
+      sessionDao?.let {
+        EventSession(
+          id = it.sessionUuid,
+          eventId = it.eventId,
+          startedAt = it.startedAt,
+        )
+      }
     }.getRight()
   }
 }

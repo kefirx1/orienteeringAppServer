@@ -591,6 +591,56 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /api/events/{id}/session:
+    post:
+      summary: "Create Event Session"
+      description: "Opens a new session for the specified event. Accessible by event owner or admin. **Requires authentication.**"
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: "Event ID"
+      responses:
+        "201":
+          description: "Session created successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateEventSessionResponseDto"
+        "400":
+          description: "Bad Request - Invalid event ID"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: "Forbidden - Not authenticated or no permission to open session"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Not Found - Event does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /api/admin/users:
     get:
       summary: "Get All Admin Panel Users"
@@ -1044,6 +1094,13 @@ components:
       properties:
         id:
           type: integer
+    CreateEventSessionResponseDto:
+      type: object
+      required:
+        - sessionId
+      properties:
+        sessionId:
+          type: string
     AddAdminUserRequestDto:
       type: object
       required:

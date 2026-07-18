@@ -23,4 +23,5 @@ data class EventDetailResponseDto(
   val finishedAt: LocalDateTime? = null,
   val allowOfflineTracking: Boolean = false,
   val eventType: EventType,
+  val session: EventSessionDto? = null,
 )

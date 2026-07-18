@@ -336,6 +336,12 @@ fun appModule(config: ApplicationConfig) = module {
 
   single { CompleteEventHandler(completeEventUC = get(), getEventByIdUC = get(), getAdminPanelUserByIdUC = get()) }
 
+  factory<CreateEventSessionUC> {
+    CreateEventSessionUCImpl(eventRepository = get())
+  }
+
+  single { CreateEventSessionHandler(createEventSessionUC = get(), getEventByIdUC = get(), getAdminPanelUserByIdUC = get()) }
+
   single {
     EventController(
       eventListHandler = get(),
@@ -344,6 +350,7 @@ fun appModule(config: ApplicationConfig) = module {
       deleteEventHandler = get(),
       completeEventHandler = get(),
       eventParticipantsProgressionHandler = get(),
+      createEventSessionHandler = get(),
     )
   } bind Controller::class
 
