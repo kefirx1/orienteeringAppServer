@@ -30,6 +30,8 @@ interface EventRepository {
   suspend fun completeEvent(id: Int): Either<DomainError, Unit>
   suspend fun createSessionForEvent(eventId: Int): Either<DomainError, String>
   suspend fun getSessionByEventId(eventId: Int): Either<DomainError, pl.dev.bkwiatkowski.domain.model.EventSession?>
+  suspend fun setSessionUserCanJoin(eventId: Int, userCanJoin: Boolean): Either<DomainError, Unit>
+  suspend fun closeSessionForEvent(eventId: Int, finishedAt: java.time.LocalDateTime): Either<DomainError, Unit>
 }
 
 class EventRepositoryImpl(
@@ -88,6 +90,8 @@ class EventRepositoryImpl(
           id = sessionDao.sessionUuid,
           eventId = sessionDao.eventId,
           startedAt = sessionDao.startedAt,
+          finishedAt = sessionDao.finishedAt,
+          userCanJoin = sessionDao.userCanJoin,
         )
         event.copy(session = session)
       } else {
@@ -142,6 +146,23 @@ class EventRepositoryImpl(
     }.getRight()
   }
 
+  override suspend fun setSessionUserCanJoin(eventId: Int, userCanJoin: Boolean): Either<DomainError, Unit> = either {
+    database.getRight().dbQuery {
+      val session = EventSessionDAO.find { EventSessionTable.eventId eq eventId }.firstOrNull()
+        ?: raise(error = DomainError.Custom(e = NullPointerException("Session not found")))
+      session.userCanJoin = userCanJoin
+    }.getRight()
+  }
+
+  override suspend fun closeSessionForEvent(eventId: Int, finishedAt: java.time.LocalDateTime): Either<DomainError, Unit> = either {
+    database.getRight().dbQuery {
+      val session = EventSessionDAO.find { EventSessionTable.eventId eq eventId }.firstOrNull()
+        ?: raise(error = DomainError.Custom(e = NullPointerException("Session not found")))
+      session.finishedAt = finishedAt
+      session.userCanJoin = false
+    }.getRight()
+  }
+
   override suspend fun createSessionForEvent(eventId: Int): Either<DomainError, String> = either {
     database.getRight().dbQuery {
       val eventDao = EventDAO.findById(eventId) ?: raise(error = DomainError.Custom(e = NullPointerException("Event not found")))
@@ -153,6 +174,8 @@ class EventRepositoryImpl(
         sessionUuid = uuid
         this.eventId = eventDao.id.value
         startedAt = java.time.LocalDateTime.now()
+        finishedAt = null
+        userCanJoin = true
       }
 
       uuid
@@ -167,6 +190,8 @@ class EventRepositoryImpl(
           id = it.sessionUuid,
           eventId = it.eventId,
           startedAt = it.startedAt,
+          finishedAt = it.finishedAt,
+          userCanJoin = it.userCanJoin,
         )
       }
     }.getRight()

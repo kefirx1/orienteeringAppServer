@@ -8,14 +8,12 @@ import io.ktor.server.response.*
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
 import pl.dev.bkwiatkowski.domain.model.AdminPanelUser
-import pl.dev.bkwiatkowski.domain.usecase.CreateEventSessionUC
+import pl.dev.bkwiatkowski.domain.usecase.CloseEventSessionUC
 import pl.dev.bkwiatkowski.domain.usecase.GetAdminPanelUserByIdUC
 import pl.dev.bkwiatkowski.domain.usecase.GetEventByIdUC
-import pl.dev.bkwiatkowski.controller.events.dto.response.CreateEventSessionResponse
-import pl.dev.bkwiatkowski.data.repository.EventRepository
 
-class CreateEventSessionHandler(
-  private val createEventSessionUC: CreateEventSessionUC,
+class CloseEventSessionHandler(
+  private val closeEventSessionUC: CloseEventSessionUC,
   private val getEventByIdUC: GetEventByIdUC,
   private val getAdminPanelUserByIdUC: GetAdminPanelUserByIdUC,
 ) {
@@ -78,25 +76,22 @@ class CreateEventSessionHandler(
         status = HttpStatusCode.Forbidden,
         message = ErrorResponse(
           businessCode = "ACCESS_FORBIDDEN",
-          message = "You do not have permission to open a session for this event"
+          message = "You do not have permission to close this event"
         )
       )
       return
     }
 
-    createEventSessionUC(params = CreateEventSessionUC.Params(eventId = eventId)).fold(
-      onRight = { sessionId ->
-        call.respond(
-          status = HttpStatusCode.Created,
-          message = CreateEventSessionResponse(sessionId = sessionId),
-        )
+    closeEventSessionUC(params = CloseEventSessionUC.Params(eventId = eventId)).fold(
+      onRight = {
+        call.respond(status = HttpStatusCode.OK)
       },
       onLeft = {
         call.respond(
           status = HttpStatusCode.InternalServerError,
           message = ErrorResponse(
-            businessCode = "SESSION_CREATION_ERROR",
-            message = "Failed to create session"
+            businessCode = "SESSION_CLOSE_ERROR",
+            message = "Failed to close session"
           )
         )
       }

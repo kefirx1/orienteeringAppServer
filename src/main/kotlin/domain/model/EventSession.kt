@@ -6,4 +6,6 @@ data class EventSession(
   val id: String,
   val eventId: Int,
   val startedAt: LocalDateTime,
+  val finishedAt: LocalDateTime? = null,
+  val userCanJoin: Boolean = true,
 )

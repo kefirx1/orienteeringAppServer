@@ -11,4 +11,6 @@ class EventSessionDAO(id: EntityID<Int>) : IntEntity(id) {
   var sessionUuid by EventSessionTable.sessionUuid
   var eventId by EventSessionTable.eventId
   var startedAt by EventSessionTable.startedAt
+  var finishedAt by EventSessionTable.finishedAt
+  var userCanJoin by EventSessionTable.userCanJoin
 }

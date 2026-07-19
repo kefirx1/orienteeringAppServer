@@ -340,7 +340,19 @@ fun appModule(config: ApplicationConfig) = module {
     CreateEventSessionUCImpl(eventRepository = get())
   }
 
+  factory<SetEventSessionJoinableUC> {
+    SetEventSessionJoinableUCImpl(eventRepository = get())
+  }
+
+  factory<CloseEventSessionUC> {
+    CloseEventSessionUCImpl(eventRepository = get())
+  }
+
   single { CreateEventSessionHandler(createEventSessionUC = get(), getEventByIdUC = get(), getAdminPanelUserByIdUC = get()) }
+
+  single { SetEventSessionJoinableHandler(setEventSessionJoinableUC = get(), getEventByIdUC = get(), getAdminPanelUserByIdUC = get()) }
+
+  single { CloseEventSessionHandler(closeEventSessionUC = get(), getEventByIdUC = get(), getAdminPanelUserByIdUC = get()) }
 
   single {
     EventController(
@@ -351,6 +363,8 @@ fun appModule(config: ApplicationConfig) = module {
       completeEventHandler = get(),
       eventParticipantsProgressionHandler = get(),
       createEventSessionHandler = get(),
+      setEventSessionJoinableHandler = get(),
+      closeEventSessionHandler = get(),
     )
   } bind Controller::class
 

@@ -9,4 +9,7 @@ data class EventSessionDto(
   val id: String,
   @Contextual
   val startedAt: LocalDateTime,
+  @Contextual
+  val finishedAt: LocalDateTime? = null,
+  val userCanJoin: Boolean = true,
 )

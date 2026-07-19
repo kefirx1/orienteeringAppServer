@@ -18,6 +18,8 @@ class EventController(
   private val completeEventHandler: CompleteEventHandler,
   private val eventParticipantsProgressionHandler: EventParticipantsProgressionHandler,
   private val createEventSessionHandler: pl.dev.bkwiatkowski.controller.events.handler.CreateEventSessionHandler,
+  private val setEventSessionJoinableHandler: pl.dev.bkwiatkowski.controller.events.handler.SetEventSessionJoinableHandler,
+  private val closeEventSessionHandler: pl.dev.bkwiatkowski.controller.events.handler.CloseEventSessionHandler,
 ) : Controller {
 
   override fun Route.registerRoutes() {
@@ -45,6 +47,14 @@ class EventController(
 
         post("{id}/session") {
           createEventSessionHandler.handle(call)
+        }
+
+        post("{id}/session/joinable") {
+          setEventSessionJoinableHandler.handle(call)
+        }
+
+        post("{id}/session/close") {
+          closeEventSessionHandler.handle(call)
         }
 
         delete("{id}") {

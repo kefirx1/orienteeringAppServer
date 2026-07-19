@@ -4,18 +4,19 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
+import pl.dev.bkwiatkowski.controller.events.dto.request.SetEventSessionJoinableRequest
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
 import pl.dev.bkwiatkowski.domain.model.AdminPanelUser
-import pl.dev.bkwiatkowski.domain.usecase.CreateEventSessionUC
+import pl.dev.bkwiatkowski.domain.usecase.CloseEventSessionUC
 import pl.dev.bkwiatkowski.domain.usecase.GetAdminPanelUserByIdUC
 import pl.dev.bkwiatkowski.domain.usecase.GetEventByIdUC
-import pl.dev.bkwiatkowski.controller.events.dto.response.CreateEventSessionResponse
-import pl.dev.bkwiatkowski.data.repository.EventRepository
+import pl.dev.bkwiatkowski.domain.usecase.SetEventSessionJoinableUC
 
-class CreateEventSessionHandler(
-  private val createEventSessionUC: CreateEventSessionUC,
+class SetEventSessionJoinableHandler(
+  private val setEventSessionJoinableUC: SetEventSessionJoinableUC,
   private val getEventByIdUC: GetEventByIdUC,
   private val getAdminPanelUserByIdUC: GetAdminPanelUserByIdUC,
 ) {
@@ -78,25 +79,24 @@ class CreateEventSessionHandler(
         status = HttpStatusCode.Forbidden,
         message = ErrorResponse(
           businessCode = "ACCESS_FORBIDDEN",
-          message = "You do not have permission to open a session for this event"
+          message = "You do not have permission to change session settings for this event"
         )
       )
       return
     }
 
-    createEventSessionUC(params = CreateEventSessionUC.Params(eventId = eventId)).fold(
-      onRight = { sessionId ->
-        call.respond(
-          status = HttpStatusCode.Created,
-          message = CreateEventSessionResponse(sessionId = sessionId),
-        )
+    val request = call.receive<SetEventSessionJoinableRequest>()
+
+    setEventSessionJoinableUC(params = SetEventSessionJoinableUC.Params(eventId = eventId, userCanJoin = request.userCanJoin)).fold(
+      onRight = {
+        call.respond(status = HttpStatusCode.OK)
       },
       onLeft = {
         call.respond(
           status = HttpStatusCode.InternalServerError,
           message = ErrorResponse(
-            businessCode = "SESSION_CREATION_ERROR",
-            message = "Failed to create session"
+            businessCode = "SESSION_UPDATE_ERROR",
+            message = "Failed to update session"
           )
         )
       }

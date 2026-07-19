@@ -95,7 +95,7 @@ class EventDetailHandler(
              allowOfflineTracking = event.allowOfflineTracking,
              eventType = event.eventType,
              session = event.session?.let { s ->
-               EventSessionDto(id = s.id, startedAt = s.startedAt)
+               EventSessionDto(id = s.id, startedAt = s.startedAt, finishedAt = s.finishedAt, userCanJoin = s.userCanJoin)
              }
            ),
         )

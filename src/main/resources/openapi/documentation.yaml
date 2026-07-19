@@ -641,6 +641,104 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /api/events/{id}/session/joinable:
+    post:
+      summary: "Set session joinable"
+      description: "Sets whether users can join the session for the specified event. Accessible by event owner or admin. **Requires authentication.**"
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: "Event ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SetEventSessionJoinableRequestDto"
+      responses:
+        "200":
+          description: "Session updated successfully"
+        "400":
+          description: "Bad Request - Invalid event ID"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: "Forbidden - Not authenticated or no permission to update session"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Not Found - Event or session does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/events/{id}/session/close:
+    post:
+      summary: "Close session"
+      description: "Closes the session for the specified event (sets finishedAt and disables joining). Accessible by event owner or admin. **Requires authentication.**"
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: "Event ID"
+      responses:
+        "200":
+          description: "Session closed successfully"
+        "400":
+          description: "Bad Request - Invalid event ID"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: "Forbidden - Not authenticated or no permission to close session"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Not Found - Event or session does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /api/admin/users:
     get:
       summary: "Get All Admin Panel Users"
@@ -1101,6 +1199,31 @@ components:
       properties:
         sessionId:
           type: string
+    EventSessionDto:
+      type: object
+      required:
+        - id
+        - startedAt
+        - userCanJoin
+      properties:
+        id:
+          type: string
+        startedAt:
+          type: string
+          format: date-time
+        finishedAt:
+          type: string
+          format: date-time
+          nullable: true
+        userCanJoin:
+          type: boolean
+    SetEventSessionJoinableRequestDto:
+      type: object
+      required:
+        - userCanJoin
+      properties:
+        userCanJoin:
+          type: boolean
     AddAdminUserRequestDto:
       type: object
       required:
