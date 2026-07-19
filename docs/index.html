@@ -832,6 +832,15 @@
     }
   }
 };
+            defs["CreateEventSessionResponseDto"] = {
+  "required" : [ "sessionId" ],
+  "type" : "object",
+  "properties" : {
+    "sessionId" : {
+      "type" : "string"
+    }
+  }
+};
             defs["CreateMapResponseDto"] = {
   "required" : [ "id" ],
   "type" : "object",
@@ -985,6 +994,27 @@
     }
   }
 };
+            defs["EventSessionDto"] = {
+  "required" : [ "id", "startedAt", "userCanJoin" ],
+  "type" : "object",
+  "properties" : {
+    "id" : {
+      "type" : "string"
+    },
+    "startedAt" : {
+      "type" : "string",
+      "format" : "date-time"
+    },
+    "finishedAt" : {
+      "type" : "string",
+      "format" : "date-time",
+      "nullable" : true
+    },
+    "userCanJoin" : {
+      "type" : "boolean"
+    }
+  }
+};
             defs["MapDetailResponseDto"] = {
   "required" : [ "description", "id", "imageData", "name", "waypoints" ],
   "type" : "object",
@@ -1045,6 +1075,15 @@
     "imageData" : {
       "type" : "string",
       "description" : "Base64 encoded image data"
+    }
+  }
+};
+            defs["SetEventSessionJoinableRequestDto"] = {
+  "required" : [ "userCanJoin" ],
+  "type" : "object",
+  "properties" : {
+    "userCanJoin" : {
+      "type" : "boolean"
     }
   }
 };
@@ -1201,6 +1240,15 @@
                     </li>
                     <li data-group="Default" data-name="apiEventsIdGet" class="">
                       <a href="#api-Default-apiEventsIdGet">apiEventsIdGet</a>
+                    </li>
+                    <li data-group="Default" data-name="apiEventsIdSessionClosePost" class="">
+                      <a href="#api-Default-apiEventsIdSessionClosePost">apiEventsIdSessionClosePost</a>
+                    </li>
+                    <li data-group="Default" data-name="apiEventsIdSessionJoinablePost" class="">
+                      <a href="#api-Default-apiEventsIdSessionJoinablePost">apiEventsIdSessionJoinablePost</a>
+                    </li>
+                    <li data-group="Default" data-name="apiEventsIdSessionPost" class="">
+                      <a href="#api-Default-apiEventsIdSessionPost">apiEventsIdSessionPost</a>
                     </li>
                     <li data-group="Default" data-name="apiEventsPost" class="">
                       <a href="#api-Default-apiEventsPost">apiEventsPost</a>
@@ -7171,6 +7219,1599 @@ except ApiException as e:
                                     </script>
                                   </div>
                                   <input id='responses-apiEventsIdGet-500-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Default-apiEventsIdSessionClosePost">
+                      <article id="api-Default-apiEventsIdSessionClosePost-0" data-group="User" data-name="apiEventsIdSessionClosePost" data-version="0">
+                        <div class="pull-left">
+                          <h1>apiEventsIdSessionClosePost</h1>
+                          <p>Close session</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Closes the session for the specified event (sets finishedAt and disables joining). Accessible by event owner or admin. **Requires authentication.**</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/api/events/{id}/session/close</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Default-apiEventsIdSessionClosePost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionClosePost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionClosePost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiEventsIdSessionClosePost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionClosePost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionClosePost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiEventsIdSessionClosePost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionClosePost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionClosePost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionClosePost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionClosePost-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Default-apiEventsIdSessionClosePost-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+"http://localhost:8080/api/events/{id}/session/close"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Default-apiEventsIdSessionClosePost-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.DefaultApi;
+
+import java.io.File;
+import java.util.*;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        DefaultApi apiInstance = new DefaultApi();
+        Integer id = 56; // Integer | Event ID
+        try {
+            apiInstance.apiEventsIdSessionClosePost(id);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#apiEventsIdSessionClosePost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Default-apiEventsIdSessionClosePost-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        DefaultApi apiInstance = new DefaultApi();
+        Integer id = 56; // Integer | Event ID
+        try {
+            apiInstance.apiEventsIdSessionClosePost(id);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#apiEventsIdSessionClosePost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Default-apiEventsIdSessionClosePost-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Default-apiEventsIdSessionClosePost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+Integer *id = 56; // Event ID
+
+DefaultApi *apiInstance = [[DefaultApi alloc] init];
+
+// Close session
+[apiInstance apiEventsIdSessionClosePostWith:id
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsIdSessionClosePost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var OrienteeringAppServerApi = require('orienteering_app_server_api');
+var defaultClient = OrienteeringAppServerApi.ApiClient.instance;
+
+
+var api = new OrienteeringAppServerApi.DefaultApi()
+var id = 56; // {{Integer}} Event ID
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.apiEventsIdSessionClosePost(id, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Default-apiEventsIdSessionClosePost-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Default-apiEventsIdSessionClosePost-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class apiEventsIdSessionClosePostExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new DefaultApi();
+            var id = 56;  // Integer | Event ID
+
+            try
+            {
+                // Close session
+                apiInstance.apiEventsIdSessionClosePost(id);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling DefaultApi.apiEventsIdSessionClosePost: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsIdSessionClosePost-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiDefaultApi();
+$id = 56; // Integer | Event ID
+
+try {
+    $api_instance->apiEventsIdSessionClosePost($id);
+} catch (Exception $e) {
+    echo 'Exception when calling DefaultApi->apiEventsIdSessionClosePost: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsIdSessionClosePost-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::DefaultApi;
+
+
+my $api_instance = WWW::SwaggerClient::DefaultApi->new();
+my $id = 56; # Integer | Event ID
+
+eval { 
+    $api_instance->apiEventsIdSessionClosePost(id => $id);
+};
+if ($@) {
+    warn "Exception when calling DefaultApi->apiEventsIdSessionClosePost: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsIdSessionClosePost-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.DefaultApi()
+id = 56 # Integer | Event ID
+
+try: 
+    # Close session
+    api_instance.api_events_id_session_close_post(id)
+except ApiException as e:
+    print("Exception when calling DefaultApi->apiEventsIdSessionClosePost: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_apiEventsIdSessionClosePost_id">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Integer
+                                                  </span>
+                                  
+                                                      <div class="inner description">
+                                                          Event ID
+                                                      </div>
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Session closed successfully </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                            <h3> Status: 400 - Bad Request - Invalid event ID </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdSessionClosePost-400-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdSessionClosePost-400-schema">
+                                  <div id='responses-apiEventsIdSessionClosePost-400-schema-400' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Bad Request - Invalid event ID",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdSessionClosePost-400-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdSessionClosePost-400-schema-400');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdSessionClosePost-400-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 401 - Unauthorized </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdSessionClosePost-401-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdSessionClosePost-401-schema">
+                                  <div id='responses-apiEventsIdSessionClosePost-401-schema-401' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Unauthorized",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdSessionClosePost-401-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdSessionClosePost-401-schema-401');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdSessionClosePost-401-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 403 - Forbidden - Not authenticated or no permission to close session </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdSessionClosePost-403-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdSessionClosePost-403-schema">
+                                  <div id='responses-apiEventsIdSessionClosePost-403-schema-403' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Forbidden - Not authenticated or no permission to close session",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdSessionClosePost-403-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdSessionClosePost-403-schema-403');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdSessionClosePost-403-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 404 - Not Found - Event or session does not exist </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdSessionClosePost-404-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdSessionClosePost-404-schema">
+                                  <div id='responses-apiEventsIdSessionClosePost-404-schema-404' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Not Found - Event or session does not exist",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdSessionClosePost-404-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdSessionClosePost-404-schema-404');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdSessionClosePost-404-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 500 - Internal Server Error </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdSessionClosePost-500-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdSessionClosePost-500-schema">
+                                  <div id='responses-apiEventsIdSessionClosePost-500-schema-500' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Internal Server Error",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdSessionClosePost-500-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdSessionClosePost-500-schema-500');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdSessionClosePost-500-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Default-apiEventsIdSessionJoinablePost">
+                      <article id="api-Default-apiEventsIdSessionJoinablePost-0" data-group="User" data-name="apiEventsIdSessionJoinablePost" data-version="0">
+                        <div class="pull-left">
+                          <h1>apiEventsIdSessionJoinablePost</h1>
+                          <p>Set session joinable</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Sets whether users can join the session for the specified event. Accessible by event owner or admin. **Requires authentication.**</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/api/events/{id}/session/joinable</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Default-apiEventsIdSessionJoinablePost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionJoinablePost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionJoinablePost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiEventsIdSessionJoinablePost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionJoinablePost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionJoinablePost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiEventsIdSessionJoinablePost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionJoinablePost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionJoinablePost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionJoinablePost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionJoinablePost-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Default-apiEventsIdSessionJoinablePost-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+-H "Content-Type: application/json"\
+"http://localhost:8080/api/events/{id}/session/joinable"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Default-apiEventsIdSessionJoinablePost-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.DefaultApi;
+
+import java.io.File;
+import java.util.*;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        DefaultApi apiInstance = new DefaultApi();
+        SetEventSessionJoinableRequestDto body = ; // SetEventSessionJoinableRequestDto | 
+        Integer id = 56; // Integer | Event ID
+        try {
+            apiInstance.apiEventsIdSessionJoinablePost(body, id);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#apiEventsIdSessionJoinablePost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Default-apiEventsIdSessionJoinablePost-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        DefaultApi apiInstance = new DefaultApi();
+        SetEventSessionJoinableRequestDto body = ; // SetEventSessionJoinableRequestDto | 
+        Integer id = 56; // Integer | Event ID
+        try {
+            apiInstance.apiEventsIdSessionJoinablePost(body, id);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#apiEventsIdSessionJoinablePost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Default-apiEventsIdSessionJoinablePost-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Default-apiEventsIdSessionJoinablePost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+SetEventSessionJoinableRequestDto *body = ; // 
+Integer *id = 56; // Event ID
+
+DefaultApi *apiInstance = [[DefaultApi alloc] init];
+
+// Set session joinable
+[apiInstance apiEventsIdSessionJoinablePostWith:body
+    id:id
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsIdSessionJoinablePost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var OrienteeringAppServerApi = require('orienteering_app_server_api');
+var defaultClient = OrienteeringAppServerApi.ApiClient.instance;
+
+
+var api = new OrienteeringAppServerApi.DefaultApi()
+var body = ; // {{SetEventSessionJoinableRequestDto}} 
+var id = 56; // {{Integer}} Event ID
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.apiEventsIdSessionJoinablePost(bodyid, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Default-apiEventsIdSessionJoinablePost-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Default-apiEventsIdSessionJoinablePost-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class apiEventsIdSessionJoinablePostExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new DefaultApi();
+            var body = new SetEventSessionJoinableRequestDto(); // SetEventSessionJoinableRequestDto | 
+            var id = 56;  // Integer | Event ID
+
+            try
+            {
+                // Set session joinable
+                apiInstance.apiEventsIdSessionJoinablePost(body, id);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling DefaultApi.apiEventsIdSessionJoinablePost: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsIdSessionJoinablePost-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiDefaultApi();
+$body = ; // SetEventSessionJoinableRequestDto | 
+$id = 56; // Integer | Event ID
+
+try {
+    $api_instance->apiEventsIdSessionJoinablePost($body, $id);
+} catch (Exception $e) {
+    echo 'Exception when calling DefaultApi->apiEventsIdSessionJoinablePost: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsIdSessionJoinablePost-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::DefaultApi;
+
+
+my $api_instance = WWW::SwaggerClient::DefaultApi->new();
+my $body = WWW::SwaggerClient::Object::SetEventSessionJoinableRequestDto->new(); # SetEventSessionJoinableRequestDto | 
+my $id = 56; # Integer | Event ID
+
+eval { 
+    $api_instance->apiEventsIdSessionJoinablePost(body => $body, id => $id);
+};
+if ($@) {
+    warn "Exception when calling DefaultApi->apiEventsIdSessionJoinablePost: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsIdSessionJoinablePost-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.DefaultApi()
+body =  # SetEventSessionJoinableRequestDto | 
+id = 56 # Integer | Event ID
+
+try: 
+    # Set session joinable
+    api_instance.api_events_id_session_joinable_post(body, id)
+except ApiException as e:
+    print("Exception when calling DefaultApi->apiEventsIdSessionJoinablePost: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_apiEventsIdSessionJoinablePost_id">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Integer
+                                                  </span>
+                                  
+                                                      <div class="inner description">
+                                                          Event ID
+                                                      </div>
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+                            <div class="methodsubtabletitle">Body parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">body <span style="color:red;">*</span></td>
+                                <td>
+                                
+                                
+                                <script>
+                                $(document).ready(function() {
+                                  var schemaWrapper = {
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/SetEventSessionJoinableRequestDto"
+      }
+    }
+  },
+  "required" : true
+};
+                                  var schema = schemaWrapper.content["application/json"].schema;
+                                  if (schema.$ref != null) {
+                                    schema = defsParser.$refs.get(schema.$ref);
+                                  } else {
+                                    schemaWrapper.components = {};
+                                    schemaWrapper.components.schemas = Object.assign({}, defs);
+                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                      console.log(err);
+                                    });
+                                  }
+                                
+                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
+                                  var result = $('#d2e199_apiEventsIdSessionJoinablePost_body');
+                                  result.empty();
+                                  result.append(view.render());
+                                });
+                                </script>
+                                <div id="d2e199_apiEventsIdSessionJoinablePost_body"></div>
+                                </td>
+                                </tr>
+                            </table>
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - Session updated successfully </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                            <h3> Status: 400 - Bad Request - Invalid event ID </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdSessionJoinablePost-400-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdSessionJoinablePost-400-schema">
+                                  <div id='responses-apiEventsIdSessionJoinablePost-400-schema-400' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Bad Request - Invalid event ID",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdSessionJoinablePost-400-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdSessionJoinablePost-400-schema-400');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdSessionJoinablePost-400-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 401 - Unauthorized </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdSessionJoinablePost-401-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdSessionJoinablePost-401-schema">
+                                  <div id='responses-apiEventsIdSessionJoinablePost-401-schema-401' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Unauthorized",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdSessionJoinablePost-401-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdSessionJoinablePost-401-schema-401');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdSessionJoinablePost-401-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 403 - Forbidden - Not authenticated or no permission to update session </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdSessionJoinablePost-403-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdSessionJoinablePost-403-schema">
+                                  <div id='responses-apiEventsIdSessionJoinablePost-403-schema-403' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Forbidden - Not authenticated or no permission to update session",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdSessionJoinablePost-403-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdSessionJoinablePost-403-schema-403');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdSessionJoinablePost-403-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 404 - Not Found - Event or session does not exist </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdSessionJoinablePost-404-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdSessionJoinablePost-404-schema">
+                                  <div id='responses-apiEventsIdSessionJoinablePost-404-schema-404' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Not Found - Event or session does not exist",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdSessionJoinablePost-404-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdSessionJoinablePost-404-schema-404');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdSessionJoinablePost-404-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 500 - Internal Server Error </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdSessionJoinablePost-500-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdSessionJoinablePost-500-schema">
+                                  <div id='responses-apiEventsIdSessionJoinablePost-500-schema-500' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Internal Server Error",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdSessionJoinablePost-500-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdSessionJoinablePost-500-schema-500');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdSessionJoinablePost-500-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Default-apiEventsIdSessionPost">
+                      <article id="api-Default-apiEventsIdSessionPost-0" data-group="User" data-name="apiEventsIdSessionPost" data-version="0">
+                        <div class="pull-left">
+                          <h1>apiEventsIdSessionPost</h1>
+                          <p>Create Event Session</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Opens a new session for the specified event. Accessible by event owner or admin. **Requires authentication.**</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/api/events/{id}/session</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Default-apiEventsIdSessionPost-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionPost-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionPost-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiEventsIdSessionPost-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionPost-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionPost-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiEventsIdSessionPost-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionPost-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionPost-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionPost-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionPost-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Default-apiEventsIdSessionPost-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+"http://localhost:8080/api/events/{id}/session"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Default-apiEventsIdSessionPost-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.DefaultApi;
+
+import java.io.File;
+import java.util.*;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        DefaultApi apiInstance = new DefaultApi();
+        Integer id = 56; // Integer | Event ID
+        try {
+            CreateEventSessionResponseDto result = apiInstance.apiEventsIdSessionPost(id);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#apiEventsIdSessionPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Default-apiEventsIdSessionPost-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        DefaultApi apiInstance = new DefaultApi();
+        Integer id = 56; // Integer | Event ID
+        try {
+            CreateEventSessionResponseDto result = apiInstance.apiEventsIdSessionPost(id);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#apiEventsIdSessionPost");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Default-apiEventsIdSessionPost-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Default-apiEventsIdSessionPost-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+Integer *id = 56; // Event ID
+
+DefaultApi *apiInstance = [[DefaultApi alloc] init];
+
+// Create Event Session
+[apiInstance apiEventsIdSessionPostWith:id
+              completionHandler: ^(CreateEventSessionResponseDto output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsIdSessionPost-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var OrienteeringAppServerApi = require('orienteering_app_server_api');
+var defaultClient = OrienteeringAppServerApi.ApiClient.instance;
+
+
+var api = new OrienteeringAppServerApi.DefaultApi()
+var id = 56; // {{Integer}} Event ID
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.apiEventsIdSessionPost(id, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Default-apiEventsIdSessionPost-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Default-apiEventsIdSessionPost-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class apiEventsIdSessionPostExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new DefaultApi();
+            var id = 56;  // Integer | Event ID
+
+            try
+            {
+                // Create Event Session
+                CreateEventSessionResponseDto result = apiInstance.apiEventsIdSessionPost(id);
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling DefaultApi.apiEventsIdSessionPost: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsIdSessionPost-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiDefaultApi();
+$id = 56; // Integer | Event ID
+
+try {
+    $result = $api_instance->apiEventsIdSessionPost($id);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling DefaultApi->apiEventsIdSessionPost: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsIdSessionPost-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::DefaultApi;
+
+
+my $api_instance = WWW::SwaggerClient::DefaultApi->new();
+my $id = 56; # Integer | Event ID
+
+eval { 
+    my $result = $api_instance->apiEventsIdSessionPost(id => $id);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling DefaultApi->apiEventsIdSessionPost: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsIdSessionPost-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.DefaultApi()
+id = 56 # Integer | Event ID
+
+try: 
+    # Create Event Session
+    api_response = api_instance.api_events_id_session_post(id)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling DefaultApi->apiEventsIdSessionPost: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_apiEventsIdSessionPost_id">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Integer
+                                                  </span>
+                                  
+                                                      <div class="inner description">
+                                                          Event ID
+                                                      </div>
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 201 - Session created successfully </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdSessionPost-201-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdSessionPost-201-schema">
+                                  <div id='responses-apiEventsIdSessionPost-201-schema-201' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Session created successfully",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/CreateEventSessionResponseDto"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdSessionPost-201-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdSessionPost-201-schema-201');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdSessionPost-201-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 400 - Bad Request - Invalid event ID </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdSessionPost-400-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdSessionPost-400-schema">
+                                  <div id='responses-apiEventsIdSessionPost-400-schema-400' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Bad Request - Invalid event ID",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdSessionPost-400-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdSessionPost-400-schema-400');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdSessionPost-400-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 401 - Unauthorized </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdSessionPost-401-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdSessionPost-401-schema">
+                                  <div id='responses-apiEventsIdSessionPost-401-schema-401' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Unauthorized",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdSessionPost-401-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdSessionPost-401-schema-401');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdSessionPost-401-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 403 - Forbidden - Not authenticated or no permission to open session </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdSessionPost-403-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdSessionPost-403-schema">
+                                  <div id='responses-apiEventsIdSessionPost-403-schema-403' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Forbidden - Not authenticated or no permission to open session",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdSessionPost-403-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdSessionPost-403-schema-403');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdSessionPost-403-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 404 - Not Found - Event does not exist </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdSessionPost-404-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdSessionPost-404-schema">
+                                  <div id='responses-apiEventsIdSessionPost-404-schema-404' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Not Found - Event does not exist",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdSessionPost-404-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdSessionPost-404-schema-404');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdSessionPost-404-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 500 - Internal Server Error </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdSessionPost-500-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdSessionPost-500-schema">
+                                  <div id='responses-apiEventsIdSessionPost-500-schema-500' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Internal Server Error",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdSessionPost-500-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdSessionPost-500-schema-500');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdSessionPost-500-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 

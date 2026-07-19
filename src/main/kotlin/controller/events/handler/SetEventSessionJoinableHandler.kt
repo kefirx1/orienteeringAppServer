@@ -89,7 +89,7 @@ class SetEventSessionJoinableHandler(
 
     setEventSessionJoinableUC(params = SetEventSessionJoinableUC.Params(eventId = eventId, userCanJoin = request.userCanJoin)).fold(
       onRight = {
-        call.respond(status = HttpStatusCode.OK)
+        call.respond(HttpStatusCode.OK)
       },
       onLeft = {
         call.respond(

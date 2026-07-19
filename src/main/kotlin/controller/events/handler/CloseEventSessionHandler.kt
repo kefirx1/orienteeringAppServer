@@ -84,7 +84,7 @@ class CloseEventSessionHandler(
 
     closeEventSessionUC(params = CloseEventSessionUC.Params(eventId = eventId)).fold(
       onRight = {
-        call.respond(status = HttpStatusCode.OK)
+        call.respond(HttpStatusCode.OK)
       },
       onLeft = {
         call.respond(
