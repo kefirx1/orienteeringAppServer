@@ -29,7 +29,7 @@ interface EventRepository {
   suspend fun deleteEvent(id: Int): Either<DomainError, Unit>
   suspend fun completeEvent(id: Int): Either<DomainError, Unit>
   suspend fun createSessionForEvent(eventId: Int): Either<DomainError, String>
-  suspend fun getSessionByEventId(eventId: Int): Either<DomainError, pl.dev.bkwiatkowski.domain.model.EventSession?>
+  suspend fun getSessionByEventId(eventId: Int): Either<DomainError, EventSession?>
   suspend fun setSessionUserCanJoin(eventId: Int, userCanJoin: Boolean): Either<DomainError, Unit>
   suspend fun closeSessionForEvent(eventId: Int, finishedAt: java.time.LocalDateTime): Either<DomainError, Unit>
 }
@@ -83,10 +83,9 @@ class EventRepositoryImpl(
         .map { it.toDomain() }
       val event = eventDao.toDomain(mapWaypoints = waypoints)
 
-      // attach session if exists
-      val sessionDao = pl.dev.bkwiatkowski.data.dao.EventSessionDAO.find { pl.dev.bkwiatkowski.data.entity.EventSessionTable.eventId eq eventDao.id.value }.firstOrNull()
+      val sessionDao = EventSessionDAO.find { EventSessionTable.eventId eq eventDao.id.value }.firstOrNull()
       if (sessionDao != null) {
-        val session = pl.dev.bkwiatkowski.domain.model.EventSession(
+        val session = EventSession(
           id = sessionDao.sessionUuid,
           eventId = sessionDao.eventId,
           startedAt = sessionDao.startedAt,
@@ -150,6 +149,7 @@ class EventRepositoryImpl(
     database.getRight().dbQuery {
       val session = EventSessionDAO.find { EventSessionTable.eventId eq eventId }.firstOrNull()
         ?: raise(error = DomainError.Custom(e = NullPointerException("Session not found")))
+      if (session.finishedAt != null) raise(error = DomainError.Custom(e = IllegalStateException("Session is already finished")))
       session.userCanJoin = userCanJoin
     }.getRight()
   }
@@ -160,6 +160,11 @@ class EventRepositoryImpl(
         ?: raise(error = DomainError.Custom(e = NullPointerException("Session not found")))
       session.finishedAt = finishedAt
       session.userCanJoin = false
+
+      val eventDao = EventDAO.findById(eventId)
+        ?: raise(error = DomainError.Custom(e = NullPointerException("Event not found")))
+      eventDao.status = EventStatus.COMPLETED.value
+      eventDao.finishedAt = finishedAt
     }.getRight()
   }
 
@@ -169,6 +174,9 @@ class EventRepositoryImpl(
       val existing = EventSessionDAO.find { EventSessionTable.eventId eq eventId }.firstOrNull()
       if (existing != null) raise(error = DomainError.Custom(e = IllegalStateException("Session for event already exists")))
 
+      val now = java.time.LocalDateTime.now()
+      if (eventDao.startDate.isAfter(now)) raise(error = DomainError.Custom(e = IllegalStateException("Event has not started yet")))
+
       val uuid = UUID.randomUUID().toString()
       EventSessionDAO.new {
         sessionUuid = uuid
@@ -177,6 +185,8 @@ class EventRepositoryImpl(
         finishedAt = null
         userCanJoin = true
       }
+
+      eventDao.status = EventStatus.IN_PROGRESS.value
 
       uuid
     }.getRight()

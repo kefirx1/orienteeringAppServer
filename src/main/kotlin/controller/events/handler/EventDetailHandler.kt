@@ -58,6 +58,8 @@ class EventDetailHandler(
       return
     }
 
+    println(1)
+
     getEventByIdUC(params = GetEventByIdUC.Params(eventId = eventId)).fold(
       onRight = { event ->
         val isAdmin = user.role == AdminPanelUser.Role.ADMIN
@@ -73,6 +75,8 @@ class EventDetailHandler(
           )
           return@fold
         }
+
+        println(event.session)
 
         call.respond(
           status = HttpStatusCode.OK,

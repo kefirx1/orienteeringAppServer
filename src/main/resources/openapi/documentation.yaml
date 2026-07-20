@@ -1168,6 +1168,8 @@ components:
           type: string
           enum: [ ONLINE, OFFLINE ]
           description: "Event type - ONLINE (normal) or OFFLINE (continuous)"
+        session:
+          $ref: "#/components/schemas/EventSessionDto"
     MapDto:
       type: object
       required:
