@@ -9,7 +9,6 @@ import java.time.LocalDateTime
 @Serializable
 data class MobileEventDetailResponseDto(
   val id: Int,
-  val map: MobileMapDto,
   val name: String,
   val description: String,
   @Contextual
@@ -21,6 +20,8 @@ data class MobileEventDetailResponseDto(
   val status: EventStatus,
   @Contextual
   val finishedAt: LocalDateTime? = null,
-  val allowOfflineTracking: Boolean = false,
+  val allowOfflineTracking: Boolean,
   val eventType: EventType,
+  val session: EventSessionResponseDto? = null,
+  val map: MobileMapDto,
 )

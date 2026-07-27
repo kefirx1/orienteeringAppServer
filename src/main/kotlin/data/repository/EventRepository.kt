@@ -30,6 +30,7 @@ interface EventRepository {
   suspend fun completeEvent(id: Int): Either<DomainError, Unit>
   suspend fun createSessionForEvent(eventId: Int): Either<DomainError, String>
   suspend fun getSessionByEventId(eventId: Int): Either<DomainError, EventSession?>
+  suspend fun getSessionByUuid(sessionUuid: String): Either<DomainError, EventSession?>
   suspend fun setSessionUserCanJoin(eventId: Int, userCanJoin: Boolean): Either<DomainError, Unit>
   suspend fun closeSessionForEvent(eventId: Int, finishedAt: java.time.LocalDateTime): Either<DomainError, Unit>
 }
@@ -83,19 +84,19 @@ class EventRepositoryImpl(
         .map { it.toDomain() }
       val event = eventDao.toDomain(mapWaypoints = waypoints)
 
-      val sessionDao = EventSessionDAO.find { EventSessionTable.eventId eq eventDao.id.value }.firstOrNull()
-      if (sessionDao != null) {
-        val session = EventSession(
-          id = sessionDao.sessionUuid,
-          eventId = sessionDao.eventId,
-          startedAt = sessionDao.startedAt,
-          finishedAt = sessionDao.finishedAt,
-          userCanJoin = sessionDao.userCanJoin,
-        )
-        event.copy(session = session)
-      } else {
-        event
-      }
+       val sessionDao = EventSessionDAO.find { EventSessionTable.eventId eq eventDao.id.value }.firstOrNull()
+       if (sessionDao != null) {
+         val session = EventSession(
+           id = sessionDao.sessionUuid,
+           eventId = sessionDao.eventId,
+           startedAt = sessionDao.startedAt,
+           finishedAt = sessionDao.finishedAt,
+           userCanJoin = sessionDao.userCanJoin,
+         )
+         event.copy(session = session)
+       } else {
+         event
+       }
     }.getRight()
   }
 
@@ -192,18 +193,33 @@ class EventRepositoryImpl(
     }.getRight()
   }
 
-  override suspend fun getSessionByEventId(eventId: Int): Either<DomainError, EventSession?> = either {
-    database.getRight().dbQuery {
-      val sessionDao = EventSessionDAO.find { EventSessionTable.eventId eq eventId }.firstOrNull()
-      sessionDao?.let {
-        EventSession(
-          id = it.sessionUuid,
-          eventId = it.eventId,
-          startedAt = it.startedAt,
-          finishedAt = it.finishedAt,
-          userCanJoin = it.userCanJoin,
-        )
-      }
-    }.getRight()
-  }
+    override suspend fun getSessionByEventId(eventId: Int): Either<DomainError, EventSession?> = either {
+      database.getRight().dbQuery {
+        val sessionDao = EventSessionDAO.find { EventSessionTable.eventId eq eventId }.firstOrNull()
+        sessionDao?.let {
+          EventSession(
+            id = it.sessionUuid,
+            eventId = it.eventId,
+            startedAt = it.startedAt,
+            finishedAt = it.finishedAt,
+            userCanJoin = it.userCanJoin,
+          )
+        }
+      }.getRight()
+    }
+
+    override suspend fun getSessionByUuid(sessionUuid: String): Either<DomainError, EventSession?> = either {
+      database.getRight().dbQuery {
+        val sessionDao = EventSessionDAO.find { EventSessionTable.sessionUuid eq sessionUuid }.firstOrNull()
+        sessionDao?.let {
+          EventSession(
+            id = it.sessionUuid,
+            eventId = it.eventId,
+            startedAt = it.startedAt,
+            finishedAt = it.finishedAt,
+            userCanJoin = it.userCanJoin,
+          )
+        }
+      }.getRight()
+    }
 }

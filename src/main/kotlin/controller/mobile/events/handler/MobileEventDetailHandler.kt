@@ -7,6 +7,7 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.MobileEventDetailResponseDto
 import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.MobileMapDto
+import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.EventSessionResponseDto
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
 import pl.dev.bkwiatkowski.domain.usecase.GetEventByIdUC
@@ -46,24 +47,32 @@ class MobileEventDetailHandler(
         call.respond(
           status = HttpStatusCode.OK,
            message = MobileEventDetailResponseDto(
-             id = event.id,
-             map = MobileMapDto(
-               id = event.map.id,
-               name = event.map.name,
-               description = event.map.description,
-               imageData = event.map.imageData,
-             ),
-             name = event.name,
-             description = event.description,
-             createdAt = event.createdAt,
-             startDate = event.startDate,
-             startLocationX = event.startLocationX,
-             startLocationY = event.startLocationY,
-             status = event.status,
-             finishedAt = event.finishedAt,
-             allowOfflineTracking = event.allowOfflineTracking,
-             eventType = event.eventType,
-           ),
+              id = event.id,
+              map = MobileMapDto(
+                id = event.map.id,
+                name = event.map.name,
+                description = event.map.description,
+                imageData = event.map.imageData,
+              ),
+              name = event.name,
+              description = event.description,
+              createdAt = event.createdAt,
+              startDate = event.startDate,
+              startLocationX = event.startLocationX,
+              startLocationY = event.startLocationY,
+              status = event.status,
+              finishedAt = event.finishedAt,
+              allowOfflineTracking = event.allowOfflineTracking,
+              eventType = event.eventType,
+              session = event.session?.let { session ->
+                EventSessionResponseDto(
+                  id = session.id,
+                  startedAt = session.startedAt,
+                  finishedAt = session.finishedAt,
+                  userCanJoin = session.userCanJoin,
+                )
+              },
+            ),
         )
       },
       onLeft = {

@@ -23,6 +23,8 @@ import pl.dev.bkwiatkowski.controller.mobile.auth.handler.MobileSignUpHandler
 import pl.dev.bkwiatkowski.controller.mobile.events.MobileEventController
 import pl.dev.bkwiatkowski.controller.mobile.events.handler.MobileEventDetailHandler
 import pl.dev.bkwiatkowski.controller.mobile.events.handler.MobileEventListHandler
+import pl.dev.bkwiatkowski.controller.mobile.events.handler.MobileJoinSessionHandler
+import pl.dev.bkwiatkowski.controller.mobile.events.handler.MobileCheckSessionJoinHandler
 import pl.dev.bkwiatkowski.controller.mobile.settings.MobileSettingsController
 import pl.dev.bkwiatkowski.controller.mobile.settings.handler.MobileSettingsHandler
 import pl.dev.bkwiatkowski.controller.settings.SettingsController
@@ -76,9 +78,11 @@ fun appModule(config: ApplicationConfig) = module {
 
   single<EventRepository> { EventRepositoryImpl(databaseProvider = get()) }
 
-  single<MobileUserEventProgressionRepository> { MobileUserEventProgressionRepositoryImpl(databaseProvider = get()) }
+   single<MobileUserEventProgressionRepository> { MobileUserEventProgressionRepositoryImpl(databaseProvider = get()) }
 
-  factory<TextValidator> { DefaultTextValidator() }
+   single<SessionParticipantsRepository> { SessionParticipantsRepositoryImpl(databaseProvider = get()) }
+
+   factory<TextValidator> { DefaultTextValidator() }
 
   factory<ValidateAdminPanelUserRequestUC> {
     ValidateAdminPanelUserRequestUCImpl(
@@ -368,18 +372,37 @@ fun appModule(config: ApplicationConfig) = module {
     )
   } bind Controller::class
 
-  single { MobileEventListHandler(getAllEventsUC = get(), getAdminPanelUserByIdUC = get()) }
+   single { MobileEventListHandler(getAllEventsUC = get(), getAdminPanelUserByIdUC = get()) }
 
-  single { MobileEventDetailHandler(getEventByIdUC = get()) }
+   single { MobileEventDetailHandler(getEventByIdUC = get()) }
 
-  single {
-    MobileEventController(
-      eventListHandler = get(),
-      eventDetailHandler = get(),
-    )
-  } bind Controller::class
+   factory<JoinSessionUC> {
+     JoinSessionUCImpl(
+       eventRepository = get(),
+       sessionParticipantsRepository = get(),
+     )
+   }
 
-  factory<AddNewMobileUserUC> {
+   factory<IsUserInSessionUC> {
+     IsUserInSessionUCImpl(
+       sessionParticipantsRepository = get(),
+     )
+   }
+
+   single { MobileJoinSessionHandler(joinSessionUC = get()) }
+
+   single { MobileCheckSessionJoinHandler(isUserInSessionUC = get()) }
+
+   single {
+     MobileEventController(
+       eventListHandler = get(),
+       eventDetailHandler = get(),
+       joinSessionHandler = get(),
+       checkSessionJoinHandler = get(),
+     )
+   } bind Controller::class
+
+   factory<AddNewMobileUserUC> {
     AddNewMobileUserUCImpl(
       mobileUserRepository = get(),
       generateAdminPanelUserPasswordHashUC = get(),

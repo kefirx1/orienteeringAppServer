@@ -228,6 +228,89 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /api/mobile/events/sessions/join:
+    post:
+      operationId: "joinEventSession"
+      summary: "Join Event Session (Mobile)"
+      description: "Allows a mobile user to join an event session. **Requires authentication.**"
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - "Mobile Events"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JoinSessionRequestDto"
+      responses:
+        "200":
+          description: "Successfully joined the session"
+        "400":
+          description: "Bad Request - Invalid request or session state (e.g., user already in session, session finished)"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Not Found - Session does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/mobile/events/sessions/{sessionUuid}/joined:
+    get:
+      operationId: "checkUserInEventSession"
+      summary: "Check If Mobile User Joined Session"
+      description: "Checks whether the authenticated mobile user (userId taken from JWT token) has already joined the specified event session. Requires authentication."
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - "Mobile Events"
+      parameters:
+        - name: sessionUuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "UUID of the event session to check"
+      responses:
+        "200":
+          description: "Membership status returned"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IsUserInSessionResponseDto"
+        "401":
+          description: "Unauthorized - missing or invalid token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Not Found - Session does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     ErrorResponse:
@@ -362,6 +445,58 @@ components:
         imageData:
           type: string
           description: "Base64 encoded image data"
+    EventSessionResponseDto:
+      type: object
+      required:
+        - id
+        - startedAt
+        - userCanJoin
+      properties:
+        id:
+          type: string
+          description: "Unique identifier of the event session (UUID)"
+        startedAt:
+          type: string
+          format: date-time
+          description: "ISO 8601 format date-time when session started"
+        finishedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "ISO 8601 format date-time when session finished (can be null if ongoing)"
+        userCanJoin:
+          type: boolean
+          description: "Whether users can join this session"
+    JoinSessionRequestDto:
+      type: object
+      description: "Request to join an event session"
+      required:
+        - sessionUuid
+      properties:
+        sessionUuid:
+          type: string
+          description: "UUID of the event session to join"
+          example: "550e8400-e29b-41d4-a716-446655440000"
+    CheckSessionRequestDto:
+      type: object
+      description: "Request to check if the authenticated mobile user has joined a session"
+      required:
+        - sessionUuid
+      properties:
+        sessionUuid:
+          type: string
+          description: "UUID of the event session to check"
+          example: "550e8400-e29b-41d4-a716-446655440000"
+    IsUserInSessionResponseDto:
+      type: object
+      description: "Response indicating whether the authenticated user is already joined in the session"
+      required:
+        - joined
+      properties:
+        joined:
+          type: boolean
+          description: "True if the user has already joined the session, false otherwise"
+          example: true
     MobileEventListResponseDto:
       type: object
       required:
@@ -456,6 +591,10 @@ components:
           type: string
           enum: [ ONLINE, OFFLINE ]
           description: "Event type - ONLINE (normal) or OFFLINE (continuous)"
+        session:
+          nullable: true
+          $ref: "#/components/schemas/EventSessionResponseDto"
+          description: "Event session data if available (null if no session)"
   securitySchemes:
     bearerAuth:
       type: http

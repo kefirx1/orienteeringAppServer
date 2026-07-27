@@ -6,6 +6,8 @@ import pl.dev.bkwiatkowski.data.dao.MapDAO
 import pl.dev.bkwiatkowski.data.dao.MapWaypointDAO
 import pl.dev.bkwiatkowski.data.dao.MobileUserDAO
 import pl.dev.bkwiatkowski.data.dao.MobileUserEventProgressionDAO
+import pl.dev.bkwiatkowski.data.dao.SessionParticipantDAO
+import pl.dev.bkwiatkowski.data.dao.SessionWaypointDetailDAO
 import pl.dev.bkwiatkowski.domain.model.AdminPanelUser
 import pl.dev.bkwiatkowski.domain.model.Event
 import pl.dev.bkwiatkowski.domain.model.EventStatus
@@ -14,6 +16,8 @@ import pl.dev.bkwiatkowski.domain.model.MapData
 import pl.dev.bkwiatkowski.domain.model.MapWaypoint
 import pl.dev.bkwiatkowski.domain.model.MobileUser
 import pl.dev.bkwiatkowski.domain.model.MobileUserEventProgression
+import pl.dev.bkwiatkowski.domain.model.SessionParticipant
+import pl.dev.bkwiatkowski.domain.model.SessionWaypointDetail
 
 fun MobileUserDAO.toDomain() = MobileUser(
   id = id.value,
@@ -81,4 +85,20 @@ fun EventDAO.toDomain(mapWaypoints: List<MapWaypoint>) = Event(
     "OFFLINE" -> EventType.OFFLINE
     else -> EventType.ONLINE
   },
+)
+
+fun SessionParticipantDAO.toDomain() = SessionParticipant(
+  id = id.value,
+  sessionUuid = sessionUuid,
+  userId = userId,
+  joinedAt = joinedAt,
+  finishedAt = finishedAt,
+)
+
+fun SessionWaypointDetailDAO.toDomain() = SessionWaypointDetail(
+  id = id.value,
+  sessionUuid = sessionUuid,
+  userId = userId,
+  waypointId = waypointId,
+  visitedAt = visitedAt,
 )
