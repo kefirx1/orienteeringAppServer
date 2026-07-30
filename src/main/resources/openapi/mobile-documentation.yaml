@@ -311,6 +311,38 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /api/mobile/events/sessions/{sessionUuid}/ws:
+    get:
+      operationId: "openSessionWebSocket"
+      summary: "Open WebSocket for Session (Mobile)"
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - "Mobile Events"
+      parameters:
+        - name: sessionUuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "UUID of the event session to bind the WebSocket to"
+      responses:
+        "101":
+          description: "Switching Protocols - WebSocket upgrade"
+        "401":
+          description: "Unauthorized - missing or invalid token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "400":
+          description: "Bad Request - invalid handshake or parameters"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
 components:
   schemas:
     ErrorResponse:
@@ -487,6 +519,22 @@ components:
           type: string
           description: "UUID of the event session to check"
           example: "550e8400-e29b-41d4-a716-446655440000"
+    WebsocketWaypointVisitDto:
+      type: object
+      description: "Message sent from mobile client over WebSocket to report a waypoint visit"
+      required:
+        - waypointId
+      properties:
+        waypointId:
+          type: integer
+          description: "Identifier of the waypoint visited"
+          example: 5
+        visitedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Optional timestamp when the waypoint was visited (LocalDateTime). If omitted server will use current time"
+          example: "2026-06-25T12:34:56"
     IsUserInSessionResponseDto:
       type: object
       description: "Response indicating whether the authenticated user is already joined in the session"

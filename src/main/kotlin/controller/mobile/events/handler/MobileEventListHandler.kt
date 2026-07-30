@@ -61,7 +61,6 @@ class MobileEventListHandler(
             eventType = event.eventType,
           )
         }
-        println(response)
         call.respond(
           status = HttpStatusCode.OK,
           message = response,

@@ -21,10 +21,7 @@ import pl.dev.bkwiatkowski.controller.mobile.auth.handler.MobileRefreshTokenHand
 import pl.dev.bkwiatkowski.controller.mobile.auth.handler.MobileSignInHandler
 import pl.dev.bkwiatkowski.controller.mobile.auth.handler.MobileSignUpHandler
 import pl.dev.bkwiatkowski.controller.mobile.events.MobileEventController
-import pl.dev.bkwiatkowski.controller.mobile.events.handler.MobileEventDetailHandler
-import pl.dev.bkwiatkowski.controller.mobile.events.handler.MobileEventListHandler
-import pl.dev.bkwiatkowski.controller.mobile.events.handler.MobileJoinSessionHandler
-import pl.dev.bkwiatkowski.controller.mobile.events.handler.MobileCheckSessionJoinHandler
+import pl.dev.bkwiatkowski.controller.mobile.events.handler.*
 import pl.dev.bkwiatkowski.controller.mobile.settings.MobileSettingsController
 import pl.dev.bkwiatkowski.controller.mobile.settings.handler.MobileSettingsHandler
 import pl.dev.bkwiatkowski.controller.settings.SettingsController
@@ -42,6 +39,8 @@ import pl.dev.bkwiatkowski.core.security.hashing.SaltGenerator
 import pl.dev.bkwiatkowski.core.security.hashing.SaltGeneratorImpl
 import pl.dev.bkwiatkowski.core.security.token.JwtTokenProvider
 import pl.dev.bkwiatkowski.core.security.token.TokenProvider
+import pl.dev.bkwiatkowski.core.serialization.JsonSerializer
+import pl.dev.bkwiatkowski.core.serialization.KotlinxJsonSerializer
 import pl.dev.bkwiatkowski.core.validation.DefaultTextValidator
 import pl.dev.bkwiatkowski.core.validation.TextValidator
 import pl.dev.bkwiatkowski.data.repository.*
@@ -65,6 +64,8 @@ fun appModule(config: ApplicationConfig) = module {
   single<DatabaseProvider> { PostgresProvider(config = get()) }
 
   single<TokenProvider> { JwtTokenProvider(config = get()) }
+
+  single<JsonSerializer> { KotlinxJsonSerializer() }
 
   single<AdminPanelUserRepository> { AdminPanelUserRepositoryImpl(databaseProvider = get()) }
 
@@ -389,9 +390,22 @@ fun appModule(config: ApplicationConfig) = module {
      )
    }
 
+    factory<RecordWaypointVisitUC> {
+      RecordWaypointVisitUCImpl(
+        sessionParticipantsRepository = get(),
+      )
+    }
+
    single { MobileJoinSessionHandler(joinSessionUC = get()) }
 
    single { MobileCheckSessionJoinHandler(isUserInSessionUC = get()) }
+
+  single<MobileSessionWebSocketHandler> {
+    MobileSessionWebSocketHandler(
+      recordWaypointVisitUC = get(),
+      jsonSerializer = get(),
+    )
+  }
 
    single {
      MobileEventController(
@@ -399,6 +413,7 @@ fun appModule(config: ApplicationConfig) = module {
        eventDetailHandler = get(),
        joinSessionHandler = get(),
        checkSessionJoinHandler = get(),
+       sessionWebSocketHandler = get(),
      )
    } bind Controller::class
 
