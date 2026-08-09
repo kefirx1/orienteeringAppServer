@@ -5,6 +5,7 @@ import kotlinx.serialization.Contextual
 import pl.dev.bkwiatkowski.domain.model.EventStatus
 import pl.dev.bkwiatkowski.domain.model.EventType
 import java.time.LocalDateTime
+import pl.dev.bkwiatkowski.controller.maps.dto.response.WaypointResponseDto
 
 @Serializable
 data class EventDetailResponseDto(
@@ -23,5 +24,6 @@ data class EventDetailResponseDto(
   val finishedAt: LocalDateTime? = null,
   val allowOfflineTracking: Boolean = false,
   val eventType: EventType,
+  val eventWaypoints: List<WaypointResponseDto>,
   val session: EventSessionDto? = null,
 )

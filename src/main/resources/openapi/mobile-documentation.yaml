@@ -477,6 +477,11 @@ components:
         imageData:
           type: string
           description: "Base64 encoded image data"
+        mapWaypoints:
+          type: array
+          description: "List of waypoints that belong to this map"
+          items:
+            $ref: "#/components/schemas/MapWaypointDto"
     EventSessionResponseDto:
       type: object
       required:
@@ -588,6 +593,11 @@ components:
           type: string
           enum: [ ONLINE, OFFLINE ]
           description: "Event type - ONLINE (normal) or OFFLINE (continuous)"
+        eventWaypoints:
+          type: array
+          description: "Waypoints that are part of this event (subset of map.mapWaypoints)"
+          items:
+            $ref: "#/components/schemas/MapWaypointDto"
     MobileEventDetailResponseDto:
       type: object
       required:
@@ -639,10 +649,33 @@ components:
           type: string
           enum: [ ONLINE, OFFLINE ]
           description: "Event type - ONLINE (normal) or OFFLINE (continuous)"
+        eventWaypoints:
+          type: array
+          description: "Waypoints that are part of this event (subset of map.mapWaypoints)"
+          items:
+            $ref: "#/components/schemas/MapWaypointDto"
         session:
           nullable: true
           $ref: "#/components/schemas/EventSessionResponseDto"
           description: "Event session data if available (null if no session)"
+    MapWaypointDto:
+      type: object
+      required:
+        - id
+        - label
+        - coordinateX
+        - coordinateY
+      properties:
+        id:
+          type: integer
+        label:
+          type: string
+        coordinateX:
+          type: number
+          format: float
+        coordinateY:
+          type: number
+          format: float
   securitySchemes:
     bearerAuth:
       type: http

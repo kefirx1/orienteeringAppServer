@@ -63,7 +63,7 @@ fun MapDAO.toDomain(mapWaypoints: List<MapWaypoint>) = MapData(
   mapWaypoints = mapWaypoints,
 )
 
-fun EventDAO.toDomain(mapWaypoints: List<MapWaypoint>) = Event(
+fun EventDAO.toDomain(mapWaypoints: List<MapWaypoint>, eventWaypoints: List<MapWaypoint>) = Event(
   id = id.value,
   map = map.toDomain(mapWaypoints = mapWaypoints),
   userId = userId,
@@ -80,6 +80,7 @@ fun EventDAO.toDomain(mapWaypoints: List<MapWaypoint>) = Event(
     else -> EventStatus.PLANNED
   },
   finishedAt = finishedAt,
+  eventWaypoints = eventWaypoints,
   allowOfflineTracking = allowOfflineTracking,
   eventType = when (eventType) {
     "OFFLINE" -> EventType.OFFLINE

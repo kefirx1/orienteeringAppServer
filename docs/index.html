@@ -914,6 +914,13 @@
       "description" : "Event type - ONLINE (normal) or OFFLINE (continuous)",
       "enum" : [ "ONLINE", "OFFLINE" ]
     },
+    "eventWaypoints" : {
+      "type" : "array",
+      "description" : "Waypoints that are part of this event (subset of map.waypoints)",
+      "items" : {
+        "$ref" : "#/components/schemas/WaypointResponseDto"
+      }
+    },
     "session" : {
       "$ref" : "#/components/schemas/EventSessionDto"
     }
@@ -961,6 +968,13 @@
       "type" : "string",
       "description" : "Event type - ONLINE (normal) or OFFLINE (continuous)",
       "enum" : [ "ONLINE", "OFFLINE" ]
+    },
+    "eventWaypoints" : {
+      "type" : "array",
+      "description" : "Waypoints that are part of this event (subset of map.waypoints)",
+      "items" : {
+        "$ref" : "#/components/schemas/WaypointResponseDto"
+      }
     }
   }
 };
@@ -1078,6 +1092,13 @@
     "imageData" : {
       "type" : "string",
       "description" : "Base64 encoded image data"
+    },
+    "mapWaypoints" : {
+      "type" : "array",
+      "description" : "List of waypoints that belong to this map",
+      "items" : {
+        "$ref" : "#/components/schemas/WaypointResponseDto"
+      }
     }
   }
 };

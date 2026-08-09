@@ -14,6 +14,7 @@ data class Event(
   val startLocationY: Float,
   val status: EventStatus,
   val finishedAt: LocalDateTime? = null,
+  val eventWaypoints: List<MapWaypoint> = emptyList(),
   val allowOfflineTracking: Boolean,
   val eventType: EventType,
   val session: EventSession? = null,

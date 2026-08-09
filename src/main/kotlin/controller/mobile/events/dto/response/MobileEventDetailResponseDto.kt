@@ -5,6 +5,7 @@ import kotlinx.serialization.Contextual
 import pl.dev.bkwiatkowski.domain.model.EventStatus
 import pl.dev.bkwiatkowski.domain.model.EventType
 import java.time.LocalDateTime
+import pl.dev.bkwiatkowski.controller.maps.dto.response.WaypointResponseDto
 
 @Serializable
 data class MobileEventDetailResponseDto(
@@ -24,4 +25,5 @@ data class MobileEventDetailResponseDto(
   val eventType: EventType,
   val session: EventSessionResponseDto? = null,
   val map: MobileMapDto,
+  val eventWaypoints: List<WaypointResponseDto> = emptyList(),
 )

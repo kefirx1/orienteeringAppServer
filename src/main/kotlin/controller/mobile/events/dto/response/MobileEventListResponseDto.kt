@@ -1,7 +1,8 @@
 package pl.dev.bkwiatkowski.controller.mobile.events.dto.response
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
+import pl.dev.bkwiatkowski.controller.maps.dto.response.WaypointResponseDto
 import pl.dev.bkwiatkowski.domain.model.EventType
 import java.time.LocalDateTime
 
@@ -19,6 +20,7 @@ data class MobileEventListResponseDto(
   val startLocationY: Float,
   val createdByUsername: String,
   val eventType: EventType,
+  val eventWaypoints: List<WaypointResponseDto>,
 )
 
 @Serializable
@@ -27,4 +29,5 @@ data class MobileMapDto(
   val name: String,
   val description: String,
   val imageData: String,
+  val mapWaypoints: List<WaypointResponseDto>,
 )

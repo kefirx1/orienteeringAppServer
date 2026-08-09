@@ -5,6 +5,7 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
+import pl.dev.bkwiatkowski.controller.maps.dto.response.WaypointResponseDto
 import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.MobileEventListResponseDto
 import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.MobileMapDto
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
@@ -50,6 +51,14 @@ class MobileEventListHandler(
               name = event.map.name,
               description = event.map.description,
               imageData = event.map.imageData,
+              mapWaypoints = event.map.mapWaypoints.map { waypoint ->
+                WaypointResponseDto(
+                  id = waypoint.id,
+                  label = waypoint.label,
+                  coordinateX = waypoint.coordinateX,
+                  coordinateY = waypoint.coordinateY,
+                )
+              },
             ),
             name = event.name,
             description = event.description,
@@ -59,6 +68,14 @@ class MobileEventListHandler(
             startLocationY = event.startLocationY,
             createdByUsername = creatorUsername,
             eventType = event.eventType,
+            eventWaypoints = event.eventWaypoints.map { waypoint ->
+              WaypointResponseDto(
+                id = waypoint.id,
+                label = waypoint.label,
+                coordinateX = waypoint.coordinateX,
+                coordinateY = waypoint.coordinateY,
+              )
+            },
           )
         }
         call.respond(

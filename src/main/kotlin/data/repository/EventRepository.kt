@@ -45,18 +45,17 @@ class EventRepositoryImpl(
     either {
       database.getRight().initTable(table = EventTable)
       database.getRight().initTable(table = EventWaypointTable)
-      database.getRight().initTable(table = pl.dev.bkwiatkowski.data.entity.EventSessionTable)
+      database.getRight().initTable(table = EventSessionTable)
     }
   }
 
   override suspend fun getAllEventsByUserId(userId: Int): Either<DomainError, List<Event>> = either {
     database.getRight().dbQuery {
       EventDAO.find { EventTable.userId eq userId }.map { event ->
+        val allMapWaypoints = MapWaypointDAO.find { MapWaypointTable.mapId eq event.mapId }.map { it.toDomain() }
         val waypointIds = EventWaypointDAO.find { EventWaypointTable.eventId eq event.id.value }.map { it.waypointId }.toList()
-        val waypoints = MapWaypointDAO.find { MapWaypointTable.mapId eq event.mapId }
-          .filter { it.id.value in waypointIds }
-          .map { it.toDomain() }
-        event.toDomain(mapWaypoints = waypoints)
+        val eventWaypoints = allMapWaypoints.filter { it.id in waypointIds }
+        event.toDomain(mapWaypoints = allMapWaypoints, eventWaypoints = eventWaypoints)
       }
     }.getRight()
   }
@@ -64,11 +63,10 @@ class EventRepositoryImpl(
   override suspend fun getAllEvents(): Either<DomainError, List<Event>> = either {
     database.getRight().dbQuery {
       EventDAO.all().map { event ->
+        val allMapWaypoints = MapWaypointDAO.find { MapWaypointTable.mapId eq event.mapId }.map { it.toDomain() }
         val waypointIds = EventWaypointDAO.find { EventWaypointTable.eventId eq event.id.value }.map { it.waypointId }.toList()
-        val waypoints = MapWaypointDAO.find { MapWaypointTable.mapId eq event.mapId }
-          .filter { it.id.value in waypointIds }
-          .map { it.toDomain() }
-        event.toDomain(mapWaypoints = waypoints)
+        val eventWaypoints = allMapWaypoints.filter { it.id in waypointIds }
+        event.toDomain(mapWaypoints = allMapWaypoints, eventWaypoints = eventWaypoints)
       }
     }.getRight()
   }
@@ -78,11 +76,10 @@ class EventRepositoryImpl(
       val eventDao = EventDAO.findById(id)
         ?: raise(error = DomainError.Custom(e = NullPointerException("Event not found")))
 
+      val allMapWaypoints = MapWaypointDAO.find { MapWaypointTable.mapId eq eventDao.mapId }.map { it.toDomain() }
       val waypointIds = EventWaypointDAO.find { EventWaypointTable.eventId eq eventDao.id.value }.map { it.waypointId }.toList()
-      val waypoints = MapWaypointDAO.find { MapWaypointTable.mapId eq eventDao.mapId }
-        .filter { it.id.value in waypointIds }
-        .map { it.toDomain() }
-      val event = eventDao.toDomain(mapWaypoints = waypoints)
+      val eventWaypoints = allMapWaypoints.filter { it.id in waypointIds }
+      val event = eventDao.toDomain(mapWaypoints = allMapWaypoints, eventWaypoints = eventWaypoints)
 
        val sessionDao = EventSessionDAO.find { EventSessionTable.eventId eq eventDao.id.value }.firstOrNull()
        if (sessionDao != null) {

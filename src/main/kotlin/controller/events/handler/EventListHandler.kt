@@ -7,6 +7,7 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import pl.dev.bkwiatkowski.controller.events.dto.response.EventListResponseDto
 import pl.dev.bkwiatkowski.controller.events.dto.response.MapDto
+import pl.dev.bkwiatkowski.controller.maps.dto.response.WaypointResponseDto
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
 import pl.dev.bkwiatkowski.domain.model.AdminPanelUser
@@ -46,28 +47,44 @@ class EventListHandler(
       )
     ).fold(
       onRight = { events ->
-        val response = events.map { event ->
+         val response = events.map { event ->
           val creatorUsername = getAdminPanelUserByIdUC(
             params = GetAdminPanelUserByIdUC.Params(id = event.userId)
           ).getRightOrNull()?.username ?: "unknown"
 
-           EventListResponseDto(
-             id = event.id,
-             map = MapDto(
-               id = event.map.id,
-               name = event.map.name,
-               description = event.map.description,
-               imageData = event.map.imageData,
-             ),
-             name = event.name,
-             description = event.description,
-             createdAt = event.createdAt,
-             startDate = event.startDate,
-             startLocationX = event.startLocationX,
-             startLocationY = event.startLocationY,
-             createdByUsername = creatorUsername,
-             eventType = event.eventType,
-           )
+            EventListResponseDto(
+              id = event.id,
+              map = MapDto(
+                id = event.map.id,
+                name = event.map.name,
+                description = event.map.description,
+                imageData = event.map.imageData,
+                mapWaypoints = event.map.mapWaypoints.map { waypoint ->
+                  WaypointResponseDto(
+                    id = waypoint.id,
+                    label = waypoint.label,
+                    coordinateX = waypoint.coordinateX,
+                    coordinateY = waypoint.coordinateY,
+                  )
+                }
+              ),
+              name = event.name,
+              description = event.description,
+              createdAt = event.createdAt,
+              startDate = event.startDate,
+              startLocationX = event.startLocationX,
+              startLocationY = event.startLocationY,
+              createdByUsername = creatorUsername,
+              eventType = event.eventType,
+              eventWaypoints = event.eventWaypoints.map { waypoint ->
+                WaypointResponseDto(
+                  id = waypoint.id,
+                  label = waypoint.label,
+                  coordinateX = waypoint.coordinateX,
+                  coordinateY = waypoint.coordinateY,
+                )
+              }
+            )
         }
         call.respond(
           status = HttpStatusCode.OK,

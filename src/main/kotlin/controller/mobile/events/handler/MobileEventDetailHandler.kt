@@ -5,6 +5,7 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
+import pl.dev.bkwiatkowski.controller.maps.dto.response.WaypointResponseDto
 import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.MobileEventDetailResponseDto
 import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.MobileMapDto
 import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.EventSessionResponseDto
@@ -53,6 +54,14 @@ class MobileEventDetailHandler(
                 name = event.map.name,
                 description = event.map.description,
                 imageData = event.map.imageData,
+                mapWaypoints = event.map.mapWaypoints.map { waypoint ->
+                  WaypointResponseDto(
+                    id = waypoint.id,
+                    label = waypoint.label,
+                    coordinateX = waypoint.coordinateX,
+                    coordinateY = waypoint.coordinateY,
+                  )
+                },
               ),
               name = event.name,
               description = event.description,
@@ -64,14 +73,22 @@ class MobileEventDetailHandler(
               finishedAt = event.finishedAt,
               allowOfflineTracking = event.allowOfflineTracking,
               eventType = event.eventType,
-              session = event.session?.let { session ->
-                EventSessionResponseDto(
-                  id = session.id,
-                  startedAt = session.startedAt,
-                  finishedAt = session.finishedAt,
-                  userCanJoin = session.userCanJoin,
-                )
-              },
+               session = event.session?.let { session ->
+                 EventSessionResponseDto(
+                   id = session.id,
+                   startedAt = session.startedAt,
+                   finishedAt = session.finishedAt,
+                   userCanJoin = session.userCanJoin,
+                 )
+               },
+               eventWaypoints = event.eventWaypoints.map { waypoint ->
+                 WaypointResponseDto(
+                   id = waypoint.id,
+                   label = waypoint.label,
+                   coordinateX = waypoint.coordinateX,
+                   coordinateY = waypoint.coordinateY,
+                 )
+               },
             ),
         )
       },

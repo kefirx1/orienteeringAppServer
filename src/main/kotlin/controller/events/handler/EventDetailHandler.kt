@@ -8,6 +8,7 @@ import io.ktor.server.response.*
 import pl.dev.bkwiatkowski.controller.events.dto.response.EventDetailResponseDto
 import pl.dev.bkwiatkowski.controller.events.dto.response.EventSessionDto
 import pl.dev.bkwiatkowski.controller.events.dto.response.MapDto
+import pl.dev.bkwiatkowski.controller.maps.dto.response.WaypointResponseDto
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
 import pl.dev.bkwiatkowski.domain.model.AdminPanelUser
@@ -78,12 +79,20 @@ class EventDetailHandler(
           status = HttpStatusCode.OK,
            message = EventDetailResponseDto(
              id = event.id,
-             map = MapDto(
-               id = event.map.id,
-               name = event.map.name,
-               description = event.map.description,
-               imageData = event.map.imageData,
-             ),
+              map = MapDto(
+                id = event.map.id,
+                name = event.map.name,
+                description = event.map.description,
+                imageData = event.map.imageData,
+                mapWaypoints = event.map.mapWaypoints.map { waypoint ->
+                  WaypointResponseDto(
+                    id = waypoint.id,
+                    label = waypoint.label,
+                    coordinateX = waypoint.coordinateX,
+                    coordinateY = waypoint.coordinateY,
+                  )
+                }
+              ),
              name = event.name,
              description = event.description,
              createdAt = event.createdAt,
@@ -94,9 +103,17 @@ class EventDetailHandler(
              finishedAt = event.finishedAt,
              allowOfflineTracking = event.allowOfflineTracking,
              eventType = event.eventType,
-             session = event.session?.let { s ->
-               EventSessionDto(id = s.id, startedAt = s.startedAt, finishedAt = s.finishedAt, userCanJoin = s.userCanJoin)
-             }
+              eventWaypoints = event.eventWaypoints.map { waypoint ->
+                WaypointResponseDto(
+                  id = waypoint.id,
+                  label = waypoint.label,
+                  coordinateX = waypoint.coordinateX,
+                  coordinateY = waypoint.coordinateY,
+                )
+              },
+              session = event.session?.let { s ->
+                EventSessionDto(id = s.id, startedAt = s.startedAt, finishedAt = s.finishedAt, userCanJoin = s.userCanJoin)
+              }
            ),
         )
       },

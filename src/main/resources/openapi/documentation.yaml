@@ -943,6 +943,11 @@ components:
         imageData:
           type: string
           description: "Base64 encoded image data"
+        mapWaypoints:
+          type: array
+          description: "List of waypoints that belong to this map"
+          items:
+            $ref: "#/components/schemas/WaypointResponseDto"
     MapDetailResponseDto:
       type: object
       required:
@@ -1075,48 +1080,53 @@ components:
            description: "Event type - ONLINE (normal) or OFFLINE (continuous, auto-completed)"
            default: ONLINE
     EventListResponseDto:
-       type: object
-       required:
-         - id
-         - map
-         - name
-         - description
-         - createdAt
-         - startDate
-         - startLocationX
-         - startLocationY
-         - createdByUsername
-         - eventType
-       properties:
-         id:
-           type: integer
-         map:
-           $ref: "#/components/schemas/MapDto"
-         name:
-           type: string
-         description:
-           type: string
-         createdAt:
-           type: string
-           format: date-time
-           description: "ISO 8601 format date-time"
-         startDate:
-           type: string
-           format: date-time
-           description: "ISO 8601 format date-time"
-         startLocationX:
-           type: number
-           format: float
-         startLocationY:
-           type: number
-           format: float
-         createdByUsername:
-           type: string
-           description: "Username of the user who created the event"
-         eventType:
-           type: string
-           enum: [ ONLINE, OFFLINE ]
-           description: "Event type - ONLINE (normal) or OFFLINE (continuous)"
+      type: object
+      required:
+        - id
+        - map
+        - name
+        - description
+        - createdAt
+        - startDate
+        - startLocationX
+        - startLocationY
+        - createdByUsername
+        - eventType
+      properties:
+        id:
+          type: integer
+        map:
+          $ref: "#/components/schemas/MapDto"
+        name:
+          type: string
+        description:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+          description: "ISO 8601 format date-time"
+        startDate:
+          type: string
+          format: date-time
+          description: "ISO 8601 format date-time"
+        startLocationX:
+          type: number
+          format: float
+        startLocationY:
+          type: number
+          format: float
+        createdByUsername:
+          type: string
+          description: "Username of the user who created the event"
+        eventType:
+          type: string
+          enum: [ ONLINE, OFFLINE ]
+          description: "Event type - ONLINE (normal) or OFFLINE (continuous)"
+        eventWaypoints:
+          type: array
+          description: "Waypoints that are part of this event (subset of map.waypoints)"
+          items:
+            $ref: "#/components/schemas/WaypointResponseDto"
     EventDetailResponseDto:
       type: object
       required:
@@ -1168,6 +1178,11 @@ components:
           type: string
           enum: [ ONLINE, OFFLINE ]
           description: "Event type - ONLINE (normal) or OFFLINE (continuous)"
+        eventWaypoints:
+          type: array
+          description: "Waypoints that are part of this event (subset of map.waypoints)"
+          items:
+            $ref: "#/components/schemas/WaypointResponseDto"
         session:
           $ref: "#/components/schemas/EventSessionDto"
     MapDto:
