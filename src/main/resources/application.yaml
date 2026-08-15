@@ -21,3 +21,5 @@ postgres:
   database: ${POSTGRES_DB}
   user: ${POSTGRES_USER}
   password: ${POSTGRES_PASSWORD}
+images:
+  storageDir: ${IMAGES_STORAGE_DIR}

@@ -34,6 +34,7 @@ interface SessionParticipantsRepository {
     userId: Int,
     waypointId: Int,
     visitedAt: LocalDateTime,
+    imagePath: String,
   ): Either<DomainError, SessionWaypointDetail>
 
   suspend fun getUserSessionWaypointDetails(
@@ -92,6 +93,7 @@ class SessionParticipantsRepositoryImpl(
     userId: Int,
     waypointId: Int,
     visitedAt: LocalDateTime,
+    imagePath: String,
   ): Either<DomainError, SessionWaypointDetail> = either {
     database.getRight().dbQuery {
       SessionWaypointDetailDAO.new {
@@ -99,6 +101,7 @@ class SessionParticipantsRepositoryImpl(
         this.userId = userId
         this.waypointId = waypointId
         this.visitedAt = visitedAt
+        this.imagePath = imagePath
       }.toDomain()
     }.getRight()
   }

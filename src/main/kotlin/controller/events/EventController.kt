@@ -8,6 +8,7 @@ import pl.dev.bkwiatkowski.controller.events.handler.DeleteEventHandler
 import pl.dev.bkwiatkowski.controller.events.handler.EventDetailHandler
 import pl.dev.bkwiatkowski.controller.events.handler.EventListHandler
 import pl.dev.bkwiatkowski.controller.events.handler.EventParticipantsProgressionHandler
+import pl.dev.bkwiatkowski.controller.events.handler.EventImageHandler
 import pl.dev.bkwiatkowski.core.routing.Controller
 
 class EventController(
@@ -20,6 +21,7 @@ class EventController(
   private val createEventSessionHandler: pl.dev.bkwiatkowski.controller.events.handler.CreateEventSessionHandler,
   private val setEventSessionJoinableHandler: pl.dev.bkwiatkowski.controller.events.handler.SetEventSessionJoinableHandler,
   private val closeEventSessionHandler: pl.dev.bkwiatkowski.controller.events.handler.CloseEventSessionHandler,
+  private val imageHandler: EventImageHandler,
 ) : Controller {
 
   override fun Route.registerRoutes() {
@@ -55,6 +57,10 @@ class EventController(
 
         post("{id}/session/close") {
           closeEventSessionHandler.handle(call)
+        }
+
+        get("images/{path...}") {
+          imageHandler.handle(call)
         }
 
         delete("{id}") {

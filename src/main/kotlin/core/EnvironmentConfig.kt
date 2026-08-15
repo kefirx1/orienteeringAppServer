@@ -19,6 +19,7 @@ interface EnvironmentConfig {
   val databaseName: String
   val databaseUser: String
   val databasePassword: String
+  val imagesStorageDir: String
 }
 
 class EnvironmentConfigImpl(config: ApplicationConfig) : EnvironmentConfig {
@@ -37,4 +38,5 @@ class EnvironmentConfigImpl(config: ApplicationConfig) : EnvironmentConfig {
   override val databaseName: String = config.property(path = "postgres.database").getString()
   override val databaseUser: String = config.property(path = "postgres.user").getString()
   override val databasePassword: String = config.property(path = "postgres.password").getString()
+  override val imagesStorageDir: String = config.property(path = "images.storageDir").getString()
 }

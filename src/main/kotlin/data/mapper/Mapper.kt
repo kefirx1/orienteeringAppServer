@@ -1,23 +1,7 @@
 package pl.dev.bkwiatkowski.data.mapper
 
-import pl.dev.bkwiatkowski.data.dao.AdminPanelUserDAO
-import pl.dev.bkwiatkowski.data.dao.EventDAO
-import pl.dev.bkwiatkowski.data.dao.MapDAO
-import pl.dev.bkwiatkowski.data.dao.MapWaypointDAO
-import pl.dev.bkwiatkowski.data.dao.MobileUserDAO
-import pl.dev.bkwiatkowski.data.dao.MobileUserEventProgressionDAO
-import pl.dev.bkwiatkowski.data.dao.SessionParticipantDAO
-import pl.dev.bkwiatkowski.data.dao.SessionWaypointDetailDAO
-import pl.dev.bkwiatkowski.domain.model.AdminPanelUser
-import pl.dev.bkwiatkowski.domain.model.Event
-import pl.dev.bkwiatkowski.domain.model.EventStatus
-import pl.dev.bkwiatkowski.domain.model.EventType
-import pl.dev.bkwiatkowski.domain.model.MapData
-import pl.dev.bkwiatkowski.domain.model.MapWaypoint
-import pl.dev.bkwiatkowski.domain.model.MobileUser
-import pl.dev.bkwiatkowski.domain.model.MobileUserEventProgression
-import pl.dev.bkwiatkowski.domain.model.SessionParticipant
-import pl.dev.bkwiatkowski.domain.model.SessionWaypointDetail
+import pl.dev.bkwiatkowski.data.dao.*
+import pl.dev.bkwiatkowski.domain.model.*
 
 fun MobileUserDAO.toDomain() = MobileUser(
   id = id.value,
@@ -102,4 +86,5 @@ fun SessionWaypointDetailDAO.toDomain() = SessionWaypointDetail(
   userId = userId,
   waypointId = waypointId,
   visitedAt = visitedAt,
+  imagePath = imagePath,
 )

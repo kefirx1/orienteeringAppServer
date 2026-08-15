@@ -9,4 +9,5 @@ data class WebsocketWaypointVisitDto(
   val waypointId: Int,
   @Contextual
   val visitedAt: LocalDateTime? = null,
+  val imagePath: String,
 )

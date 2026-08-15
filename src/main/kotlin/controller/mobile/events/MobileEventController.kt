@@ -8,6 +8,7 @@ import pl.dev.bkwiatkowski.controller.mobile.events.handler.MobileEventListHandl
 import pl.dev.bkwiatkowski.controller.mobile.events.handler.MobileJoinSessionHandler
 import pl.dev.bkwiatkowski.controller.mobile.events.handler.MobileCheckSessionJoinHandler
 import pl.dev.bkwiatkowski.controller.mobile.events.handler.MobileSessionWebSocketHandler
+import pl.dev.bkwiatkowski.controller.mobile.events.handler.MobileUploadImageHandler
 import pl.dev.bkwiatkowski.core.routing.Controller
 
 class MobileEventController(
@@ -16,6 +17,7 @@ class MobileEventController(
   private val joinSessionHandler: MobileJoinSessionHandler,
   private val checkSessionJoinHandler: MobileCheckSessionJoinHandler,
   private val sessionWebSocketHandler: MobileSessionWebSocketHandler,
+  private val uploadImageHandler: MobileUploadImageHandler,
 ) : Controller {
 
   override fun Route.registerRoutes() {
@@ -35,6 +37,10 @@ class MobileEventController(
 
         get("sessions/{sessionUuid}/joined") {
           checkSessionJoinHandler.handle(call)
+        }
+
+        post("sessions/{sessionUuid}/upload-image") {
+          uploadImageHandler.handle(call)
         }
 
         webSocket("sessions/{sessionUuid}/ws") {

@@ -14,6 +14,7 @@ interface RecordWaypointVisitUC : UseCase<RecordWaypointVisitUC.Params, SessionW
     val userId: Int,
     val waypointId: Int,
     val visitedAt: LocalDateTime,
+    val imagePath: String,
   ) : UseCase.Params
 }
 
@@ -26,6 +27,7 @@ class RecordWaypointVisitUCImpl(
       userId = params.userId,
       waypointId = params.waypointId,
       visitedAt = params.visitedAt,
+      imagePath = params.imagePath,
     ).getRight()
   }
 }

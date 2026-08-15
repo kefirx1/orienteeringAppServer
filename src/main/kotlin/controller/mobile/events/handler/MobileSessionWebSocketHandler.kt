@@ -6,11 +6,13 @@ import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import pl.dev.bkwiatkowski.controller.mobile.events.dto.request.WebsocketWaypointVisitDto
 import pl.dev.bkwiatkowski.core.DomainError
+import pl.dev.bkwiatkowski.core.Log
 import pl.dev.bkwiatkowski.core.either
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
 import pl.dev.bkwiatkowski.core.serialization.JsonSerializer
 import pl.dev.bkwiatkowski.domain.usecase.RecordWaypointVisitUC
+import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.WebsocketWaypointVisitResponseDto
 import java.time.LocalDateTime
 
 class MobileSessionWebSocketHandler(
@@ -43,7 +45,7 @@ class MobileSessionWebSocketHandler(
     }
 
     either {
-      for (frame in session.incoming) {
+      mainLoop@ for (frame in session.incoming) {
         when (frame) {
           is Frame.Text -> {
             val text = frame.readText()
@@ -55,21 +57,46 @@ class MobileSessionWebSocketHandler(
               )
               val visitedAt = dto.visitedAt ?: LocalDateTime.now()
 
+              val imagePath = dto.imagePath.takeIf { it.isNotBlank() }
+              if ((imagePath != null) && !imagePath.startsWith(prefix = sessionUuid)) {
+                val payload = jsonSerializer.serialize(
+                  value = ErrorResponse(
+                    businessCode = "INVALID_IMAGE_PATH",
+                    message = "Provided image path does not belong to this session",
+                  ),
+                  serializer = ErrorResponse.serializer(),
+                )
+                session.send(Frame.Text(payload))
+                continue@mainLoop
+              }
+
               recordWaypointVisitUC(
                 params = RecordWaypointVisitUC.Params(
                   sessionUuid = sessionUuid,
                   userId = userId,
                   waypointId = dto.waypointId,
                   visitedAt = visitedAt,
+                  imagePath = imagePath!!,
                 )
               ).getRight()
 
-              session.send(Frame.Text("zapisano"))
+              val payload = jsonSerializer.serialize(
+                value = WebsocketWaypointVisitResponseDto(
+                  waypointId = dto.waypointId,
+                ),
+                serializer = WebsocketWaypointVisitResponseDto.serializer(),
+              )
+
+              session.send(Frame.Text(payload))
             }.onLeft { error ->
-              val message = (error as? DomainError.Custom)?.e?.message ?: "Failed to record waypoint visit"
+              Log.error(
+                message = "Failed to record waypoint visit",
+                throwable = (error as? DomainError.Custom)?.e,
+              )
+
               either {
                 val payload = jsonSerializer.serialize(
-                  value = ErrorResponse(businessCode = "RECORD_WAYPOINT_FAILED", message = message),
+                  value = ErrorResponse(businessCode = "RECORD_WAYPOINT_FAILED", message = "Failed to record waypoint visit"),
                   serializer = ErrorResponse.serializer(),
                 )
                 session.send(Frame.Text(payload))

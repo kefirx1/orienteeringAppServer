@@ -41,6 +41,8 @@ import pl.dev.bkwiatkowski.core.security.token.JwtTokenProvider
 import pl.dev.bkwiatkowski.core.security.token.TokenProvider
 import pl.dev.bkwiatkowski.core.serialization.JsonSerializer
 import pl.dev.bkwiatkowski.core.serialization.KotlinxJsonSerializer
+import pl.dev.bkwiatkowski.core.storage.LocalStorageService
+import pl.dev.bkwiatkowski.core.storage.StorageService
 import pl.dev.bkwiatkowski.core.validation.DefaultTextValidator
 import pl.dev.bkwiatkowski.core.validation.TextValidator
 import pl.dev.bkwiatkowski.data.repository.*
@@ -67,6 +69,10 @@ fun appModule(config: ApplicationConfig) = module {
 
   single<JsonSerializer> { KotlinxJsonSerializer() }
 
+  single<StorageService> { LocalStorageService(config = get()) }
+
+  single<LocalFileRepository> { LocalFileRepositoryImpl(storageService = get()) }
+
   single<AdminPanelUserRepository> { AdminPanelUserRepositoryImpl(databaseProvider = get()) }
 
   single<RefreshTokenRepository> { RefreshTokenRepositoryImpl(databaseProvider = get()) }
@@ -79,11 +85,11 @@ fun appModule(config: ApplicationConfig) = module {
 
   single<EventRepository> { EventRepositoryImpl(databaseProvider = get()) }
 
-   single<MobileUserEventProgressionRepository> { MobileUserEventProgressionRepositoryImpl(databaseProvider = get()) }
+  single<MobileUserEventProgressionRepository> { MobileUserEventProgressionRepositoryImpl(databaseProvider = get()) }
 
-   single<SessionParticipantsRepository> { SessionParticipantsRepositoryImpl(databaseProvider = get()) }
+  single<SessionParticipantsRepository> { SessionParticipantsRepositoryImpl(databaseProvider = get()) }
 
-   factory<TextValidator> { DefaultTextValidator() }
+  factory<TextValidator> { DefaultTextValidator() }
 
   factory<ValidateAdminPanelUserRequestUC> {
     ValidateAdminPanelUserRequestUCImpl(
@@ -370,6 +376,7 @@ fun appModule(config: ApplicationConfig) = module {
       createEventSessionHandler = get(),
       setEventSessionJoinableHandler = get(),
       closeEventSessionHandler = get(),
+      imageHandler = get(),
     )
   } bind Controller::class
 
@@ -390,15 +397,25 @@ fun appModule(config: ApplicationConfig) = module {
      )
    }
 
-    factory<RecordWaypointVisitUC> {
-      RecordWaypointVisitUCImpl(
-        sessionParticipantsRepository = get(),
-      )
-    }
+  factory<RecordWaypointVisitUC> {
+    RecordWaypointVisitUCImpl(
+      sessionParticipantsRepository = get(),
+    )
+  }
 
-   single { MobileJoinSessionHandler(joinSessionUC = get()) }
+  single { MobileJoinSessionHandler(joinSessionUC = get()) }
 
-   single { MobileCheckSessionJoinHandler(isUserInSessionUC = get()) }
+  single { MobileCheckSessionJoinHandler(isUserInSessionUC = get()) }
+
+  single { EventImageHandler(environmentConfig = get(), getAdminPanelUserByIdUC = get(), getEventByIdUC = get(), eventRepository = get()) }
+
+  factory<StoreSessionImageUC> {
+    StoreSessionImageUCImpl(
+      localFileRepository = get(),
+    )
+  }
+
+  single { MobileUploadImageHandler(storeSessionImageUC = get(), byteCoder = get()) }
 
   single<MobileSessionWebSocketHandler> {
     MobileSessionWebSocketHandler(
@@ -407,15 +424,16 @@ fun appModule(config: ApplicationConfig) = module {
     )
   }
 
-   single {
-     MobileEventController(
-       eventListHandler = get(),
-       eventDetailHandler = get(),
-       joinSessionHandler = get(),
-       checkSessionJoinHandler = get(),
-       sessionWebSocketHandler = get(),
-     )
-   } bind Controller::class
+    single {
+      MobileEventController(
+        eventListHandler = get(),
+        eventDetailHandler = get(),
+        joinSessionHandler = get(),
+        checkSessionJoinHandler = get(),
+        sessionWebSocketHandler = get(),
+        uploadImageHandler = get(),
+      )
+    } bind Controller::class
 
    factory<AddNewMobileUserUC> {
     AddNewMobileUserUCImpl(

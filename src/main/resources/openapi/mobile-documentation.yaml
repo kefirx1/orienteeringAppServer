@@ -343,6 +343,57 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/mobile/events/sessions/{sessionUuid}/upload-image:
+    post:
+      operationId: "uploadSessionImage"
+      summary: "Upload JPEG image for session (Mobile)"
+      description: "Uploads a JPEG image (max 400KB) associated with the given session UUID. The request body must be a JSON object with a Base64-encoded image payload. Returns stored image path. Requires authentication."
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - "Mobile Events"
+      parameters:
+        - name: sessionUuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "UUID of the event session to associate the image with"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UploadImageRequest"
+      responses:
+        "200":
+          description: "Image stored successfully. Returns path to stored image."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadImageResponse"
+        "400":
+          description: "Bad Request - missing sessionUuid, invalid body, non-JPEG image or image too large"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized - missing or invalid token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error - failed to store image"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     ErrorResponse:
@@ -529,6 +580,7 @@ components:
       description: "Message sent from mobile client over WebSocket to report a waypoint visit"
       required:
         - waypointId
+        - imagePath
       properties:
         waypointId:
           type: integer
@@ -540,6 +592,10 @@ components:
           nullable: true
           description: "Optional timestamp when the waypoint was visited (LocalDateTime). If omitted server will use current time"
           example: "2026-06-25T12:34:56"
+        imagePath:
+          type: string
+          description: "Previously uploaded image path associated with this visit (relative storage path, must start with sessionUuid). Can be empty string if no image is associated. Example: '550e8400-e29b-41d4-a716-446655440000/photo.jpg'"
+          example: "550e8400-e29b-41d4-a716-446655440000/photo.jpg"
     IsUserInSessionResponseDto:
       type: object
       description: "Response indicating whether the authenticated user is already joined in the session"
@@ -676,6 +732,33 @@ components:
         coordinateY:
           type: number
           format: float
+    UploadImageResponse:
+      type: object
+      description: "Response returned after successful image upload"
+      required:
+        - path
+      properties:
+        path:
+          type: string
+          description: "Relative path to stored image (use to reference image in websocket messages). Example: '550e8400-e29b-41d4-a716-446655440000/photo.jpg'"
+          example: "550e8400-e29b-41d4-a716-446655440000/photo.jpg"
+    UploadImageRequest:
+      type: object
+      description: "Request to upload a JPEG image for a session. When sending JSON, the `image` property must be a Base64-encoded string. Alternatively clients can POST raw binary (Content-Type: image/jpeg or application/octet-stream)."
+      required:
+        - image
+      properties:
+        image:
+          type: string
+    WebsocketWaypointVisitResponseDto:
+      type: object
+      description: "Response message sent from server to mobile client after successfully recording a waypoint visit (over WebSocket)"
+      required:
+        - waypointId
+      properties:
+        waypointId:
+          type: integer
+          description: "Id of the waypoint on the map"
   securitySchemes:
     bearerAuth:
       type: http

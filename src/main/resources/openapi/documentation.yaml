@@ -739,6 +739,57 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /api/events/images/{path...}:
+    get:
+      summary: "Get event image file"
+      description: "Returns a JPG image file stored for event sessions. The path parameter is a greedy path (relative storage path) and the first segment is expected to be the session UUID. Access restricted to event owner or admin. Requires authentication."
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: path
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "Relative path under images storage, e.g. '{sessionUuid}/photo.jpg'"
+      responses:
+        "200":
+          description: "JPEG image binary"
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+        "401":
+          description: "Unauthorized - missing or invalid token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: "Forbidden - user does not have access to this image"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Not Found - image or session does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "415":
+          description: "Unsupported Media Type - only JPG/JPEG images are supported"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /api/admin/users:
     get:
       summary: "Get All Admin Panel Users"
