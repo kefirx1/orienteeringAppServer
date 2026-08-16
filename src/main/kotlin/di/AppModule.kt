@@ -413,6 +413,8 @@ fun appModule(config: ApplicationConfig) = module {
 
   single { MobileCheckSessionJoinHandler(isUserInSessionUC = get()) }
 
+  single { MobileGetSessionWaypointDetailsHandler(getUserSessionWaypointDetailsUC = get()) }
+
   single { EventImageHandler(environmentConfig = get(), getAdminPanelUserByIdUC = get(), getEventByIdUC = get(), eventRepository = get()) }
 
   factory<StoreSessionImageUC> {
@@ -436,6 +438,7 @@ fun appModule(config: ApplicationConfig) = module {
         eventDetailHandler = get(),
         joinSessionHandler = get(),
         checkSessionJoinHandler = get(),
+        getSessionWaypointDetailsHandler = get(),
         sessionWebSocketHandler = get(),
         uploadImageHandler = get(),
       )

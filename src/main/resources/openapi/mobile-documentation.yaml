@@ -311,6 +311,45 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /api/mobile/events/sessions/{sessionUuid}/waypoint-details:
+    get:
+      operationId: "getSessionWaypointDetails"
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - "Mobile Events"
+      parameters:
+        - name: sessionUuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "UUID of the event session"
+      responses:
+        "200":
+          description: "List of session waypoint details returned"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionWaypointDetailsResponseDto"
+        "400":
+          description: "Bad Request - invalid parameters or failed to fetch details"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized - missing or invalid token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /api/mobile/events/sessions/{sessionUuid}/ws:
     get:
       operationId: "openSessionWebSocket"
@@ -761,6 +800,16 @@ components:
           type: string
           format: date-time
           description: "Timestamp when the waypoint was visited (server LocalDateTime serialized as string)"
+    SessionWaypointDetailsResponseDto:
+      type: object
+      description: "Response containing list of session waypoint details for the authenticated user"
+      required:
+        - sessionWaypointDetails
+      properties:
+        sessionWaypointDetails:
+          type: array
+          items:
+            $ref: "#/components/schemas/SessionWaypointDetailDto"
     UploadImageRequest:
       type: object
       description: "Request to upload a JPEG image for a session. When sending JSON, the `image` property must be a Base64-encoded string. Alternatively clients can POST raw binary (Content-Type: image/jpeg or application/octet-stream)."
