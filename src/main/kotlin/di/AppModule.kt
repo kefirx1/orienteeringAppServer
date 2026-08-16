@@ -403,6 +403,12 @@ fun appModule(config: ApplicationConfig) = module {
     )
   }
 
+  factory<GetUserSessionWaypointDetailsUC> {
+    GetUserSessionWaypointDetailsUCImpl(
+      sessionParticipantsRepository = get(),
+    )
+  }
+
   single { MobileJoinSessionHandler(joinSessionUC = get()) }
 
   single { MobileCheckSessionJoinHandler(isUserInSessionUC = get()) }

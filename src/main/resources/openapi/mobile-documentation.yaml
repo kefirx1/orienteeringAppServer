@@ -741,7 +741,26 @@ components:
         path:
           type: string
           description: "Relative path to stored image (use to reference image in websocket messages). Example: '550e8400-e29b-41d4-a716-446655440000/photo.jpg'"
-          example: "550e8400-e29b-41d4-a716-446655440000/photo.jpg"
+    SessionWaypointDetailDto:
+      type: object
+      description: "Details about a waypoint visit recorded in a session"
+      required:
+        - id
+        - sessionUuid
+        - userId
+        - waypointId
+        - visitedAt
+      properties:
+        id:
+          type: integer
+          description: "Primary key identifier of the waypoint visit record"
+        waypointId:
+          type: integer
+          description: "Identifier of the visited waypoint on the map"
+        visitedAt:
+          type: string
+          format: date-time
+          description: "Timestamp when the waypoint was visited (server LocalDateTime serialized as string)"
     UploadImageRequest:
       type: object
       description: "Request to upload a JPEG image for a session. When sending JSON, the `image` property must be a Base64-encoded string. Alternatively clients can POST raw binary (Content-Type: image/jpeg or application/octet-stream)."
@@ -752,13 +771,11 @@ components:
           type: string
     WebsocketWaypointVisitResponseDto:
       type: object
-      description: "Response message sent from server to mobile client after successfully recording a waypoint visit (over WebSocket)"
       required:
-        - waypointId
+        - lastVisitedWaypoint
       properties:
-        waypointId:
-          type: integer
-          description: "Id of the waypoint on the map"
+        lastVisitedWaypoint:
+          $ref: "#/components/schemas/SessionWaypointDetailDto"
   securitySchemes:
     bearerAuth:
       type: http

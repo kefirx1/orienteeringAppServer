@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class WebsocketWaypointVisitResponseDto(
-  val waypointId: Int,
+  val lastVisitedWaypoint: SessionWaypointDetailDto,
 )

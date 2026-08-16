@@ -2,13 +2,8 @@ package pl.dev.bkwiatkowski.controller.mobile.events
 
 import io.ktor.server.auth.*
 import io.ktor.server.routing.*
-import io.ktor.server.websocket.webSocket
-import pl.dev.bkwiatkowski.controller.mobile.events.handler.MobileEventDetailHandler
-import pl.dev.bkwiatkowski.controller.mobile.events.handler.MobileEventListHandler
-import pl.dev.bkwiatkowski.controller.mobile.events.handler.MobileJoinSessionHandler
-import pl.dev.bkwiatkowski.controller.mobile.events.handler.MobileCheckSessionJoinHandler
-import pl.dev.bkwiatkowski.controller.mobile.events.handler.MobileSessionWebSocketHandler
-import pl.dev.bkwiatkowski.controller.mobile.events.handler.MobileUploadImageHandler
+import io.ktor.server.websocket.*
+import pl.dev.bkwiatkowski.controller.mobile.events.handler.*
 import pl.dev.bkwiatkowski.core.routing.Controller
 
 class MobileEventController(

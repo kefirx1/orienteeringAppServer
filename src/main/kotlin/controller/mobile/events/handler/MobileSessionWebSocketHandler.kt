@@ -5,6 +5,8 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import pl.dev.bkwiatkowski.controller.mobile.events.dto.request.WebsocketWaypointVisitDto
+import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.SessionWaypointDetailDto
+import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.WebsocketWaypointVisitResponseDto
 import pl.dev.bkwiatkowski.core.DomainError
 import pl.dev.bkwiatkowski.core.Log
 import pl.dev.bkwiatkowski.core.either
@@ -12,7 +14,6 @@ import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
 import pl.dev.bkwiatkowski.core.serialization.JsonSerializer
 import pl.dev.bkwiatkowski.domain.usecase.RecordWaypointVisitUC
-import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.WebsocketWaypointVisitResponseDto
 import java.time.LocalDateTime
 
 class MobileSessionWebSocketHandler(
@@ -70,7 +71,7 @@ class MobileSessionWebSocketHandler(
                 continue@mainLoop
               }
 
-              recordWaypointVisitUC(
+              val savedDetail = recordWaypointVisitUC(
                 params = RecordWaypointVisitUC.Params(
                   sessionUuid = sessionUuid,
                   userId = userId,
@@ -80,9 +81,15 @@ class MobileSessionWebSocketHandler(
                 )
               ).getRight()
 
+              val lastDetailDto = SessionWaypointDetailDto(
+                id = savedDetail.id,
+                waypointId = savedDetail.waypointId,
+                visitedAt = savedDetail.visitedAt,
+              )
+
               val payload = jsonSerializer.serialize(
                 value = WebsocketWaypointVisitResponseDto(
-                  waypointId = dto.waypointId,
+                  lastVisitedWaypoint = lastDetailDto,
                 ),
                 serializer = WebsocketWaypointVisitResponseDto.serializer(),
               )
