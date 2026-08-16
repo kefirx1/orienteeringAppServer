@@ -115,9 +115,7 @@ class MobileUploadImageHandler(
           status = HttpStatusCode.InternalServerError,
           message = ErrorResponse(
             businessCode = "STORE_FAILED",
-            message = when (error) {
-              is DomainError.Custom -> error.e?.message ?: "Failed to store file"
-            },
+            message = "Failed to store file",
           )
         )
       }

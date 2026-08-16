@@ -5,8 +5,10 @@ import kotlinx.serialization.Serializable
 import java.time.LocalDateTime
 
 @Serializable
-data class SessionWaypointDetailDto(
-  val waypointId: Int,
+data class SessionParticipantDto(
+  val sessionUuid: String,
   @Contextual
-  val visitedAt: LocalDateTime,
+  val joinedAt: LocalDateTime,
+  @Contextual
+  val finishedAt: LocalDateTime,
 )

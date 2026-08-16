@@ -45,7 +45,51 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-
+  /api/mobile/events/sessions/{sessionUuid}/participant:
+    get:
+      operationId: "getSessionParticipantForUser"
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - "Mobile Events"
+      parameters:
+        - name: sessionUuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "UUID of the event session to check"
+      responses:
+        "200":
+          description: "Participant record returned"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionParticipantResponseDto"
+        "400":
+          description: "Bad Request - participant not finished or failed to fetch"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized - missing or invalid token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Not Found - Participant does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /api/mobile/auth/login:
     post:
       operationId: "loginMobileUser"
@@ -433,6 +477,51 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /api/mobile/events/sessions/{sessionUuid}/finish:
+    post:
+      operationId: "finishEventSession"
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - "Mobile Events"
+      parameters:
+        - name: sessionUuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "UUID of the event session to finish for the authenticated user"
+      responses:
+        "200":
+          description: "Session finished successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FinishSessionResponseDto"
+        "400":
+          description: "Bad Request - invalid parameters or failed to finish session"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized - missing or invalid token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Not Found - Session or participant does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 components:
   schemas:
     ErrorResponse:
@@ -637,14 +726,13 @@ components:
           example: "550e8400-e29b-41d4-a716-446655440000/photo.jpg"
     IsUserInSessionResponseDto:
       type: object
-      description: "Response indicating whether the authenticated user is already joined in the session"
+      description: "Response indicating the membership status of the authenticated user in the session"
       required:
-        - joined
+        - status
       properties:
-        joined:
-          type: boolean
-          description: "True if the user has already joined the session, false otherwise"
-          example: true
+        status:
+          type: string
+          enum: [ JOINED, NOT_JOINED, FINISHED ]
     MobileEventListResponseDto:
       type: object
       required:
@@ -784,15 +872,9 @@ components:
       type: object
       description: "Details about a waypoint visit recorded in a session"
       required:
-        - id
-        - sessionUuid
-        - userId
         - waypointId
         - visitedAt
       properties:
-        id:
-          type: integer
-          description: "Primary key identifier of the waypoint visit record"
         waypointId:
           type: integer
           description: "Identifier of the visited waypoint on the map"
@@ -800,6 +882,55 @@ components:
           type: string
           format: date-time
           description: "Timestamp when the waypoint was visited (server LocalDateTime serialized as string)"
+    SessionParticipantDto:
+      type: object
+      description: "Participant record for a session"
+      required:
+        - sessionUuid
+        - joinedAt
+        - finishedAt
+      properties:
+        sessionUuid:
+          type: string
+        joinedAt:
+          type: string
+          format: date-time
+          description: "Timestamp when the user joined the session (LocalDateTime)"
+        finishedAt:
+          type: string
+          format: date-time
+          description: "Timestamp when the user finished the session (nullable)"
+    SessionParticipantResponseDto:
+      type: object
+      description: "Response containing participant record for the authenticated user (only returned when finishedAt is present)"
+      required:
+        - sessionUuid
+        - joinedAt
+        - finishedAt
+      properties:
+        sessionUuid:
+          type: string
+        joinedAt:
+          type: string
+          format: date-time
+          description: "Timestamp when the user joined the session (LocalDateTime)"
+        finishedAt:
+          type: string
+          format: date-time
+          description: "Timestamp when the user finished the session (LocalDateTime, not null)"
+    FinishSessionResponseDto:
+      type: object
+      description: "Response returned when finishing a session for the authenticated user"
+      required:
+        - participant
+        - sessionWaypointDetails
+      properties:
+        participant:
+          $ref: "#/components/schemas/SessionParticipantDto"
+        sessionWaypointDetails:
+          type: array
+          items:
+            $ref: "#/components/schemas/SessionWaypointDetailDto"
     SessionWaypointDetailsResponseDto:
       type: object
       description: "Response containing list of session waypoint details for the authenticated user"

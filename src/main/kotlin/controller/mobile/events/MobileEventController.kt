@@ -12,8 +12,10 @@ class MobileEventController(
   private val joinSessionHandler: MobileJoinSessionHandler,
   private val checkSessionJoinHandler: MobileCheckSessionJoinHandler,
   private val getSessionWaypointDetailsHandler: MobileGetSessionWaypointDetailsHandler,
+  private val getSessionParticipantHandler: MobileGetSessionParticipantHandler,
   private val sessionWebSocketHandler: MobileSessionWebSocketHandler,
   private val uploadImageHandler: MobileUploadImageHandler,
+  private val finishSessionHandler: MobileFinishSessionHandler,
 ) : Controller {
 
   override fun Route.registerRoutes() {
@@ -39,8 +41,16 @@ class MobileEventController(
           getSessionWaypointDetailsHandler.handle(call)
         }
 
+        get("sessions/{sessionUuid}/participant") {
+          getSessionParticipantHandler.handle(call)
+        }
+
         post("sessions/{sessionUuid}/upload-image") {
           uploadImageHandler.handle(call)
+        }
+
+        post("sessions/{sessionUuid}/finish") {
+          finishSessionHandler.handle(call)
         }
 
         webSocket("sessions/{sessionUuid}/ws") {

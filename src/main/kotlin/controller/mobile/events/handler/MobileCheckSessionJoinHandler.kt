@@ -6,13 +6,15 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.IsUserInSessionResponseDto
-import pl.dev.bkwiatkowski.core.DomainError
+import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.JoinStatus
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
+import pl.dev.bkwiatkowski.domain.usecase.GetSessionParticipantUC
 import pl.dev.bkwiatkowski.domain.usecase.IsUserInSessionUC
 
 class MobileCheckSessionJoinHandler(
   private val isUserInSessionUC: IsUserInSessionUC,
+  private val getSessionParticipantUC: GetSessionParticipantUC,
 ) {
   suspend fun handle(call: ApplicationCall) {
     val principal = call.principal<JWTPrincipal>()
@@ -48,16 +50,30 @@ class MobileCheckSessionJoinHandler(
       )
     ).fold(
       onRight = { isInSession ->
-        call.respond(message = IsUserInSessionResponseDto(joined = isInSession))
+        if (isInSession) {
+          call.respond(message = IsUserInSessionResponseDto(status = JoinStatus.JOINED))
+        } else {
+          val participant = getSessionParticipantUC(
+            params = GetSessionParticipantUC.Params(
+              sessionUuid = sessionUuid,
+              userId = userId,
+            )
+          ).getRightOrNull()
+
+          val status = when {
+            participant == null -> JoinStatus.NOT_JOINED
+            participant.finishedAt != null -> JoinStatus.FINISHED
+            else -> JoinStatus.NOT_JOINED
+          }
+          call.respond(message = IsUserInSessionResponseDto(status = status))
+        }
       },
-      onLeft = { error ->
+      onLeft = {
         call.respond(
           status = HttpStatusCode.BadRequest,
           message = ErrorResponse(
             businessCode = "CHECK_SESSION_FAILED",
-            message = when (error) {
-              is DomainError.Custom -> error.e?.message ?: "Failed to check session membership"
-            }
+            message = "Failed to check session membership",
           )
         )
       }

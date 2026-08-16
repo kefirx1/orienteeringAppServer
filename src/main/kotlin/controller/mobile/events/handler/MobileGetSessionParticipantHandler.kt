@@ -5,14 +5,13 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
-import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.SessionWaypointDetailDto
-import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.SessionWaypointDetailsResponseDto
+import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.SessionParticipantResponseDto
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
-import pl.dev.bkwiatkowski.domain.usecase.GetUserSessionWaypointDetailsUC
+import pl.dev.bkwiatkowski.domain.usecase.GetSessionParticipantUC
 
-class MobileGetSessionWaypointDetailsHandler(
-  private val getUserSessionWaypointDetailsUC: GetUserSessionWaypointDetailsUC,
+class MobileGetSessionParticipantHandler(
+  private val getSessionParticipantUC: GetSessionParticipantUC,
 ) {
   suspend fun handle(call: ApplicationCall) {
     val principal = call.principal<JWTPrincipal>()
@@ -23,7 +22,7 @@ class MobileGetSessionWaypointDetailsHandler(
         status = HttpStatusCode.Unauthorized,
         message = ErrorResponse(
           businessCode = "UNAUTHORIZED",
-          message = "User is not authenticated",
+          message = "User is not authenticated"
         )
       )
       return
@@ -35,37 +34,45 @@ class MobileGetSessionWaypointDetailsHandler(
         status = HttpStatusCode.BadRequest,
         message = ErrorResponse(
           businessCode = "INVALID_REQUEST",
-          message = "Missing or invalid sessionUuid path parameter",
+          message = "Missing or invalid sessionUuid path parameter"
         )
       )
       return
     }
 
-    getUserSessionWaypointDetailsUC(
-      params = GetUserSessionWaypointDetailsUC.Params(
+    getSessionParticipantUC(
+      params = GetSessionParticipantUC.Params(
         sessionUuid = sessionUuid,
         userId = userId,
       )
     ).fold(
-      onRight = { details ->
-        val dto = details.map { detail ->
-          SessionWaypointDetailDto(
-            waypointId = detail.waypointId,
-            visitedAt = detail.visitedAt,
+      onRight = { participant ->
+        val finishedAt = participant.finishedAt
+        if (finishedAt == null) {
+          call.respond(
+            status = HttpStatusCode.BadRequest,
+            message = ErrorResponse(
+              businessCode = "PARTICIPANT_NOT_FINISHED",
+              message = "Participant has not finished the session"
+            )
           )
+          return@fold
         }
 
         call.respond(
-          status = HttpStatusCode.OK,
-          message = SessionWaypointDetailsResponseDto(sessionWaypointDetails = dto),
+          message = SessionParticipantResponseDto(
+            sessionUuid = participant.sessionUuid,
+            joinedAt = participant.joinedAt,
+            finishedAt = finishedAt,
+          )
         )
       },
       onLeft = {
         call.respond(
-          status = HttpStatusCode.BadRequest,
+          status = HttpStatusCode.NotFound,
           message = ErrorResponse(
-            businessCode = "FETCH_SESSION_WAYPOINT_DETAILS_FAILED",
-            message = "Failed to fetch session waypoint details",
+            businessCode = "GET_PARTICIPANT_FAILED",
+            message = "Failed to retrieve participant"
           )
         )
       }

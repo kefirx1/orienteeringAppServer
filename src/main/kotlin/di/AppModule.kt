@@ -397,8 +397,20 @@ fun appModule(config: ApplicationConfig) = module {
      )
    }
 
+    factory<GetSessionParticipantUC> {
+      GetSessionParticipantUCImpl(
+        sessionParticipantsRepository = get(),
+      )
+    }
+
   factory<RecordWaypointVisitUC> {
     RecordWaypointVisitUCImpl(
+      sessionParticipantsRepository = get(),
+    )
+  }
+
+  factory<FinishSessionUC> {
+    FinishSessionUCImpl(
       sessionParticipantsRepository = get(),
     )
   }
@@ -411,9 +423,11 @@ fun appModule(config: ApplicationConfig) = module {
 
   single { MobileJoinSessionHandler(joinSessionUC = get()) }
 
-  single { MobileCheckSessionJoinHandler(isUserInSessionUC = get()) }
+  single { MobileCheckSessionJoinHandler(isUserInSessionUC = get(), getSessionParticipantUC = get()) }
 
   single { MobileGetSessionWaypointDetailsHandler(getUserSessionWaypointDetailsUC = get()) }
+
+  single { MobileGetSessionParticipantHandler(getSessionParticipantUC = get()) }
 
   single { EventImageHandler(environmentConfig = get(), getAdminPanelUserByIdUC = get(), getEventByIdUC = get(), eventRepository = get()) }
 
@@ -424,6 +438,8 @@ fun appModule(config: ApplicationConfig) = module {
   }
 
   single { MobileUploadImageHandler(storeSessionImageUC = get(), byteCoder = get()) }
+
+  single { MobileFinishSessionHandler(finishSessionUC = get(), getUserSessionWaypointDetailsUC = get()) }
 
   single<MobileSessionWebSocketHandler> {
     MobileSessionWebSocketHandler(
@@ -439,8 +455,10 @@ fun appModule(config: ApplicationConfig) = module {
         joinSessionHandler = get(),
         checkSessionJoinHandler = get(),
         getSessionWaypointDetailsHandler = get(),
+        getSessionParticipantHandler = get(),
         sessionWebSocketHandler = get(),
         uploadImageHandler = get(),
+        finishSessionHandler = get(),
       )
     } bind Controller::class
 

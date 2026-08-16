@@ -29,6 +29,8 @@ interface SessionParticipantsRepository {
 
   suspend fun isUserInSession(sessionUuid: String, userId: Int): Either<DomainError, Boolean>
 
+  suspend fun getSessionParticipant(sessionUuid: String, userId: Int): Either<DomainError, SessionParticipant>
+
   suspend fun recordWaypointVisit(
     sessionUuid: String,
     userId: Int,
@@ -43,6 +45,12 @@ interface SessionParticipantsRepository {
   ): Either<DomainError, List<SessionWaypointDetail>>
 
   suspend fun getSessionWaypointDetails(sessionUuid: String): Either<DomainError, List<SessionWaypointDetail>>
+
+  suspend fun finishParticipantSession(
+    sessionUuid: String,
+    userId: Int,
+    finishedAt: LocalDateTime,
+  ): Either<DomainError, SessionParticipant>
 }
 
 class SessionParticipantsRepositoryImpl(
@@ -88,6 +96,28 @@ class SessionParticipantsRepositoryImpl(
     }.getRight()
   }
 
+  override suspend fun getSessionParticipant(sessionUuid: String, userId: Int): Either<DomainError, SessionParticipant> = either {
+    database.getRight().dbQuery {
+      SessionParticipantDAO.find {
+        (SessionParticipantsTable.sessionUuid eq sessionUuid) and (SessionParticipantsTable.userId eq userId)
+      }.firstOrNull()?.toDomain() ?: raise(error = DomainError.Custom(IllegalStateException("Participant not found")))
+    }.getRight()
+  }
+
+  override suspend fun finishParticipantSession(
+    sessionUuid: String,
+    userId: Int,
+    finishedAt: LocalDateTime,
+  ): Either<DomainError, SessionParticipant> = either {
+    database.getRight().dbQuery {
+      val participant = SessionParticipantDAO.find {
+        (SessionParticipantsTable.sessionUuid eq sessionUuid) and (SessionParticipantsTable.userId eq userId) and (SessionParticipantsTable.finishedAt.isNull())
+      }.firstOrNull() ?: raise(error = DomainError.Custom(IllegalStateException("Participant not found or already finished")))
+
+      participant.finishedAt = finishedAt
+      participant.toDomain()
+    }.getRight()
+  }
   override suspend fun recordWaypointVisit(
     sessionUuid: String,
     userId: Int,

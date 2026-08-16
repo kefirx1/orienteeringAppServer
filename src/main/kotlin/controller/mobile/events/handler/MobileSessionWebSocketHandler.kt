@@ -81,11 +81,10 @@ class MobileSessionWebSocketHandler(
                 )
               ).getRight()
 
-              val lastDetailDto = SessionWaypointDetailDto(
-                id = savedDetail.id,
-                waypointId = savedDetail.waypointId,
-                visitedAt = savedDetail.visitedAt,
-              )
+               val lastDetailDto = SessionWaypointDetailDto(
+                 waypointId = savedDetail.waypointId,
+                 visitedAt = savedDetail.visitedAt,
+               )
 
               val payload = jsonSerializer.serialize(
                 value = WebsocketWaypointVisitResponseDto(

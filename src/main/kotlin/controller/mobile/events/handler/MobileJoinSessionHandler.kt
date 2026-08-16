@@ -58,9 +58,7 @@ class MobileJoinSessionHandler(
           status = HttpStatusCode.BadRequest,
           message = ErrorResponse(
             businessCode = "JOIN_SESSION_FAILED",
-            message = when (error) {
-              is DomainError.Custom -> error.e?.message ?: "Failed to join session"
-            }
+            message = "Failed to join session",
           ),
         )
       }
