@@ -13,16 +13,6 @@ fun MobileUserDAO.toDomain() = MobileUser(
   dateOfBirth = dateOfBirth,
 )
 
-fun MobileUserEventProgressionDAO.toDomain() = MobileUserEventProgression(
-  id = id.value,
-  userId = userId,
-  eventId = eventId,
-  startedAt = startedAt,
-  finishedAt = finishedAt,
-  visitedWaypointsCount = visitedWaypointsCount,
-  isLiveTracking = isLiveTracking,
-)
-
 fun AdminPanelUserDAO.toDomain() = AdminPanelUser(
   id = id.value,
   username = username,

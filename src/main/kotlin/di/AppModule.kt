@@ -85,8 +85,6 @@ fun appModule(config: ApplicationConfig) = module {
 
   single<EventRepository> { EventRepositoryImpl(databaseProvider = get()) }
 
-  single<MobileUserEventProgressionRepository> { MobileUserEventProgressionRepositoryImpl(databaseProvider = get()) }
-
   single<SessionParticipantsRepository> { SessionParticipantsRepositoryImpl(databaseProvider = get()) }
 
   factory<TextValidator> { DefaultTextValidator() }
@@ -334,7 +332,8 @@ fun appModule(config: ApplicationConfig) = module {
 
   factory<GetEventParticipantsProgressionUC> {
     GetEventParticipantsProgressionUCImpl(
-      progressionRepository = get(),
+      eventRepository = get(),
+      sessionParticipantsRepository = get(),
       mobileUserRepository = get(),
     )
   }
