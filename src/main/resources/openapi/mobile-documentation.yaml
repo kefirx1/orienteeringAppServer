@@ -195,6 +195,47 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /api/mobile/settings/change-password:
+    post:
+      operationId: "changeMobilePassword"
+      description: "Allows authenticated mobile user to change their password by providing old and new password. Returns 200 on success."
+      tags:
+        - "Mobile Settings"
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangePasswordRequestDto"
+      responses:
+        "200":
+          description: "Password changed successfully"
+        "400":
+          description: "Bad Request - Invalid or missing request body"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized - missing or invalid token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: "Forbidden - invalid old password or user not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /api/mobile/events:
     get:
       operationId: "getMobileEvents"
@@ -575,6 +616,19 @@ components:
           nullable: true
           description: "Optional date of birth in ISO 8601 format (mobile-specific)"
           example: "1990-05-15T10:30:00"
+    ChangePasswordRequestDto:
+      type: object
+      description: "Request to change password (used by mobile and admin endpoints)"
+      required:
+        - oldPassword
+        - newPassword
+      properties:
+        oldPassword:
+          type: string
+          format: password
+        newPassword:
+          type: string
+          format: password
     MobileSignInRequestDto:
       type: object
       description: "Mobile user login request"

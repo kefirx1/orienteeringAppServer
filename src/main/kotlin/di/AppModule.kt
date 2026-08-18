@@ -23,6 +23,7 @@ import pl.dev.bkwiatkowski.controller.mobile.auth.handler.MobileSignUpHandler
 import pl.dev.bkwiatkowski.controller.mobile.events.MobileEventController
 import pl.dev.bkwiatkowski.controller.mobile.events.handler.*
 import pl.dev.bkwiatkowski.controller.mobile.settings.MobileSettingsController
+import pl.dev.bkwiatkowski.controller.mobile.settings.handler.MobileChangePasswordHandler
 import pl.dev.bkwiatkowski.controller.mobile.settings.handler.MobileSettingsHandler
 import pl.dev.bkwiatkowski.controller.settings.SettingsController
 import pl.dev.bkwiatkowski.controller.settings.handler.SettingsHandler
@@ -495,6 +496,13 @@ fun appModule(config: ApplicationConfig) = module {
     )
   }
 
+  factory<ChangeMobileUserPasswordUC> {
+    ChangeMobileUserPasswordUCImpl(
+      mobileUserRepository = get(),
+      generateAdminPanelUserPasswordHashUC = get(),
+    )
+  }
+
   factory<SaveMobileUserRefreshTokenUC> {
     SaveMobileUserRefreshTokenUCImpl(
       mobileUserRefreshTokenRepository = get(),
@@ -557,8 +565,17 @@ fun appModule(config: ApplicationConfig) = module {
   single { MobileSettingsHandler() }
 
   single {
+    MobileChangePasswordHandler(
+      changeMobileUserPasswordUC = get(),
+      getMobileUserByIdUC = get(),
+      verifyMobileUserAuthenticationUC = get(),
+    )
+  }
+
+  single {
     MobileSettingsController(
       mobileSettingsHandler = get(),
+      mobileChangePasswordHandler = get(),
     )
   } bind Controller::class
 
