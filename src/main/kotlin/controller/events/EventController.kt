@@ -8,6 +8,7 @@ import pl.dev.bkwiatkowski.controller.events.handler.DeleteEventHandler
 import pl.dev.bkwiatkowski.controller.events.handler.EventDetailHandler
 import pl.dev.bkwiatkowski.controller.events.handler.EventListHandler
 import pl.dev.bkwiatkowski.controller.events.handler.EventParticipantsProgressionHandler
+import pl.dev.bkwiatkowski.controller.events.handler.GetUserSessionWaypointDetailsHandler
 import pl.dev.bkwiatkowski.controller.events.handler.EventImageHandler
 import pl.dev.bkwiatkowski.core.routing.Controller
 
@@ -18,6 +19,7 @@ class EventController(
   private val deleteEventHandler: DeleteEventHandler,
   private val completeEventHandler: CompleteEventHandler,
   private val eventParticipantsProgressionHandler: EventParticipantsProgressionHandler,
+  private val eventGetUserSessionWaypointDetailsHandler: GetUserSessionWaypointDetailsHandler,
   private val createEventSessionHandler: pl.dev.bkwiatkowski.controller.events.handler.CreateEventSessionHandler,
   private val setEventSessionJoinableHandler: pl.dev.bkwiatkowski.controller.events.handler.SetEventSessionJoinableHandler,
   private val closeEventSessionHandler: pl.dev.bkwiatkowski.controller.events.handler.CloseEventSessionHandler,
@@ -43,6 +45,10 @@ class EventController(
           eventParticipantsProgressionHandler.handle(call)
         }
 
+        get("{id}/session/{sessionUuid}/user/{userId}/waypoints") {
+          eventGetUserSessionWaypointDetailsHandler.handle(call)
+        }
+
         post("/complete") {
           completeEventHandler.handle(call)
         }
@@ -59,7 +65,7 @@ class EventController(
           closeEventSessionHandler.handle(call)
         }
 
-        get("images/{path...}") {
+        get("images") {
           imageHandler.handle(call)
         }
 

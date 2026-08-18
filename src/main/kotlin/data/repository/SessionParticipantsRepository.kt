@@ -11,6 +11,7 @@ import pl.dev.bkwiatkowski.core.database.initTable
 import pl.dev.bkwiatkowski.core.either
 import pl.dev.bkwiatkowski.data.dao.SessionParticipantDAO
 import pl.dev.bkwiatkowski.data.dao.SessionWaypointDetailDAO
+import pl.dev.bkwiatkowski.data.dao.MapWaypointDAO
 import pl.dev.bkwiatkowski.data.entity.SessionParticipantsTable
 import pl.dev.bkwiatkowski.data.entity.SessionWaypointDetailsTable
 import pl.dev.bkwiatkowski.data.mapper.toDomain
@@ -143,15 +144,20 @@ class SessionParticipantsRepositoryImpl(
     database.getRight().dbQuery {
       SessionWaypointDetailDAO.find {
         (SessionWaypointDetailsTable.sessionUuid eq sessionUuid) and (SessionWaypointDetailsTable.userId eq userId)
-      }.map { it.toDomain() }
-        .toList()
+      }.map { detailDao ->
+        val waypointLabel = MapWaypointDAO.findById(detailDao.waypointId)?.label
+        detailDao.toDomain(label = waypointLabel)
+      }.toList()
     }.getRight()
   }
 
   override suspend fun getSessionWaypointDetails(sessionUuid: String): Either<DomainError, List<SessionWaypointDetail>> = either {
     database.getRight().dbQuery {
       SessionWaypointDetailDAO.find { SessionWaypointDetailsTable.sessionUuid eq sessionUuid }
-        .map { it.toDomain() }
+        .map { detailDao ->
+          val waypointLabel = MapWaypointDAO.findById(detailDao.waypointId)?.label
+          detailDao.toDomain(label = waypointLabel)
+        }
         .toList()
     }.getRight()
   }

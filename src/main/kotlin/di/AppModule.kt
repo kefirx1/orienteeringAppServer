@@ -340,6 +340,8 @@ fun appModule(config: ApplicationConfig) = module {
 
   single { EventParticipantsProgressionHandler(getEventParticipantsProgressionUC = get(), getEventByIdUC = get(), getAdminPanelUserByIdUC = get()) }
 
+  single { GetUserSessionWaypointDetailsHandler(getUserSessionWaypointDetailsUC = get(), getEventByIdUC = get()) }
+
   factory<CompleteEventUC> {
     CompleteEventUCImpl(eventRepository = get())
   }
@@ -372,6 +374,7 @@ fun appModule(config: ApplicationConfig) = module {
       deleteEventHandler = get(),
       completeEventHandler = get(),
       eventParticipantsProgressionHandler = get(),
+      eventGetUserSessionWaypointDetailsHandler = get(),
       createEventSessionHandler = get(),
       setEventSessionJoinableHandler = get(),
       closeEventSessionHandler = get(),

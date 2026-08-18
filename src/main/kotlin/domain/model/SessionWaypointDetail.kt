@@ -8,5 +8,6 @@ data class SessionWaypointDetail(
   val userId: Int,
   val waypointId: Int,
   val visitedAt: LocalDateTime,
-  val imagePath: String,
+  val imagePath: String?,
+  val label: String? = null,
 )

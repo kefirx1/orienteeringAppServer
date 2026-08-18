@@ -5,6 +5,7 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
+import io.ktor.server.request.*
 import pl.dev.bkwiatkowski.core.EnvironmentConfig
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
@@ -13,6 +14,7 @@ import pl.dev.bkwiatkowski.domain.model.AdminPanelUser
 import pl.dev.bkwiatkowski.domain.usecase.GetAdminPanelUserByIdUC
 import pl.dev.bkwiatkowski.domain.usecase.GetEventByIdUC
 import java.io.File
+import java.net.URLDecoder
 
 class EventImageHandler(
   private val environmentConfig: EnvironmentConfig,
@@ -35,7 +37,9 @@ class EventImageHandler(
       return
     }
 
-    val relativePath = call.parameters["path"] ?: run {
+    val relativePath = call.request.queryParameters["path"]?.let { path ->
+      URLDecoder.decode(path, Charsets.UTF_8.name())
+    } ?: run {
       call.respond(HttpStatusCode.BadRequest)
       return
     }

@@ -739,7 +739,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-
   /api/events/{id}/session/{sessionUuid}/user/{userId}/waypoints:
     get:
       summary: "Get session waypoint details for a mobile user"
@@ -802,15 +801,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /api/events/images/{path...}:
+  /api/events/images:
     get:
-      summary: "Get event image file"
-      description: "Returns a JPG image file stored for event sessions. The path parameter is a greedy path (relative storage path) and the first segment is expected to be the session UUID. Access restricted to event owner or admin. Requires authentication."
+      summary: "Get event image file (query param)"
+      description: "Alternative endpoint that accepts the relative image path as a query parameter `path`. Useful for clients that percent-encode slashes in path variables. Example: /api/events/images?path={sessionUuid}/photo.jpg. Requires authentication."
       security:
         - bearerAuth: [ ]
       parameters:
         - name: path
-          in: path
+          in: query
           required: true
           schema:
             type: string
@@ -1420,36 +1419,36 @@ components:
         isLiveTracking:
           type: boolean
           description: "Whether the participant was in live tracking mode (true) or offline/replay mode (false)"
-            SessionWaypointDetailWebDto:
-              type: object
-              required:
-                - waypointId
-                - visitedAt
-              properties:
-                waypointId:
-                  type: integer
-                  description: "Identifier of the visited waypoint"
-                visitedAt:
-                  type: string
-                  format: date-time
-                  description: "Timestamp when the waypoint was visited (LocalDateTime)"
-                label:
-                  type: string
-                  nullable: true
-                  description: "Optional waypoint label"
-                imagePath:
-                  type: string
-                  nullable: true
-                  description: "Optional relative path to an uploaded image associated with the visit"
-            SessionWaypointDetailsWebResponseDto:
-              type: object
-              required:
-                - sessionWaypointDetails
-              properties:
-                sessionWaypointDetails:
-                  type: array
-                  items:
-                    $ref: "#/components/schemas/SessionWaypointDetailWebDto"
+    SessionWaypointDetailWebDto:
+      type: object
+      required:
+        - waypointId
+        - visitedAt
+      properties:
+        waypointId:
+          type: integer
+          description: "Identifier of the visited waypoint"
+        visitedAt:
+          type: string
+          format: date-time
+          description: "Timestamp when the waypoint was visited (LocalDateTime)"
+        label:
+          type: string
+          nullable: true
+          description: "Optional waypoint label"
+        imagePath:
+          type: string
+          nullable: true
+          description: "Optional relative path to an uploaded image associated with the visit"
+    SessionWaypointDetailsWebResponseDto:
+      type: object
+      required:
+        - sessionWaypointDetails
+      properties:
+        sessionWaypointDetails:
+          type: array
+          items:
+            $ref: "#/components/schemas/SessionWaypointDetailWebDto"
   securitySchemes:
     bearerAuth:
       type: http

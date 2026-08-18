@@ -1102,6 +1102,43 @@
     }
   }
 };
+            defs["SessionWaypointDetailWebDto"] = {
+  "required" : [ "visitedAt", "waypointId" ],
+  "type" : "object",
+  "properties" : {
+    "waypointId" : {
+      "type" : "integer",
+      "description" : "Identifier of the visited waypoint"
+    },
+    "visitedAt" : {
+      "type" : "string",
+      "description" : "Timestamp when the waypoint was visited (LocalDateTime)",
+      "format" : "date-time"
+    },
+    "label" : {
+      "type" : "string",
+      "description" : "Optional waypoint label",
+      "nullable" : true
+    },
+    "imagePath" : {
+      "type" : "string",
+      "description" : "Optional relative path to an uploaded image associated with the visit",
+      "nullable" : true
+    }
+  }
+};
+            defs["SessionWaypointDetailsWebResponseDto"] = {
+  "required" : [ "sessionWaypointDetails" ],
+  "type" : "object",
+  "properties" : {
+    "sessionWaypointDetails" : {
+      "type" : "array",
+      "items" : {
+        "$ref" : "#/components/schemas/SessionWaypointDetailWebDto"
+      }
+    }
+  }
+};
             defs["SetEventSessionJoinableRequestDto"] = {
   "required" : [ "userCanJoin" ],
   "type" : "object",
@@ -1274,8 +1311,11 @@
                     <li data-group="Default" data-name="apiEventsIdSessionPost" class="">
                       <a href="#api-Default-apiEventsIdSessionPost">apiEventsIdSessionPost</a>
                     </li>
-                    <li data-group="Default" data-name="apiEventsImagesPathGet" class="">
-                      <a href="#api-Default-apiEventsImagesPathGet">apiEventsImagesPathGet</a>
+                    <li data-group="Default" data-name="apiEventsIdSessionSessionUuidUserUserIdWaypointsGet" class="">
+                      <a href="#api-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet">apiEventsIdSessionSessionUuidUserUserIdWaypointsGet</a>
+                    </li>
+                    <li data-group="Default" data-name="apiEventsImagesGet" class="">
+                      <a href="#api-Default-apiEventsImagesGet">apiEventsImagesGet</a>
                     </li>
                     <li data-group="Default" data-name="apiEventsPost" class="">
                       <a href="#api-Default-apiEventsPost">apiEventsPost</a>
@@ -8845,44 +8885,652 @@ except ApiException as e:
                         </article>
                       </div>
                       <hr>
-                    <div id="api-Default-apiEventsImagesPathGet">
-                      <article id="api-Default-apiEventsImagesPathGet-0" data-group="User" data-name="apiEventsImagesPathGet" data-version="0">
+                    <div id="api-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet">
+                      <article id="api-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-0" data-group="User" data-name="apiEventsIdSessionSessionUuidUserUserIdWaypointsGet" data-version="0">
                         <div class="pull-left">
-                          <h1>apiEventsImagesPathGet</h1>
-                          <p>Get event image file</p>
+                          <h1>apiEventsIdSessionSessionUuidUserUserIdWaypointsGet</h1>
+                          <p>Get session waypoint details for a mobile user</p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
                         <p></p>
-                        <p class="marked">Returns a JPG image file stored for event sessions. The path parameter is a greedy path (relative storage path) and the first segment is expected to be the session UUID. Access restricted to event owner or admin. Requires authentication.</p>
+                        <p class="marked">Retrieves a list of waypoint visit details (visitedAt, label, image path) for a given session UUID and mobile user. Accessible by event owner or admin. **Requires authentication.**</p>
                         <p></p>
                         <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/events/images/{path...}</span></code></pre>
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/events/{id}/session/{sessionUuid}/user/{userId}/waypoints</span></code></pre>
                         <p>
                           <h3>Usage and SDK Samples</h3>
                         </p>
                         <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Default-apiEventsImagesPathGet-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-Default-apiEventsImagesPathGet-0-java">Java</a></li>
-                          <li class=""><a href="#examples-Default-apiEventsImagesPathGet-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Default-apiEventsImagesPathGet-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-Default-apiEventsImagesPathGet-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-Default-apiEventsImagesPathGet-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Default-apiEventsImagesPathGet-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-Default-apiEventsImagesPathGet-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-Default-apiEventsImagesPathGet-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-Default-apiEventsImagesPathGet-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-Default-apiEventsImagesPathGet-0-python">Python</a></li>
+                          <li class="active"><a href="#examples-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-0-python">Python</a></li>
                         </ul>
 
                         <div class="tab-content">
-                          <div class="tab-pane active" id="examples-Default-apiEventsImagesPathGet-0-curl">
+                          <div class="tab-pane active" id="examples-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-0-curl">
+                           <pre class="prettyprint"><code class="language-bsh">curl -X GET\
+ -H "Authorization: Bearer [[accessToken]]"\
+-H "Accept: application/json"\
+"http://localhost:8080/api/events/{id}/session/{sessionUuid}/user/{userId}/waypoints"</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.DefaultApi;
+
+import java.io.File;
+import java.util.*;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+
+
+        DefaultApi apiInstance = new DefaultApi();
+        Integer id = 56; // Integer | Event ID
+        String sessionUuid = sessionUuid_example; // String | UUID of the event session
+        Integer userId = 56; // Integer | Mobile user ID
+        try {
+            SessionWaypointDetailsWebResponseDto result = apiInstance.apiEventsIdSessionSessionUuidUserUserIdWaypointsGet(id, sessionUuid, userId);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#apiEventsIdSessionSessionUuidUserUserIdWaypointsGet");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
+
+public class DefaultApiExample {
+
+    public static void main(String[] args) {
+        DefaultApi apiInstance = new DefaultApi();
+        Integer id = 56; // Integer | Event ID
+        String sessionUuid = sessionUuid_example; // String | UUID of the event session
+        Integer userId = 56; // Integer | Mobile user ID
+        try {
+            SessionWaypointDetailsWebResponseDto result = apiInstance.apiEventsIdSessionSessionUuidUserUserIdWaypointsGet(id, sessionUuid, userId);
+            System.out.println(result);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling DefaultApi#apiEventsIdSessionSessionUuidUserUserIdWaypointsGet");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+Integer *id = 56; // Event ID
+String *sessionUuid = sessionUuid_example; // UUID of the event session
+Integer *userId = 56; // Mobile user ID
+
+DefaultApi *apiInstance = [[DefaultApi alloc] init];
+
+// Get session waypoint details for a mobile user
+[apiInstance apiEventsIdSessionSessionUuidUserUserIdWaypointsGetWith:id
+    sessionUuid:sessionUuid
+    userId:userId
+              completionHandler: ^(SessionWaypointDetailsWebResponseDto output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var OrienteeringAppServerApi = require('orienteering_app_server_api');
+var defaultClient = OrienteeringAppServerApi.ApiClient.instance;
+
+
+var api = new OrienteeringAppServerApi.DefaultApi()
+var id = 56; // {{Integer}} Event ID
+var sessionUuid = sessionUuid_example; // {{String}} UUID of the event session
+var userId = 56; // {{Integer}} Mobile user ID
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully. Returned data: ' + data);
+  }
+};
+api.apiEventsIdSessionSessionUuidUserUserIdWaypointsGet(id, sessionUuid, userId, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class apiEventsIdSessionSessionUuidUserUserIdWaypointsGetExample
+    {
+        public void main()
+        {
+
+
+            var apiInstance = new DefaultApi();
+            var id = 56;  // Integer | Event ID
+            var sessionUuid = sessionUuid_example;  // String | UUID of the event session
+            var userId = 56;  // Integer | Mobile user ID
+
+            try
+            {
+                // Get session waypoint details for a mobile user
+                SessionWaypointDetailsWebResponseDto result = apiInstance.apiEventsIdSessionSessionUuidUserUserIdWaypointsGet(id, sessionUuid, userId);
+                Debug.WriteLine(result);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling DefaultApi.apiEventsIdSessionSessionUuidUserUserIdWaypointsGet: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+$api_instance = new Swagger\Client\ApiDefaultApi();
+$id = 56; // Integer | Event ID
+$sessionUuid = sessionUuid_example; // String | UUID of the event session
+$userId = 56; // Integer | Mobile user ID
+
+try {
+    $result = $api_instance->apiEventsIdSessionSessionUuidUserUserIdWaypointsGet($id, $sessionUuid, $userId);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling DefaultApi->apiEventsIdSessionSessionUuidUserUserIdWaypointsGet: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::DefaultApi;
+
+
+my $api_instance = WWW::SwaggerClient::DefaultApi->new();
+my $id = 56; # Integer | Event ID
+my $sessionUuid = sessionUuid_example; # String | UUID of the event session
+my $userId = 56; # Integer | Mobile user ID
+
+eval { 
+    my $result = $api_instance->apiEventsIdSessionSessionUuidUserUserIdWaypointsGet(id => $id, sessionUuid => $sessionUuid, userId => $userId);
+    print Dumper($result);
+};
+if ($@) {
+    warn "Exception when calling DefaultApi->apiEventsIdSessionSessionUuidUserUserIdWaypointsGet: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+
+# create an instance of the API class
+api_instance = swagger_client.DefaultApi()
+id = 56 # Integer | Event ID
+sessionUuid = sessionUuid_example # String | UUID of the event session
+userId = 56 # Integer | Mobile user ID
+
+try: 
+    # Get session waypoint details for a mobile user
+    api_response = api_instance.api_events_id_session_session_uuid_user_user_id_waypoints_get(id, sessionUuid, userId)
+    pprint(api_response)
+except ApiException as e:
+    print("Exception when calling DefaultApi->apiEventsIdSessionSessionUuidUserUserIdWaypointsGet: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">id*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_apiEventsIdSessionSessionUuidUserUserIdWaypointsGet_id">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Integer
+                                                  </span>
+                                  
+                                                      <div class="inner description">
+                                                          Event ID
+                                                      </div>
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                                  <tr><td style="width:150px;">sessionUuid*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_apiEventsIdSessionSessionUuidUserUserIdWaypointsGet_sessionUuid">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      String
+                                                  </span>
+                                  
+                                                      <div class="inner description">
+                                                          UUID of the event session
+                                                      </div>
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                                  <tr><td style="width:150px;">userId*</td>
+                                  <td>
+                                  
+                                  
+                                      <div id="d2e199_apiEventsIdSessionSessionUuidUserUserIdWaypointsGet_userId">
+                                          <div class="json-schema-view">
+                                              <div class="primitive">
+                                                  <span class="type">
+                                                      Integer
+                                                  </span>
+                                  
+                                                      <div class="inner description">
+                                                          Mobile user ID
+                                                      </div>
+                                              </div>
+                                                  <div class="inner required">
+                                                      Required
+                                                  </div>
+                                          </div>
+                                      </div>
+                                  </td>
+                                  </tr>
+                            </table>
+
+
+
+
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - List of session waypoint details returned </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-200-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-200-schema">
+                                  <div id='responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "List of session waypoint details returned",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/SessionWaypointDetailsWebResponseDto"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-200-schema-200');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-200-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 400 - Bad Request - invalid parameters </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-400-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-400-schema">
+                                  <div id='responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-400-schema-400' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Bad Request - invalid parameters",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-400-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-400-schema-400');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-400-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 401 - Unauthorized - missing or invalid token </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-401-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-401-schema">
+                                  <div id='responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-401-schema-401' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Unauthorized - missing or invalid token",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-401-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-401-schema-401');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-401-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 403 - Forbidden - Not authenticated or no permission to view this event&#x27;s session waypoint details </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-403-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-403-schema">
+                                  <div id='responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-403-schema-403' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Forbidden - Not authenticated or no permission to view this event's session waypoint details",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-403-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-403-schema-403');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-403-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 404 - Not Found - Event, session or user does not exist </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-404-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-404-schema">
+                                  <div id='responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-404-schema-404' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Not Found - Event, session or user does not exist",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-404-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-404-schema-404');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-404-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                            <h3> Status: 500 - Internal Server Error </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-500-schema">Schema</a>
+                                </li>
+
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-500-schema">
+                                  <div id='responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-500-schema-500' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Internal Server Error",
+  "content" : {
+    "application/json" : {
+      "schema" : {
+        "$ref" : "#/components/schemas/ErrorResponse"
+      }
+    }
+  }
+};
+                                        var schema = schemaWrapper.content["application/json"].schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.components = {};
+                                          schemaWrapper.components.schemas = Object.assign({}, defs);
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-500-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-500-schema-500');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-500-schema-data' type='hidden' value=''></input>
+                                </div>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Default-apiEventsImagesGet">
+                      <article id="api-Default-apiEventsImagesGet-0" data-group="User" data-name="apiEventsImagesGet" data-version="0">
+                        <div class="pull-left">
+                          <h1>apiEventsImagesGet</h1>
+                          <p>Get event image file (query param)</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Alternative endpoint that accepts the relative image path as a query parameter &#x60;path&#x60;. Useful for clients that percent-encode slashes in path variables. Example: /api/events/images?path&#x3D;{sessionUuid}/photo.jpg. Requires authentication.</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/api/events/images</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Default-apiEventsImagesGet-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsImagesGet-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsImagesGet-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiEventsImagesGet-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Default-apiEventsImagesGet-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsImagesGet-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Default-apiEventsImagesGet-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Default-apiEventsImagesGet-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsImagesGet-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsImagesGet-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Default-apiEventsImagesGet-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Default-apiEventsImagesGet-0-curl">
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
  -H "Authorization: Bearer [[accessToken]]"\
 -H "Accept: image/jpeg,application/json"\
-"http://localhost:8080/api/events/images/{path...}"</code></pre>
+"http://localhost:8080/api/events/images?path="</code></pre>
                           </div>
-                          <div class="tab-pane" id="examples-Default-apiEventsImagesPathGet-0-java">
+                          <div class="tab-pane" id="examples-Default-apiEventsImagesGet-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
 import io.swagger.client.auth.*;
 import io.swagger.client.model.*;
@@ -8900,17 +9548,17 @@ public class DefaultApiExample {
         DefaultApi apiInstance = new DefaultApi();
         String path = path_example; // String | Relative path under images storage, e.g. '{sessionUuid}/photo.jpg'
         try {
-            byte[] result = apiInstance.apiEventsImagesPathGet(path);
+            byte[] result = apiInstance.apiEventsImagesGet(path);
             System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#apiEventsImagesPathGet");
+            System.err.println("Exception when calling DefaultApi#apiEventsImagesGet");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
 
-                          <div class="tab-pane" id="examples-Default-apiEventsImagesPathGet-0-android">
+                          <div class="tab-pane" id="examples-Default-apiEventsImagesGet-0-android">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
 
 public class DefaultApiExample {
@@ -8919,27 +9567,27 @@ public class DefaultApiExample {
         DefaultApi apiInstance = new DefaultApi();
         String path = path_example; // String | Relative path under images storage, e.g. '{sessionUuid}/photo.jpg'
         try {
-            byte[] result = apiInstance.apiEventsImagesPathGet(path);
+            byte[] result = apiInstance.apiEventsImagesGet(path);
             System.out.println(result);
         } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#apiEventsImagesPathGet");
+            System.err.println("Exception when calling DefaultApi#apiEventsImagesGet");
             e.printStackTrace();
         }
     }
 }</code></pre>
                           </div>
   <!--
-  <div class="tab-pane" id="examples-Default-apiEventsImagesPathGet-0-groovy">
+  <div class="tab-pane" id="examples-Default-apiEventsImagesGet-0-groovy">
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
-                            <div class="tab-pane" id="examples-Default-apiEventsImagesPathGet-0-objc">
+                            <div class="tab-pane" id="examples-Default-apiEventsImagesGet-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
 String *path = path_example; // Relative path under images storage, e.g. '{sessionUuid}/photo.jpg'
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Get event image file
-[apiInstance apiEventsImagesPathGetWith:path
+// Get event image file (query param)
+[apiInstance apiEventsImagesGetWith:path
               completionHandler: ^(byte[] output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
@@ -8951,7 +9599,7 @@ DefaultApi *apiInstance = [[DefaultApi alloc] init];
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-apiEventsImagesPathGet-0-javascript">
+                            <div class="tab-pane" id="examples-Default-apiEventsImagesGet-0-javascript">
                               <pre class="prettyprint"><code class="language-js">var OrienteeringAppServerApi = require('orienteering_app_server_api');
 var defaultClient = OrienteeringAppServerApi.ApiClient.instance;
 
@@ -8966,14 +9614,14 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.apiEventsImagesPathGet(path, callback);
+api.apiEventsImagesGet(path, callback);
 </code></pre>
                             </div>
 
-                            <!--<div class="tab-pane" id="examples-Default-apiEventsImagesPathGet-0-angular">
+                            <!--<div class="tab-pane" id="examples-Default-apiEventsImagesGet-0-angular">
               <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
             </div>-->
-                            <div class="tab-pane" id="examples-Default-apiEventsImagesPathGet-0-csharp">
+                            <div class="tab-pane" id="examples-Default-apiEventsImagesGet-0-csharp">
                               <pre class="prettyprint"><code class="language-cs">using System;
 using System.Diagnostics;
 using IO.Swagger.Api;
@@ -8982,7 +9630,7 @@ using IO.Swagger.Model;
 
 namespace Example
 {
-    public class apiEventsImagesPathGetExample
+    public class apiEventsImagesGetExample
     {
         public void main()
         {
@@ -8993,13 +9641,13 @@ namespace Example
 
             try
             {
-                // Get event image file
-                byte[] result = apiInstance.apiEventsImagesPathGet(path);
+                // Get event image file (query param)
+                byte[] result = apiInstance.apiEventsImagesGet(path);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
             {
-                Debug.Print("Exception when calling DefaultApi.apiEventsImagesPathGet: " + e.Message );
+                Debug.Print("Exception when calling DefaultApi.apiEventsImagesGet: " + e.Message );
             }
         }
     }
@@ -9007,7 +9655,7 @@ namespace Example
 </code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-apiEventsImagesPathGet-0-php">
+                            <div class="tab-pane" id="examples-Default-apiEventsImagesGet-0-php">
                               <pre class="prettyprint"><code class="language-php"><&#63;php
 require_once(__DIR__ . '/vendor/autoload.php');
 
@@ -9016,15 +9664,15 @@ $api_instance = new Swagger\Client\ApiDefaultApi();
 $path = path_example; // String | Relative path under images storage, e.g. '{sessionUuid}/photo.jpg'
 
 try {
-    $result = $api_instance->apiEventsImagesPathGet($path);
+    $result = $api_instance->apiEventsImagesGet($path);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling DefaultApi->apiEventsImagesPathGet: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling DefaultApi->apiEventsImagesGet: ', $e->getMessage(), PHP_EOL;
 }
 ?></code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-apiEventsImagesPathGet-0-perl">
+                            <div class="tab-pane" id="examples-Default-apiEventsImagesGet-0-perl">
                               <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
 use WWW::SwaggerClient::Configuration;
 use WWW::SwaggerClient::DefaultApi;
@@ -9034,15 +9682,15 @@ my $api_instance = WWW::SwaggerClient::DefaultApi->new();
 my $path = path_example; # String | Relative path under images storage, e.g. '{sessionUuid}/photo.jpg'
 
 eval { 
-    my $result = $api_instance->apiEventsImagesPathGet(path => $path);
+    my $result = $api_instance->apiEventsImagesGet(path => $path);
     print Dumper($result);
 };
 if ($@) {
-    warn "Exception when calling DefaultApi->apiEventsImagesPathGet: $@\n";
+    warn "Exception when calling DefaultApi->apiEventsImagesGet: $@\n";
 }</code></pre>
                             </div>
 
-                            <div class="tab-pane" id="examples-Default-apiEventsImagesPathGet-0-python">
+                            <div class="tab-pane" id="examples-Default-apiEventsImagesGet-0-python">
                               <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
 import time
 import swagger_client
@@ -9055,63 +9703,63 @@ api_instance = swagger_client.DefaultApi()
 path = path_example # String | Relative path under images storage, e.g. '{sessionUuid}/photo.jpg'
 
 try: 
-    # Get event image file
-    api_response = api_instance.api_events_images_path_get(path)
+    # Get event image file (query param)
+    api_response = api_instance.api_events_images_get(path)
     pprint(api_response)
 except ApiException as e:
-    print("Exception when calling DefaultApi->apiEventsImagesPathGet: %s\n" % e)</code></pre>
+    print("Exception when calling DefaultApi->apiEventsImagesGet: %s\n" % e)</code></pre>
                             </div>
                           </div>
 
                           <h2>Parameters</h2>
 
-                            <div class="methodsubtabletitle">Path parameters</div>
+
+
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
                             <table id="methodsubtable">
-                                <tr>
-                                  <th width="150px">Name</th>
-                                  <th>Description</th>
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">path*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_apiEventsImagesGet_path">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    String
+                                                </span>
+                                
+                                                    <div class="inner description">
+                                                        Relative path under images storage, e.g. &#x27;{sessionUuid}/photo.jpg&#x27;
+                                                    </div>
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
                                 </tr>
-                                  <tr><td style="width:150px;">path*</td>
-                                  <td>
-                                  
-                                  
-                                      <div id="d2e199_apiEventsImagesPathGet_path">
-                                          <div class="json-schema-view">
-                                              <div class="primitive">
-                                                  <span class="type">
-                                                      String
-                                                  </span>
-                                  
-                                                      <div class="inner description">
-                                                          Relative path under images storage, e.g. &#x27;{sessionUuid}/photo.jpg&#x27;
-                                                      </div>
-                                              </div>
-                                                  <div class="inner required">
-                                                      Required
-                                                  </div>
-                                          </div>
-                                      </div>
-                                  </td>
-                                  </tr>
                             </table>
-
-
-
-
 
                           <h2>Responses</h2>
                             <h3> Status: 200 - JPEG image binary </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-apiEventsImagesPathGet-200-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-apiEventsImagesGet-200-schema">Schema</a>
                                 </li>
 
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-apiEventsImagesPathGet-200-schema">
-                                  <div id='responses-apiEventsImagesPathGet-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                <div class="tab-pane active" id="responses-apiEventsImagesGet-200-schema">
+                                  <div id='responses-apiEventsImagesGet-200-schema-200' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
@@ -9139,14 +9787,14 @@ except ApiException as e:
 
                                         //console.log(JSON.stringify(schema));
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-apiEventsImagesPathGet-200-schema-data').val(stringify(schema));
-                                        var result = $('#responses-apiEventsImagesPathGet-200-schema-200');
+                                        $('#responses-apiEventsImagesGet-200-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsImagesGet-200-schema-200');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-apiEventsImagesPathGet-200-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-apiEventsImagesGet-200-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 
@@ -9154,14 +9802,14 @@ except ApiException as e:
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-apiEventsImagesPathGet-401-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-apiEventsImagesGet-401-schema">Schema</a>
                                 </li>
 
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-apiEventsImagesPathGet-401-schema">
-                                  <div id='responses-apiEventsImagesPathGet-401-schema-401' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                <div class="tab-pane active" id="responses-apiEventsImagesGet-401-schema">
+                                  <div id='responses-apiEventsImagesGet-401-schema-401' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
@@ -9187,14 +9835,14 @@ except ApiException as e:
 
                                         //console.log(JSON.stringify(schema));
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-apiEventsImagesPathGet-401-schema-data').val(stringify(schema));
-                                        var result = $('#responses-apiEventsImagesPathGet-401-schema-401');
+                                        $('#responses-apiEventsImagesGet-401-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsImagesGet-401-schema-401');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-apiEventsImagesPathGet-401-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-apiEventsImagesGet-401-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 
@@ -9202,14 +9850,14 @@ except ApiException as e:
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-apiEventsImagesPathGet-403-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-apiEventsImagesGet-403-schema">Schema</a>
                                 </li>
 
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-apiEventsImagesPathGet-403-schema">
-                                  <div id='responses-apiEventsImagesPathGet-403-schema-403' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                <div class="tab-pane active" id="responses-apiEventsImagesGet-403-schema">
+                                  <div id='responses-apiEventsImagesGet-403-schema-403' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
@@ -9235,14 +9883,14 @@ except ApiException as e:
 
                                         //console.log(JSON.stringify(schema));
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-apiEventsImagesPathGet-403-schema-data').val(stringify(schema));
-                                        var result = $('#responses-apiEventsImagesPathGet-403-schema-403');
+                                        $('#responses-apiEventsImagesGet-403-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsImagesGet-403-schema-403');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-apiEventsImagesPathGet-403-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-apiEventsImagesGet-403-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 
@@ -9250,14 +9898,14 @@ except ApiException as e:
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-apiEventsImagesPathGet-404-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-apiEventsImagesGet-404-schema">Schema</a>
                                 </li>
 
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-apiEventsImagesPathGet-404-schema">
-                                  <div id='responses-apiEventsImagesPathGet-404-schema-404' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                <div class="tab-pane active" id="responses-apiEventsImagesGet-404-schema">
+                                  <div id='responses-apiEventsImagesGet-404-schema-404' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
@@ -9283,14 +9931,14 @@ except ApiException as e:
 
                                         //console.log(JSON.stringify(schema));
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-apiEventsImagesPathGet-404-schema-data').val(stringify(schema));
-                                        var result = $('#responses-apiEventsImagesPathGet-404-schema-404');
+                                        $('#responses-apiEventsImagesGet-404-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsImagesGet-404-schema-404');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-apiEventsImagesPathGet-404-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-apiEventsImagesGet-404-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 
@@ -9298,14 +9946,14 @@ except ApiException as e:
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-apiEventsImagesPathGet-415-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-apiEventsImagesGet-415-schema">Schema</a>
                                 </li>
 
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-apiEventsImagesPathGet-415-schema">
-                                  <div id='responses-apiEventsImagesPathGet-415-schema-415' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                <div class="tab-pane active" id="responses-apiEventsImagesGet-415-schema">
+                                  <div id='responses-apiEventsImagesGet-415-schema-415' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
@@ -9331,14 +9979,14 @@ except ApiException as e:
 
                                         //console.log(JSON.stringify(schema));
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-apiEventsImagesPathGet-415-schema-data').val(stringify(schema));
-                                        var result = $('#responses-apiEventsImagesPathGet-415-schema-415');
+                                        $('#responses-apiEventsImagesGet-415-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsImagesGet-415-schema-415');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-apiEventsImagesPathGet-415-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-apiEventsImagesGet-415-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 
@@ -9346,14 +9994,14 @@ except ApiException as e:
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
                                 <li class="active">
-                                  <a data-toggle="tab" href="#responses-apiEventsImagesPathGet-500-schema">Schema</a>
+                                  <a data-toggle="tab" href="#responses-apiEventsImagesGet-500-schema">Schema</a>
                                 </li>
 
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-apiEventsImagesPathGet-500-schema">
-                                  <div id='responses-apiEventsImagesPathGet-500-schema-500' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                <div class="tab-pane active" id="responses-apiEventsImagesGet-500-schema">
+                                  <div id='responses-apiEventsImagesGet-500-schema-500' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
                                     <script>
                                       $(document).ready(function() {
                                         var schemaWrapper = {
@@ -9379,14 +10027,14 @@ except ApiException as e:
 
                                         //console.log(JSON.stringify(schema));
                                         var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-apiEventsImagesPathGet-500-schema-data').val(stringify(schema));
-                                        var result = $('#responses-apiEventsImagesPathGet-500-schema-500');
+                                        $('#responses-apiEventsImagesGet-500-schema-data').val(stringify(schema));
+                                        var result = $('#responses-apiEventsImagesGet-500-schema-500');
                                         result.empty();
                                         result.append(view.render());
                                       });
                                     </script>
                                   </div>
-                                  <input id='responses-apiEventsImagesPathGet-500-schema-data' type='hidden' value=''></input>
+                                  <input id='responses-apiEventsImagesGet-500-schema-data' type='hidden' value=''></input>
                                 </div>
                             </div>
 

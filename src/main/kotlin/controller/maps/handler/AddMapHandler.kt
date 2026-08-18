@@ -10,8 +10,6 @@ import pl.dev.bkwiatkowski.controller.maps.dto.request.AddMapRequestDto
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.either
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
-import pl.dev.bkwiatkowski.core.security.token.USER_ROLE_CLAIM
-import pl.dev.bkwiatkowski.domain.model.AdminPanelUser
 import pl.dev.bkwiatkowski.domain.model.MapWaypoint
 import pl.dev.bkwiatkowski.domain.usecase.AddMapUC
 

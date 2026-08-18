@@ -70,11 +70,12 @@ fun SessionParticipantDAO.toDomain() = SessionParticipant(
   finishedAt = finishedAt,
 )
 
-fun SessionWaypointDetailDAO.toDomain() = SessionWaypointDetail(
+fun SessionWaypointDetailDAO.toDomain(label: String? = null) = SessionWaypointDetail(
   id = id.value,
   sessionUuid = sessionUuid,
   userId = userId,
   waypointId = waypointId,
   visitedAt = visitedAt,
-  imagePath = imagePath,
+  imagePath = imagePath.takeIf { it.isNotBlank() },
+  label = label,
 )
