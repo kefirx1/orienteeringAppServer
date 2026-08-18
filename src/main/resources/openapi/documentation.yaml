@@ -739,6 +739,69 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
+  /api/events/{id}/session/{sessionUuid}/user/{userId}/waypoints:
+    get:
+      summary: "Get session waypoint details for a mobile user"
+      description: "Retrieves a list of waypoint visit details (visitedAt, label, image path) for a given session UUID and mobile user. Accessible by event owner or admin. **Requires authentication.**"
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: "Event ID"
+        - name: sessionUuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "UUID of the event session"
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: "Mobile user ID"
+      responses:
+        "200":
+          description: "List of session waypoint details returned"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionWaypointDetailsWebResponseDto"
+        "400":
+          description: "Bad Request - invalid parameters"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized - missing or invalid token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: "Forbidden - Not authenticated or no permission to view this event's session waypoint details"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Not Found - Event, session or user does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /api/events/images/{path...}:
     get:
       summary: "Get event image file"
@@ -1357,6 +1420,36 @@ components:
         isLiveTracking:
           type: boolean
           description: "Whether the participant was in live tracking mode (true) or offline/replay mode (false)"
+            SessionWaypointDetailWebDto:
+              type: object
+              required:
+                - waypointId
+                - visitedAt
+              properties:
+                waypointId:
+                  type: integer
+                  description: "Identifier of the visited waypoint"
+                visitedAt:
+                  type: string
+                  format: date-time
+                  description: "Timestamp when the waypoint was visited (LocalDateTime)"
+                label:
+                  type: string
+                  nullable: true
+                  description: "Optional waypoint label"
+                imagePath:
+                  type: string
+                  nullable: true
+                  description: "Optional relative path to an uploaded image associated with the visit"
+            SessionWaypointDetailsWebResponseDto:
+              type: object
+              required:
+                - sessionWaypointDetails
+              properties:
+                sessionWaypointDetails:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/SessionWaypointDetailWebDto"
   securitySchemes:
     bearerAuth:
       type: http
