@@ -6,6 +6,7 @@ import java.time.LocalDateTime
 
 @Serializable
 data class MobileSettingsResponseDto(
+  val userId: Int,
   @Contextual
   val serverLocalDateTime: LocalDateTime,
 )

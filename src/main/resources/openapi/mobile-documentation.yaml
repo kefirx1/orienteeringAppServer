@@ -177,7 +177,7 @@ paths:
     get:
       operationId: "getMobileSettings"
       summary: "Get Mobile Settings"
-      description: "Returns mobile client settings including current server time. Used for synchronizing client clock and retrieving configuration."
+      description: "Returns mobile client settings including current server time and the authenticated user's id. Used for synchronizing client clock and retrieving configuration."
       tags:
         - "Mobile Settings"
       security:
@@ -226,6 +226,51 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "403":
           description: "Forbidden - invalid old password or user not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/mobile/user/{userId}/sessions:
+    get:
+      operationId: "getUserSessions"
+      description: "Returns a list of sessions for the specified user (start/finish times, visited waypoint count, map and event names). The userId path parameter must match the authenticated user's id from the JWT token. Requires authentication."
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - "Mobile User"
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "List of user sessions returned"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserSessionsResponseDto"
+        "400":
+          description: "Bad Request - Missing or invalid path parameter"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized - missing or invalid token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: "Forbidden - userId in path does not match authenticated user"
           content:
             application/json:
               schema:
@@ -686,8 +731,12 @@ components:
       type: object
       description: "Mobile client settings response"
       required:
+        - userId
         - serverLocalDateTime
       properties:
+        userId:
+          type: integer
+          description: "Identifier of the authenticated mobile user"
         serverLocalDateTime:
           type: string
           format: date-time
@@ -1010,6 +1059,56 @@ components:
       properties:
         lastVisitedWaypoint:
           $ref: "#/components/schemas/SessionWaypointDetailDto"
+    UserSessionsRequestDto:
+      type: object
+      description: "Request to fetch sessions for a mobile user. The userId must match the authenticated user id from JWT."
+      required:
+        - userId
+      properties:
+        userId:
+          type: integer
+          description: "Identifier of the mobile user"
+    UserSessionDto:
+      type: object
+      description: "Summary information about a user's session"
+      required:
+        - sessionUuid
+        - startedAt
+        - finishedAt
+        - visitedWaypointsCount
+        - mapName
+        - eventName
+      properties:
+        sessionUuid:
+          type: string
+          description: "UUID of the session"
+        startedAt:
+          type: string
+          format: date-time
+          description: "Session start time (server LocalDateTime)"
+        finishedAt:
+          type: string
+          format: date-time
+          description: "Session finish time (server LocalDateTime, not null)"
+        visitedWaypointsCount:
+          type: integer
+          description: "Number of waypoints visited by the user in this session"
+        mapName:
+          type: string
+          description: "Name of the map used in the event"
+        eventName:
+          type: string
+          description: "Name of the event"
+    UserSessionsResponseDto:
+      type: object
+      description: "Response containing list of user session summaries"
+      required:
+        - sessions
+      properties:
+        sessions:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserSessionDto"
   securitySchemes:
     bearerAuth:
       type: http

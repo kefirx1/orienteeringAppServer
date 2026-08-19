@@ -9,14 +9,14 @@ import pl.dev.bkwiatkowski.core.database.DatabaseProvider
 import pl.dev.bkwiatkowski.core.database.dbQuery
 import pl.dev.bkwiatkowski.core.database.initTable
 import pl.dev.bkwiatkowski.core.either
-import pl.dev.bkwiatkowski.data.dao.SessionParticipantDAO
-import pl.dev.bkwiatkowski.data.dao.SessionWaypointDetailDAO
-import pl.dev.bkwiatkowski.data.dao.MapWaypointDAO
+import pl.dev.bkwiatkowski.data.dao.*
+import pl.dev.bkwiatkowski.data.entity.EventSessionTable
 import pl.dev.bkwiatkowski.data.entity.SessionParticipantsTable
 import pl.dev.bkwiatkowski.data.entity.SessionWaypointDetailsTable
 import pl.dev.bkwiatkowski.data.mapper.toDomain
 import pl.dev.bkwiatkowski.domain.model.SessionParticipant
 import pl.dev.bkwiatkowski.domain.model.SessionWaypointDetail
+import pl.dev.bkwiatkowski.domain.model.UserSessionSummary
 import java.time.LocalDateTime
 
 interface SessionParticipantsRepository {
@@ -46,6 +46,8 @@ interface SessionParticipantsRepository {
   ): Either<DomainError, List<SessionWaypointDetail>>
 
   suspend fun getSessionWaypointDetails(sessionUuid: String): Either<DomainError, List<SessionWaypointDetail>>
+
+  suspend fun getUserSessionsSummary(userId: Int): Either<DomainError, List<UserSessionSummary>>
 
   suspend fun finishParticipantSession(
     sessionUuid: String,
@@ -159,6 +161,40 @@ class SessionParticipantsRepositoryImpl(
           detailDao.toDomain(label = waypointLabel)
         }
         .toList()
+    }.getRight()
+  }
+
+  override suspend fun getUserSessionsSummary(userId: Int): Either<DomainError, List<UserSessionSummary>> = either {
+    database.getRight().dbQuery {
+      val participantDao = SessionParticipantDAO.find { SessionParticipantsTable.userId eq userId }.toList()
+
+      participantDao.mapNotNull { participant ->
+        participant.finishedAt ?: return@mapNotNull null
+
+        val sessionUuid = participant.sessionUuid
+
+        val sessionDao = EventSessionDAO.find { EventSessionTable.sessionUuid eq sessionUuid }.firstOrNull()
+          ?: return@mapNotNull null
+
+        val eventDao = EventDAO.findById(sessionDao.eventId)
+          ?: return@mapNotNull null
+
+        val mapDao = MapDAO.findById(eventDao.mapId)
+          ?: return@mapNotNull null
+
+        val visitedCount = SessionWaypointDetailDAO.find {
+          (SessionWaypointDetailsTable.sessionUuid eq sessionUuid) and (SessionWaypointDetailsTable.userId eq userId)
+        }.count()
+
+        UserSessionSummary(
+          sessionUuid = sessionUuid,
+          startedAt = participant.joinedAt,
+          finishedAt = participant.finishedAt!!,
+          visitedWaypointsCount = visitedCount.toInt(),
+          mapName = mapDao.name,
+          eventName = eventDao.name,
+        )
+      }
     }.getRight()
   }
 }

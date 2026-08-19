@@ -25,6 +25,8 @@ import pl.dev.bkwiatkowski.controller.mobile.events.handler.*
 import pl.dev.bkwiatkowski.controller.mobile.settings.MobileSettingsController
 import pl.dev.bkwiatkowski.controller.mobile.settings.handler.MobileChangePasswordHandler
 import pl.dev.bkwiatkowski.controller.mobile.settings.handler.MobileSettingsHandler
+import pl.dev.bkwiatkowski.controller.mobile.user.MobileUserController
+import pl.dev.bkwiatkowski.controller.mobile.user.handler.MobileGetUserSessionsSummaryHandler
 import pl.dev.bkwiatkowski.controller.settings.SettingsController
 import pl.dev.bkwiatkowski.controller.settings.handler.SettingsHandler
 import pl.dev.bkwiatkowski.core.EnvironmentConfig
@@ -424,6 +426,12 @@ fun appModule(config: ApplicationConfig) = module {
     )
   }
 
+  factory<GetUserSessionsSummaryUC> {
+    GetUserSessionsSummaryUCImpl(
+      sessionParticipantsRepository = get(),
+    )
+  }
+
   single { MobileJoinSessionHandler(joinSessionUC = get()) }
 
   single { MobileCheckSessionJoinHandler(isUserInSessionUC = get(), getSessionParticipantUC = get()) }
@@ -431,6 +439,8 @@ fun appModule(config: ApplicationConfig) = module {
   single { MobileGetSessionWaypointDetailsHandler(getUserSessionWaypointDetailsUC = get()) }
 
   single { MobileGetSessionParticipantHandler(getSessionParticipantUC = get()) }
+
+  single { MobileGetUserSessionsSummaryHandler(getUserSessionsSummaryUC = get()) }
 
   single { EventImageHandler(environmentConfig = get(), getAdminPanelUserByIdUC = get(), getEventByIdUC = get(), eventRepository = get()) }
 
@@ -464,6 +474,8 @@ fun appModule(config: ApplicationConfig) = module {
         finishSessionHandler = get(),
       )
     } bind Controller::class
+
+    single { MobileUserController(getUserSessionsHandler = get()) } bind Controller::class
 
    factory<AddNewMobileUserUC> {
     AddNewMobileUserUCImpl(
