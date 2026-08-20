@@ -6,6 +6,7 @@ import java.time.LocalDateTime
 
 @Serializable
 data class EventParticipantProgressionDto(
+  val participantId: Int,
   val userId: Int,
   val userName: String,
   @Contextual val startedAt: LocalDateTime,

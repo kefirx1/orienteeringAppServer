@@ -53,9 +53,7 @@ fun EventDAO.toDomain(mapWaypoints: List<MapWaypoint>, eventWaypoints: List<MapW
     "CONTINUOUS" -> EventStatus.CONTINUOUS
     else -> EventStatus.PLANNED
   },
-  finishedAt = finishedAt,
   eventWaypoints = eventWaypoints,
-  allowOfflineTracking = allowOfflineTracking,
   eventType = when (eventType) {
     "OFFLINE" -> EventType.OFFLINE
     else -> EventType.ONLINE
@@ -74,6 +72,7 @@ fun SessionWaypointDetailDAO.toDomain(label: String? = null) = SessionWaypointDe
   id = id.value,
   sessionUuid = sessionUuid,
   userId = userId,
+  participantId = participantId,
   waypointId = waypointId,
   visitedAt = visitedAt,
   imagePath = imagePath.takeIf { it.isNotBlank() },

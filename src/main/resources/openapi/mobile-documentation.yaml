@@ -45,9 +45,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /api/mobile/events/sessions/{sessionUuid}/participant:
+  /api/mobile/events/sessions/{sessionUuid}/finished-participants:
     get:
-      operationId: "getSessionParticipantForUser"
+      operationId: "getFinishedSessionParticipants"
+      summary: "Get finished participants for authenticated user"
       security:
         - bearerAuth: [ ]
       tags:
@@ -58,16 +59,18 @@ paths:
           required: true
           schema:
             type: string
-          description: "UUID of the event session to check"
+          description: "UUID of the event session to list finished participants for"
       responses:
         "200":
-          description: "Participant record returned"
+          description: "List of finished participant records returned"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SessionParticipantResponseDto"
+                type: array
+                items:
+                  $ref: "#/components/schemas/SessionParticipantResponseDto"
         "400":
-          description: "Bad Request - participant not finished or failed to fetch"
+          description: "Bad Request - invalid parameters or failed to fetch"
           content:
             application/json:
               schema:
@@ -79,7 +82,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
         "404":
-          description: "Not Found - Participant does not exist"
+          description: "Not Found - Session does not exist"
           content:
             application/json:
               schema:
@@ -924,13 +927,6 @@ components:
           type: string
           enum: [ PLANNED, IN_PROGRESS, COMPLETED, CONTINUOUS ]
           description: "Event status (PLANNED, IN_PROGRESS, COMPLETED, CONTINUOUS)"
-        finishedAt:
-          type: string
-          format: date-time
-          description: "ISO 8601 format date-time when event finished (nullable)"
-        allowOfflineTracking:
-          type: boolean
-          description: "Allow users to track the event offline even after it ends"
         eventType:
           type: string
           enum: [ ONLINE, OFFLINE ]

@@ -55,8 +55,6 @@ class AddEventHandler(
       return
     }
 
-    val allowOfflineTracking = if (request.eventType == EventType.OFFLINE) true else request.allowOfflineTracking
-
     addEventUC(
       params = AddEventUC.Params(
         mapId = request.mapId,
@@ -67,7 +65,6 @@ class AddEventHandler(
         startLocationX = request.startLocationX,
         startLocationY = request.startLocationY,
         waypointIds = request.waypointIds,
-        allowOfflineTracking = allowOfflineTracking,
         eventType = request.eventType,
       )
     ).fold(

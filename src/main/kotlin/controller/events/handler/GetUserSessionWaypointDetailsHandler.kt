@@ -104,10 +104,22 @@ class GetUserSessionWaypointDetailsHandler(
       return
     }
 
+    val participantId = call.request.queryParameters["participantId"]?.toIntOrNull() ?: run {
+      call.respond(
+        status = HttpStatusCode.BadRequest,
+        message = ErrorResponse(
+          businessCode = "INVALID_REQUEST",
+          message = "Missing or invalid participantId query parameter",
+        )
+      )
+      return
+    }
+
     getUserSessionWaypointDetailsUC(
       params = GetUserSessionWaypointDetailsUC.Params(
         sessionUuid = sessionUuid,
         userId = mobileUserId,
+        participantId = participantId,
       )
     ).fold(
       onRight = { details ->

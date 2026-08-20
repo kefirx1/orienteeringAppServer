@@ -199,10 +199,17 @@ fun appModule(config: ApplicationConfig) = module {
     )
   }
 
+  factory<GetEventBySessionUuidUC> {
+    GetEventBySessionUuidUCImpl(
+      eventRepository = get(),
+    )
+  }
+
   factory<AddEventUC> {
     AddEventUCImpl(
       eventRepository = get(),
       mapRepository = get(),
+      createEventSessionUC = get(),
     )
   }
 
@@ -345,12 +352,6 @@ fun appModule(config: ApplicationConfig) = module {
 
   single { GetUserSessionWaypointDetailsHandler(getUserSessionWaypointDetailsUC = get(), getEventByIdUC = get()) }
 
-  factory<CompleteEventUC> {
-    CompleteEventUCImpl(eventRepository = get())
-  }
-
-  single { CompleteEventHandler(completeEventUC = get(), getEventByIdUC = get(), getAdminPanelUserByIdUC = get()) }
-
   factory<CreateEventSessionUC> {
     CreateEventSessionUCImpl(eventRepository = get())
   }
@@ -375,7 +376,6 @@ fun appModule(config: ApplicationConfig) = module {
       eventDetailHandler = get(),
       addEventHandler = get(),
       deleteEventHandler = get(),
-      completeEventHandler = get(),
       eventParticipantsProgressionHandler = get(),
       eventGetUserSessionWaypointDetailsHandler = get(),
       createEventSessionHandler = get(),
@@ -402,11 +402,17 @@ fun appModule(config: ApplicationConfig) = module {
      )
    }
 
-    factory<GetSessionParticipantUC> {
-      GetSessionParticipantUCImpl(
-        sessionParticipantsRepository = get(),
-      )
-    }
+  factory<GetSessionParticipantUC> {
+    GetSessionParticipantUCImpl(
+      sessionParticipantsRepository = get(),
+    )
+  }
+
+  factory<GetFinishedSessionParticipantsUC> {
+    GetFinishedSessionParticipantsUCImpl(
+      sessionParticipantsRepository = get(),
+    )
+  }
 
   factory<RecordWaypointVisitUC> {
     RecordWaypointVisitUCImpl(
@@ -434,11 +440,11 @@ fun appModule(config: ApplicationConfig) = module {
 
   single { MobileJoinSessionHandler(joinSessionUC = get()) }
 
-  single { MobileCheckSessionJoinHandler(isUserInSessionUC = get(), getSessionParticipantUC = get()) }
+  single { MobileCheckSessionJoinHandler(isUserInSessionUC = get(), getSessionParticipantUC = get(), getEventBySessionUuidUC = get()) }
 
   single { MobileGetSessionWaypointDetailsHandler(getUserSessionWaypointDetailsUC = get()) }
 
-  single { MobileGetSessionParticipantHandler(getSessionParticipantUC = get()) }
+  single { MobileGetSessionParticipantHandler(getFinishedSessionParticipantsUC = get()) }
 
   single { MobileGetUserSessionsSummaryHandler(getUserSessionsSummaryUC = get()) }
 

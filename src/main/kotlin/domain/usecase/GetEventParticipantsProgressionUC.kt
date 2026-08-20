@@ -30,9 +30,10 @@ class GetEventParticipantsProgressionUCImpl(
 
       val progressions = participants.map { participant ->
         val user = mobileUserRepository.getUserById(id = participant.userId).getRight()
-        val visitedCount = sessionWaypointDetails.count { it.userId == participant.userId }
+        val visitedCount = sessionWaypointDetails.count { it.participantId == participant.id }
 
         EventParticipantProgressionDto(
+          participantId = participant.id,
           userId = participant.userId,
           userName = user.username,
           startedAt = participant.joinedAt,
@@ -41,15 +42,6 @@ class GetEventParticipantsProgressionUCImpl(
         )
       }
 
-      progressions.sortedWith(
-        comparator = compareBy<EventParticipantProgressionDto> { -it.visitedWaypointsCount }
-          .thenBy { progressionData ->
-            if (progressionData.finishedAt != null) {
-              ChronoUnit.SECONDS.between(progressionData.startedAt, progressionData.finishedAt)
-            } else {
-              Long.MAX_VALUE
-            }
-          }
-      )
+      progressions.sortedByDescending { it.participantId }
     }
 }

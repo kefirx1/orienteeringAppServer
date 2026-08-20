@@ -100,20 +100,23 @@ class EventDetailHandler(
              startLocationX = event.startLocationX,
              startLocationY = event.startLocationY,
              status = event.status,
-             finishedAt = event.finishedAt,
-             allowOfflineTracking = event.allowOfflineTracking,
              eventType = event.eventType,
-              eventWaypoints = event.eventWaypoints.map { waypoint ->
-                WaypointResponseDto(
-                  id = waypoint.id,
-                  label = waypoint.label,
-                  coordinateX = waypoint.coordinateX,
-                  coordinateY = waypoint.coordinateY,
-                )
-              },
-              session = event.session?.let { s ->
-                EventSessionDto(id = s.id, startedAt = s.startedAt, finishedAt = s.finishedAt, userCanJoin = s.userCanJoin)
-              }
+             eventWaypoints = event.eventWaypoints.map { waypoint ->
+               WaypointResponseDto(
+                 id = waypoint.id,
+                 label = waypoint.label,
+                 coordinateX = waypoint.coordinateX,
+                 coordinateY = waypoint.coordinateY,
+               )
+             },
+             session = event.session?.let { s ->
+               EventSessionDto(
+                 id = s.id,
+                 startedAt = s.startedAt,
+                 finishedAt = s.finishedAt,
+                 userCanJoin = s.userCanJoin
+               )
+             }
            ),
         )
       },

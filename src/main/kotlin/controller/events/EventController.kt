@@ -2,14 +2,7 @@ package pl.dev.bkwiatkowski.controller.events
 
 import io.ktor.server.auth.*
 import io.ktor.server.routing.*
-import pl.dev.bkwiatkowski.controller.events.handler.AddEventHandler
-import pl.dev.bkwiatkowski.controller.events.handler.CompleteEventHandler
-import pl.dev.bkwiatkowski.controller.events.handler.DeleteEventHandler
-import pl.dev.bkwiatkowski.controller.events.handler.EventDetailHandler
-import pl.dev.bkwiatkowski.controller.events.handler.EventListHandler
-import pl.dev.bkwiatkowski.controller.events.handler.EventParticipantsProgressionHandler
-import pl.dev.bkwiatkowski.controller.events.handler.GetUserSessionWaypointDetailsHandler
-import pl.dev.bkwiatkowski.controller.events.handler.EventImageHandler
+import pl.dev.bkwiatkowski.controller.events.handler.*
 import pl.dev.bkwiatkowski.core.routing.Controller
 
 class EventController(
@@ -17,12 +10,11 @@ class EventController(
   private val eventDetailHandler: EventDetailHandler,
   private val addEventHandler: AddEventHandler,
   private val deleteEventHandler: DeleteEventHandler,
-  private val completeEventHandler: CompleteEventHandler,
   private val eventParticipantsProgressionHandler: EventParticipantsProgressionHandler,
   private val eventGetUserSessionWaypointDetailsHandler: GetUserSessionWaypointDetailsHandler,
-  private val createEventSessionHandler: pl.dev.bkwiatkowski.controller.events.handler.CreateEventSessionHandler,
-  private val setEventSessionJoinableHandler: pl.dev.bkwiatkowski.controller.events.handler.SetEventSessionJoinableHandler,
-  private val closeEventSessionHandler: pl.dev.bkwiatkowski.controller.events.handler.CloseEventSessionHandler,
+  private val createEventSessionHandler: CreateEventSessionHandler,
+  private val setEventSessionJoinableHandler: SetEventSessionJoinableHandler,
+  private val closeEventSessionHandler: CloseEventSessionHandler,
   private val imageHandler: EventImageHandler,
 ) : Controller {
 
@@ -47,10 +39,6 @@ class EventController(
 
         get("{id}/session/{sessionUuid}/user/{userId}/waypoints") {
           eventGetUserSessionWaypointDetailsHandler.handle(call)
-        }
-
-        post("/complete") {
-          completeEventHandler.handle(call)
         }
 
         post("{id}/session") {

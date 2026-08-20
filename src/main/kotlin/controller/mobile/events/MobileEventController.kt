@@ -41,7 +41,7 @@ class MobileEventController(
           getSessionWaypointDetailsHandler.handle(call)
         }
 
-        get("sessions/{sessionUuid}/participant") {
+        get("sessions/{sessionUuid}/finished-participants") {
           getSessionParticipantHandler.handle(call)
         }
 

@@ -19,9 +19,6 @@ data class MobileEventDetailResponseDto(
   val startLocationX: Float,
   val startLocationY: Float,
   val status: EventStatus,
-  @Contextual
-  val finishedAt: LocalDateTime? = null,
-  val allowOfflineTracking: Boolean,
   val eventType: EventType,
   val session: EventSessionResponseDto? = null,
   val map: MobileMapDto,

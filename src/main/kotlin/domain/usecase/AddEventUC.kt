@@ -21,7 +21,6 @@ interface AddEventUC : UseCase<AddEventUC.Params, Int> {
     val startLocationX: Float,
     val startLocationY: Float,
     val waypointIds: List<Int>,
-    val allowOfflineTracking: Boolean = false,
     val eventType: EventType,
   ) : UseCase.Params
 }
@@ -29,14 +28,20 @@ interface AddEventUC : UseCase<AddEventUC.Params, Int> {
 class AddEventUCImpl(
   private val eventRepository: EventRepository,
   private val mapRepository: MapRepository,
+  private val createEventSessionUC: CreateEventSessionUC,
 ) : AddEventUC {
   override suspend operator fun invoke(params: AddEventUC.Params): Either<DomainError, Int> = either {
     val map = mapRepository.getMapById(id = params.mapId).getRight()
     val now = LocalDateTime.now()
 
-    val (status, finishedAt) = when (params.eventType) {
-      EventType.OFFLINE -> EventStatus.CONTINUOUS to now
-      EventType.ONLINE -> EventStatus.PLANNED to null
+    val status = when (params.eventType) {
+      EventType.OFFLINE -> EventStatus.CONTINUOUS
+      EventType.ONLINE -> EventStatus.PLANNED
+    }
+
+    val startDate = when (params.eventType) {
+      EventType.OFFLINE -> now
+      EventType.ONLINE -> params.startDate
     }
 
     val newEvent = Event(
@@ -45,15 +50,19 @@ class AddEventUCImpl(
       name = params.name,
       description = params.description,
       createdAt = now,
-      startDate = params.startDate,
+      startDate = startDate,
       startLocationX = params.startLocationX,
       startLocationY = params.startLocationY,
-      allowOfflineTracking = params.allowOfflineTracking,
       status = status,
-      finishedAt = finishedAt,
       eventType = params.eventType,
     )
 
-    eventRepository.insertEvent(event = newEvent, waypointIds = params.waypointIds).getRight()
+    val eventId = eventRepository.insertEvent(event = newEvent, waypointIds = params.waypointIds).getRight()
+
+    if (params.eventType == EventType.OFFLINE) {
+      createEventSessionUC(params = CreateEventSessionUC.Params(eventId = eventId)).getRight()
+    }
+
+    eventId
   }
 }

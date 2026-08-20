@@ -19,6 +19,8 @@ import pl.dev.bkwiatkowski.data.mapper.toDomain
 import pl.dev.bkwiatkowski.domain.model.Event
 import pl.dev.bkwiatkowski.domain.model.EventSession
 import pl.dev.bkwiatkowski.domain.model.EventStatus
+import pl.dev.bkwiatkowski.domain.model.EventType
+import java.time.LocalDateTime
 import java.util.*
 
 interface EventRepository {
@@ -27,12 +29,11 @@ interface EventRepository {
   suspend fun getEventById(id: Int): Either<DomainError, Event>
   suspend fun insertEvent(event: Event, waypointIds: List<Int>): Either<DomainError, Int>
   suspend fun deleteEvent(id: Int): Either<DomainError, Unit>
-  suspend fun completeEvent(id: Int): Either<DomainError, Unit>
   suspend fun createSessionForEvent(eventId: Int): Either<DomainError, String>
   suspend fun getSessionByEventId(eventId: Int): Either<DomainError, EventSession?>
   suspend fun getSessionByUuid(sessionUuid: String): Either<DomainError, EventSession?>
   suspend fun setSessionUserCanJoin(eventId: Int, userCanJoin: Boolean): Either<DomainError, Unit>
-  suspend fun closeSessionForEvent(eventId: Int, finishedAt: java.time.LocalDateTime): Either<DomainError, Unit>
+  suspend fun closeSessionForEvent(eventId: Int, finishedAt: LocalDateTime): Either<DomainError, Unit>
 }
 
 class EventRepositoryImpl(
@@ -109,9 +110,7 @@ class EventRepositoryImpl(
         startLocationX = event.startLocationX
         startLocationY = event.startLocationY
         status = event.status.value
-        allowOfflineTracking = event.allowOfflineTracking
         eventType = event.eventType.value
-        finishedAt = event.finishedAt
       }
 
       waypointIds.forEach { waypointId ->
@@ -134,15 +133,6 @@ class EventRepositoryImpl(
     }.getRight()
   }
 
-  override suspend fun completeEvent(id: Int): Either<DomainError, Unit> = either {
-    database.getRight().dbQuery {
-      val event = EventDAO.findById(id)
-        ?: raise(error = DomainError.Custom(e = NullPointerException("Event not found")))
-      event.status = EventStatus.COMPLETED.value
-      event.finishedAt = java.time.LocalDateTime.now()
-    }.getRight()
-  }
-
   override suspend fun setSessionUserCanJoin(eventId: Int, userCanJoin: Boolean): Either<DomainError, Unit> = either {
     database.getRight().dbQuery {
       val session = EventSessionDAO.find { EventSessionTable.eventId eq eventId }.firstOrNull()
@@ -152,7 +142,7 @@ class EventRepositoryImpl(
     }.getRight()
   }
 
-  override suspend fun closeSessionForEvent(eventId: Int, finishedAt: java.time.LocalDateTime): Either<DomainError, Unit> = either {
+  override suspend fun closeSessionForEvent(eventId: Int, finishedAt: LocalDateTime): Either<DomainError, Unit> = either {
     database.getRight().dbQuery {
       val session = EventSessionDAO.find { EventSessionTable.eventId eq eventId }.firstOrNull()
         ?: raise(error = DomainError.Custom(e = NullPointerException("Session not found")))
@@ -161,8 +151,10 @@ class EventRepositoryImpl(
 
       val eventDao = EventDAO.findById(eventId)
         ?: raise(error = DomainError.Custom(e = NullPointerException("Event not found")))
-      eventDao.status = EventStatus.COMPLETED.value
-      eventDao.finishedAt = finishedAt
+
+      if (eventDao.eventType == EventType.ONLINE.value) {
+        eventDao.status = EventStatus.COMPLETED.value
+      }
     }.getRight()
   }
 
@@ -172,19 +164,21 @@ class EventRepositoryImpl(
       val existing = EventSessionDAO.find { EventSessionTable.eventId eq eventId }.firstOrNull()
       if (existing != null) raise(error = DomainError.Custom(e = IllegalStateException("Session for event already exists")))
 
-      val now = java.time.LocalDateTime.now()
+      val now = LocalDateTime.now()
       if (eventDao.startDate.isAfter(now)) raise(error = DomainError.Custom(e = IllegalStateException("Event has not started yet")))
 
       val uuid = UUID.randomUUID().toString()
       EventSessionDAO.new {
         sessionUuid = uuid
         this.eventId = eventDao.id.value
-        startedAt = java.time.LocalDateTime.now()
+        startedAt = LocalDateTime.now()
         finishedAt = null
         userCanJoin = true
       }
 
-      eventDao.status = EventStatus.IN_PROGRESS.value
+      if (eventDao.eventType == EventType.ONLINE.value){
+        eventDao.status = EventStatus.IN_PROGRESS.value
+      }
 
       uuid
     }.getRight()

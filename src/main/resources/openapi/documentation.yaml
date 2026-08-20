@@ -506,45 +506,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-  /api/events/complete:
-    post:
-      summary: "Complete Event"
-      description: "Marks an event as completed. Users can only complete their own events, admins can complete any event. **Requires authentication.**"
-      security:
-        - bearerAuth: [ ]
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CompleteEventRequestDto"
-      responses:
-        "200":
-          description: "Event completed successfully"
-        "400":
-          description: "Bad Request - Invalid event ID"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "403":
-          description: "Forbidden - Not authenticated or no permission to complete this event"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "404":
-          description: "Not Found - Event does not exist"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
-          description: "Internal Server Error"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
   /api/events/{eventId}/participants-progression:
     get:
       summary: "Get Event Participants Progression"
@@ -764,6 +725,11 @@ paths:
           schema:
             type: integer
           description: "Mobile user ID"
+        - name: participantId
+          in: query
+          required: true
+          schema:
+            type: integer
       responses:
         "200":
           description: "List of session waypoint details returned"
@@ -1141,14 +1107,6 @@ components:
        properties:
          id:
            type: integer
-    CompleteEventRequestDto:
-       type: object
-       required:
-         - eventId
-       properties:
-         eventId:
-           type: integer
-           description: "ID of the event to complete"
     AddEventRequestDto:
        type: object
        required:
@@ -1183,10 +1141,6 @@ components:
            items:
              type: integer
            description: "List of waypoint IDs to include in this event"
-         allowOfflineTracking:
-           type: boolean
-           description: "Allow users to track the event offline even after it ends"
-           default: false
          eventType:
            type: string
            enum: [ ONLINE, OFFLINE ]
@@ -1280,13 +1234,6 @@ components:
           type: string
           enum: [ PLANNED, IN_PROGRESS, COMPLETED, CONTINUOUS ]
           description: "Event status (PLANNED, IN_PROGRESS, COMPLETED, CONTINUOUS)"
-        finishedAt:
-          type: string
-          format: date-time
-          description: "ISO 8601 format date-time when event finished (nullable)"
-        allowOfflineTracking:
-          type: boolean
-          description: "Allow users to track the event offline even after it ends"
         eventType:
           type: string
           enum: [ ONLINE, OFFLINE ]
@@ -1391,6 +1338,7 @@ components:
     EventParticipantProgressionDto:
       type: object
       required:
+        - participantId
         - userId
         - userName
         - startedAt
@@ -1398,6 +1346,8 @@ components:
         - visitedWaypointsCount
         - isLiveTracking
       properties:
+        participantId:
+          type: integer
         userId:
           type: integer
           description: "Mobile user ID"

@@ -11,10 +11,13 @@ import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
 import pl.dev.bkwiatkowski.domain.usecase.GetSessionParticipantUC
 import pl.dev.bkwiatkowski.domain.usecase.IsUserInSessionUC
+import pl.dev.bkwiatkowski.domain.usecase.GetEventBySessionUuidUC
+import pl.dev.bkwiatkowski.domain.model.EventType
 
 class MobileCheckSessionJoinHandler(
   private val isUserInSessionUC: IsUserInSessionUC,
   private val getSessionParticipantUC: GetSessionParticipantUC,
+  private val getEventBySessionUuidUC: GetEventBySessionUuidUC,
 ) {
   suspend fun handle(call: ApplicationCall) {
     val principal = call.principal<JWTPrincipal>()
@@ -60,9 +63,13 @@ class MobileCheckSessionJoinHandler(
             )
           ).getRightOrNull()
 
+          val event = getEventBySessionUuidUC(params = GetEventBySessionUuidUC.Params(sessionUuid = sessionUuid)).getRightOrNull()
+
           val status = when {
             participant == null -> JoinStatus.NOT_JOINED
-            participant.finishedAt != null -> JoinStatus.FINISHED
+            participant.finishedAt != null -> {
+              if (event?.eventType == EventType.OFFLINE) JoinStatus.NOT_JOINED else JoinStatus.FINISHED
+            }
             else -> JoinStatus.NOT_JOINED
           }
           call.respond(message = IsUserInSessionResponseDto(status = status))

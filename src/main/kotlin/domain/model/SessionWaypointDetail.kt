@@ -6,6 +6,7 @@ data class SessionWaypointDetail(
   val id: Int,
   val sessionUuid: String,
   val userId: Int,
+  val participantId: Int,
   val waypointId: Int,
   val visitedAt: LocalDateTime,
   val imagePath: String?,

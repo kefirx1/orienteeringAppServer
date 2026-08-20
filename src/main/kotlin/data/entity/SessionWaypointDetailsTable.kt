@@ -6,6 +6,7 @@ import org.jetbrains.exposed.v1.javatime.datetime
 object SessionWaypointDetailsTable : IntIdTable(name = "session_waypoint_details") {
   val sessionUuid = varchar(name = "session_uuid", length = 36).references(EventSessionTable.sessionUuid)
   val userId = integer(name = "user_id").references(MobileUserTable.id)
+  val participantId = integer(name = "participant_id")
   val waypointId = integer(name = "waypoint_id").references(MapWaypointTable.id)
   val visitedAt = datetime(name = "visited_at")
   val imagePath = varchar(name = "image_path", length = 512)

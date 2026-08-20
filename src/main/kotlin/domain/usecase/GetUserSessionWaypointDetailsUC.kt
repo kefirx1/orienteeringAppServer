@@ -11,6 +11,7 @@ interface GetUserSessionWaypointDetailsUC : UseCase<GetUserSessionWaypointDetail
   data class Params(
     val sessionUuid: String,
     val userId: Int,
+    val participantId: Int?,
   ) : UseCase.Params
 }
 
@@ -21,5 +22,6 @@ class GetUserSessionWaypointDetailsUCImpl(
     sessionParticipantsRepository.getUserSessionWaypointDetails(
       sessionUuid = params.sessionUuid,
       userId = params.userId,
+      participantId = params.participantId,
     )
 }

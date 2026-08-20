@@ -20,9 +20,6 @@ data class EventDetailResponseDto(
   val startLocationX: Float,
   val startLocationY: Float,
   val status: EventStatus,
-  @Contextual
-  val finishedAt: LocalDateTime? = null,
-  val allowOfflineTracking: Boolean = false,
   val eventType: EventType,
   val eventWaypoints: List<WaypointResponseDto>,
   val session: EventSessionDto? = null,

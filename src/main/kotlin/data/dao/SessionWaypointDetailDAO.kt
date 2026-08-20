@@ -10,6 +10,7 @@ class SessionWaypointDetailDAO(id: EntityID<Int>) : IntEntity(id) {
 
   var sessionUuid by SessionWaypointDetailsTable.sessionUuid
   var userId by SessionWaypointDetailsTable.userId
+  var participantId by SessionWaypointDetailsTable.participantId
   var waypointId by SessionWaypointDetailsTable.waypointId
   var visitedAt by SessionWaypointDetailsTable.visitedAt
   var imagePath by SessionWaypointDetailsTable.imagePath

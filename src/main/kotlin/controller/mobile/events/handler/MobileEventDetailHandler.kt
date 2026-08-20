@@ -47,49 +47,47 @@ class MobileEventDetailHandler(
       onRight = { event ->
         call.respond(
           status = HttpStatusCode.OK,
-           message = MobileEventDetailResponseDto(
-              id = event.id,
-              map = MobileMapDto(
-                id = event.map.id,
-                name = event.map.name,
-                description = event.map.description,
-                imageData = event.map.imageData,
-                mapWaypoints = event.map.mapWaypoints.map { waypoint ->
-                  WaypointResponseDto(
-                    id = waypoint.id,
-                    label = waypoint.label,
-                    coordinateX = waypoint.coordinateX,
-                    coordinateY = waypoint.coordinateY,
-                  )
-                },
-              ),
-              name = event.name,
-              description = event.description,
-              createdAt = event.createdAt,
-              startDate = event.startDate,
-              startLocationX = event.startLocationX,
-              startLocationY = event.startLocationY,
-              status = event.status,
-              finishedAt = event.finishedAt,
-              allowOfflineTracking = event.allowOfflineTracking,
-              eventType = event.eventType,
-               session = event.session?.let { session ->
-                 EventSessionResponseDto(
-                   id = session.id,
-                   startedAt = session.startedAt,
-                   finishedAt = session.finishedAt,
-                   userCanJoin = session.userCanJoin,
-                 )
-               },
-               eventWaypoints = event.eventWaypoints.map { waypoint ->
-                 WaypointResponseDto(
-                   id = waypoint.id,
-                   label = waypoint.label,
-                   coordinateX = waypoint.coordinateX,
-                   coordinateY = waypoint.coordinateY,
-                 )
-               },
+          message = MobileEventDetailResponseDto(
+            id = event.id,
+            map = MobileMapDto(
+              id = event.map.id,
+              name = event.map.name,
+              description = event.map.description,
+              imageData = event.map.imageData,
+              mapWaypoints = event.map.mapWaypoints.map { waypoint ->
+                WaypointResponseDto(
+                  id = waypoint.id,
+                  label = waypoint.label,
+                  coordinateX = waypoint.coordinateX,
+                  coordinateY = waypoint.coordinateY,
+                )
+              },
             ),
+            name = event.name,
+            description = event.description,
+            createdAt = event.createdAt,
+            startDate = event.startDate,
+            startLocationX = event.startLocationX,
+            startLocationY = event.startLocationY,
+            status = event.status,
+            eventType = event.eventType,
+            session = event.session?.let { session ->
+              EventSessionResponseDto(
+                id = session.id,
+                startedAt = session.startedAt,
+                finishedAt = session.finishedAt,
+                userCanJoin = session.userCanJoin,
+              )
+            },
+            eventWaypoints = event.eventWaypoints.map { waypoint ->
+              WaypointResponseDto(
+                id = waypoint.id,
+                label = waypoint.label,
+                coordinateX = waypoint.coordinateX,
+                coordinateY = waypoint.coordinateY,
+              )
+            },
+          ),
         )
       },
       onLeft = {

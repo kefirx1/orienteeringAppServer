@@ -745,11 +745,6 @@
         "type" : "integer"
       }
     },
-    "allowOfflineTracking" : {
-      "type" : "boolean",
-      "description" : "Allow users to track the event offline even after it ends",
-      "default" : false
-    },
     "eventType" : {
       "type" : "string",
       "description" : "Event type - ONLINE (normal) or OFFLINE (continuous, auto-completed)",
@@ -810,16 +805,6 @@
     "newPassword" : {
       "type" : "string",
       "description" : "The new password for the user"
-    }
-  }
-};
-            defs["CompleteEventRequestDto"] = {
-  "required" : [ "eventId" ],
-  "type" : "object",
-  "properties" : {
-    "eventId" : {
-      "type" : "integer",
-      "description" : "ID of the event to complete"
     }
   }
 };
@@ -900,15 +885,6 @@
       "description" : "Event status (PLANNED, IN_PROGRESS, COMPLETED, CONTINUOUS)",
       "enum" : [ "PLANNED", "IN_PROGRESS", "COMPLETED", "CONTINUOUS" ]
     },
-    "finishedAt" : {
-      "type" : "string",
-      "description" : "ISO 8601 format date-time when event finished (nullable)",
-      "format" : "date-time"
-    },
-    "allowOfflineTracking" : {
-      "type" : "boolean",
-      "description" : "Allow users to track the event offline even after it ends"
-    },
     "eventType" : {
       "type" : "string",
       "description" : "Event type - ONLINE (normal) or OFFLINE (continuous)",
@@ -979,9 +955,12 @@
   }
 };
             defs["EventParticipantProgressionDto"] = {
-  "required" : [ "finishedAt", "isLiveTracking", "startedAt", "userId", "userName", "visitedWaypointsCount" ],
+  "required" : [ "finishedAt", "isLiveTracking", "participantId", "startedAt", "userId", "userName", "visitedWaypointsCount" ],
   "type" : "object",
   "properties" : {
+    "participantId" : {
+      "type" : "integer"
+    },
     "userId" : {
       "type" : "integer",
       "description" : "Mobile user ID"
@@ -1286,9 +1265,6 @@
                     </li>
                     <li data-group="Default" data-name="apiAuthenticateGet" class="">
                       <a href="#api-Default-apiAuthenticateGet">apiAuthenticateGet</a>
-                    </li>
-                    <li data-group="Default" data-name="apiEventsCompletePost" class="">
-                      <a href="#api-Default-apiEventsCompletePost">apiEventsCompletePost</a>
                     </li>
                     <li data-group="Default" data-name="apiEventsEventIdParticipantsProgressionGet" class="">
                       <a href="#api-Default-apiEventsEventIdParticipantsProgressionGet">apiEventsEventIdParticipantsProgressionGet</a>
@@ -5107,470 +5083,6 @@ except ApiException as e:
                         </article>
                       </div>
                       <hr>
-                    <div id="api-Default-apiEventsCompletePost">
-                      <article id="api-Default-apiEventsCompletePost-0" data-group="User" data-name="apiEventsCompletePost" data-version="0">
-                        <div class="pull-left">
-                          <h1>apiEventsCompletePost</h1>
-                          <p>Complete Event</p>
-                        </div>
-                        <div class="pull-right"></div>
-                        <div class="clearfix"></div>
-                        <p></p>
-                        <p class="marked">Marks an event as completed. Users can only complete their own events, admins can complete any event. **Requires authentication.**</p>
-                        <p></p>
-                        <br />
-                        <pre class="prettyprint language-html prettyprinted" data-type="post"><code><span class="pln">/api/events/complete</span></code></pre>
-                        <p>
-                          <h3>Usage and SDK Samples</h3>
-                        </p>
-                        <ul class="nav nav-tabs nav-tabs-examples">
-                          <li class="active"><a href="#examples-Default-apiEventsCompletePost-0-curl">Curl</a></li>
-                          <li class=""><a href="#examples-Default-apiEventsCompletePost-0-java">Java</a></li>
-                          <li class=""><a href="#examples-Default-apiEventsCompletePost-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Default-apiEventsCompletePost-0-groovy">Groovy</a></li>-->
-                          <li class=""><a href="#examples-Default-apiEventsCompletePost-0-objc">Obj-C</a></li>
-                          <li class=""><a href="#examples-Default-apiEventsCompletePost-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Default-apiEventsCompletePost-0-angular">Angular</a></li>-->
-                          <li class=""><a href="#examples-Default-apiEventsCompletePost-0-csharp">C#</a></li>
-                          <li class=""><a href="#examples-Default-apiEventsCompletePost-0-php">PHP</a></li>
-                          <li class=""><a href="#examples-Default-apiEventsCompletePost-0-perl">Perl</a></li>
-                          <li class=""><a href="#examples-Default-apiEventsCompletePost-0-python">Python</a></li>
-                        </ul>
-
-                        <div class="tab-content">
-                          <div class="tab-pane active" id="examples-Default-apiEventsCompletePost-0-curl">
-                           <pre class="prettyprint"><code class="language-bsh">curl -X POST\
- -H "Authorization: Bearer [[accessToken]]"\
--H "Accept: application/json"\
--H "Content-Type: application/json"\
-"http://localhost:8080/api/events/complete"</code></pre>
-                          </div>
-                          <div class="tab-pane" id="examples-Default-apiEventsCompletePost-0-java">
-                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
-import io.swagger.client.auth.*;
-import io.swagger.client.model.*;
-import io.swagger.client.api.DefaultApi;
-
-import java.io.File;
-import java.util.*;
-
-public class DefaultApiExample {
-
-    public static void main(String[] args) {
-        ApiClient defaultClient = Configuration.getDefaultApiClient();
-
-
-        DefaultApi apiInstance = new DefaultApi();
-        CompleteEventRequestDto body = ; // CompleteEventRequestDto | 
-        try {
-            apiInstance.apiEventsCompletePost(body);
-        } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#apiEventsCompletePost");
-            e.printStackTrace();
-        }
-    }
-}</code></pre>
-                          </div>
-
-                          <div class="tab-pane" id="examples-Default-apiEventsCompletePost-0-android">
-                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.DefaultApi;
-
-public class DefaultApiExample {
-
-    public static void main(String[] args) {
-        DefaultApi apiInstance = new DefaultApi();
-        CompleteEventRequestDto body = ; // CompleteEventRequestDto | 
-        try {
-            apiInstance.apiEventsCompletePost(body);
-        } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#apiEventsCompletePost");
-            e.printStackTrace();
-        }
-    }
-}</code></pre>
-                          </div>
-  <!--
-  <div class="tab-pane" id="examples-Default-apiEventsCompletePost-0-groovy">
-  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-  </div> -->
-                            <div class="tab-pane" id="examples-Default-apiEventsCompletePost-0-objc">
-                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
-CompleteEventRequestDto *body = ; // 
-
-DefaultApi *apiInstance = [[DefaultApi alloc] init];
-
-// Complete Event
-[apiInstance apiEventsCompletePostWith:body
-              completionHandler: ^(NSError* error) {
-                            if (error) {
-                                NSLog(@"Error: %@", error);
-                            }
-                        }];
-</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-apiEventsCompletePost-0-javascript">
-                              <pre class="prettyprint"><code class="language-js">var OrienteeringAppServerApi = require('orienteering_app_server_api');
-var defaultClient = OrienteeringAppServerApi.ApiClient.instance;
-
-
-var api = new OrienteeringAppServerApi.DefaultApi()
-var body = ; // {{CompleteEventRequestDto}} 
-
-var callback = function(error, data, response) {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully.');
-  }
-};
-api.apiEventsCompletePost(body, callback);
-</code></pre>
-                            </div>
-
-                            <!--<div class="tab-pane" id="examples-Default-apiEventsCompletePost-0-angular">
-              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-            </div>-->
-                            <div class="tab-pane" id="examples-Default-apiEventsCompletePost-0-csharp">
-                              <pre class="prettyprint"><code class="language-cs">using System;
-using System.Diagnostics;
-using IO.Swagger.Api;
-using IO.Swagger.Client;
-using IO.Swagger.Model;
-
-namespace Example
-{
-    public class apiEventsCompletePostExample
-    {
-        public void main()
-        {
-
-
-            var apiInstance = new DefaultApi();
-            var body = new CompleteEventRequestDto(); // CompleteEventRequestDto | 
-
-            try
-            {
-                // Complete Event
-                apiInstance.apiEventsCompletePost(body);
-            }
-            catch (Exception e)
-            {
-                Debug.Print("Exception when calling DefaultApi.apiEventsCompletePost: " + e.Message );
-            }
-        }
-    }
-}
-</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-apiEventsCompletePost-0-php">
-                              <pre class="prettyprint"><code class="language-php"><&#63;php
-require_once(__DIR__ . '/vendor/autoload.php');
-
-
-$api_instance = new Swagger\Client\ApiDefaultApi();
-$body = ; // CompleteEventRequestDto | 
-
-try {
-    $api_instance->apiEventsCompletePost($body);
-} catch (Exception $e) {
-    echo 'Exception when calling DefaultApi->apiEventsCompletePost: ', $e->getMessage(), PHP_EOL;
-}
-?></code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-apiEventsCompletePost-0-perl">
-                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
-use WWW::SwaggerClient::Configuration;
-use WWW::SwaggerClient::DefaultApi;
-
-
-my $api_instance = WWW::SwaggerClient::DefaultApi->new();
-my $body = WWW::SwaggerClient::Object::CompleteEventRequestDto->new(); # CompleteEventRequestDto | 
-
-eval { 
-    $api_instance->apiEventsCompletePost(body => $body);
-};
-if ($@) {
-    warn "Exception when calling DefaultApi->apiEventsCompletePost: $@\n";
-}</code></pre>
-                            </div>
-
-                            <div class="tab-pane" id="examples-Default-apiEventsCompletePost-0-python">
-                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
-import time
-import swagger_client
-from swagger_client.rest import ApiException
-from pprint import pprint
-
-
-# create an instance of the API class
-api_instance = swagger_client.DefaultApi()
-body =  # CompleteEventRequestDto | 
-
-try: 
-    # Complete Event
-    api_instance.api_events_complete_post(body)
-except ApiException as e:
-    print("Exception when calling DefaultApi->apiEventsCompletePost: %s\n" % e)</code></pre>
-                            </div>
-                          </div>
-
-                          <h2>Parameters</h2>
-
-
-
-                            <div class="methodsubtabletitle">Body parameters</div>
-                            <table id="methodsubtable">
-                              <tr>
-                                <th width="150px">Name</th>
-                                <th>Description</th>
-                              </tr>
-                                <tr><td style="width:150px;">body <span style="color:red;">*</span></td>
-                                <td>
-                                
-                                
-                                <script>
-                                $(document).ready(function() {
-                                  var schemaWrapper = {
-  "content" : {
-    "application/json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/CompleteEventRequestDto"
-      }
-    }
-  },
-  "required" : true
-};
-                                  var schema = schemaWrapper.content["application/json"].schema;
-                                  if (schema.$ref != null) {
-                                    schema = defsParser.$refs.get(schema.$ref);
-                                  } else {
-                                    schemaWrapper.components = {};
-                                    schemaWrapper.components.schemas = Object.assign({}, defs);
-                                    $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                      console.log(err);
-                                    });
-                                  }
-                                
-                                  var view = new JSONSchemaView(schema,2,{isBodyParam: true});
-                                  var result = $('#d2e199_apiEventsCompletePost_body');
-                                  result.empty();
-                                  result.append(view.render());
-                                });
-                                </script>
-                                <div id="d2e199_apiEventsCompletePost_body"></div>
-                                </td>
-                                </tr>
-                            </table>
-
-
-
-                          <h2>Responses</h2>
-                            <h3> Status: 200 - Event completed successfully </h3>
-
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                            </ul>
-
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                            </div>
-
-                            <h3> Status: 400 - Bad Request - Invalid event ID </h3>
-
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                                <li class="active">
-                                  <a data-toggle="tab" href="#responses-apiEventsCompletePost-400-schema">Schema</a>
-                                </li>
-
-                            </ul>
-
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-apiEventsCompletePost-400-schema">
-                                  <div id='responses-apiEventsCompletePost-400-schema-400' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
-                                    <script>
-                                      $(document).ready(function() {
-                                        var schemaWrapper = {
-  "description" : "Bad Request - Invalid event ID",
-  "content" : {
-    "application/json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/ErrorResponse"
-      }
-    }
-  }
-};
-                                        var schema = schemaWrapper.content["application/json"].schema;
-                                        if (schema.$ref != null) {
-                                          schema = defsParser.$refs.get(schema.$ref);
-                                        } else {
-                                          schemaWrapper.components = {};
-                                          schemaWrapper.components.schemas = Object.assign({}, defs);
-                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                            console.log(err);
-                                          });
-                                        }
-
-                                        //console.log(JSON.stringify(schema));
-                                        var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-apiEventsCompletePost-400-schema-data').val(stringify(schema));
-                                        var result = $('#responses-apiEventsCompletePost-400-schema-400');
-                                        result.empty();
-                                        result.append(view.render());
-                                      });
-                                    </script>
-                                  </div>
-                                  <input id='responses-apiEventsCompletePost-400-schema-data' type='hidden' value=''></input>
-                                </div>
-                            </div>
-
-                            <h3> Status: 403 - Forbidden - Not authenticated or no permission to complete this event </h3>
-
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                                <li class="active">
-                                  <a data-toggle="tab" href="#responses-apiEventsCompletePost-403-schema">Schema</a>
-                                </li>
-
-                            </ul>
-
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-apiEventsCompletePost-403-schema">
-                                  <div id='responses-apiEventsCompletePost-403-schema-403' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
-                                    <script>
-                                      $(document).ready(function() {
-                                        var schemaWrapper = {
-  "description" : "Forbidden - Not authenticated or no permission to complete this event",
-  "content" : {
-    "application/json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/ErrorResponse"
-      }
-    }
-  }
-};
-                                        var schema = schemaWrapper.content["application/json"].schema;
-                                        if (schema.$ref != null) {
-                                          schema = defsParser.$refs.get(schema.$ref);
-                                        } else {
-                                          schemaWrapper.components = {};
-                                          schemaWrapper.components.schemas = Object.assign({}, defs);
-                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                            console.log(err);
-                                          });
-                                        }
-
-                                        //console.log(JSON.stringify(schema));
-                                        var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-apiEventsCompletePost-403-schema-data').val(stringify(schema));
-                                        var result = $('#responses-apiEventsCompletePost-403-schema-403');
-                                        result.empty();
-                                        result.append(view.render());
-                                      });
-                                    </script>
-                                  </div>
-                                  <input id='responses-apiEventsCompletePost-403-schema-data' type='hidden' value=''></input>
-                                </div>
-                            </div>
-
-                            <h3> Status: 404 - Not Found - Event does not exist </h3>
-
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                                <li class="active">
-                                  <a data-toggle="tab" href="#responses-apiEventsCompletePost-404-schema">Schema</a>
-                                </li>
-
-                            </ul>
-
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-apiEventsCompletePost-404-schema">
-                                  <div id='responses-apiEventsCompletePost-404-schema-404' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
-                                    <script>
-                                      $(document).ready(function() {
-                                        var schemaWrapper = {
-  "description" : "Not Found - Event does not exist",
-  "content" : {
-    "application/json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/ErrorResponse"
-      }
-    }
-  }
-};
-                                        var schema = schemaWrapper.content["application/json"].schema;
-                                        if (schema.$ref != null) {
-                                          schema = defsParser.$refs.get(schema.$ref);
-                                        } else {
-                                          schemaWrapper.components = {};
-                                          schemaWrapper.components.schemas = Object.assign({}, defs);
-                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                            console.log(err);
-                                          });
-                                        }
-
-                                        //console.log(JSON.stringify(schema));
-                                        var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-apiEventsCompletePost-404-schema-data').val(stringify(schema));
-                                        var result = $('#responses-apiEventsCompletePost-404-schema-404');
-                                        result.empty();
-                                        result.append(view.render());
-                                      });
-                                    </script>
-                                  </div>
-                                  <input id='responses-apiEventsCompletePost-404-schema-data' type='hidden' value=''></input>
-                                </div>
-                            </div>
-
-                            <h3> Status: 500 - Internal Server Error </h3>
-
-                            <ul class="nav nav-tabs nav-tabs-examples" >
-                                <li class="active">
-                                  <a data-toggle="tab" href="#responses-apiEventsCompletePost-500-schema">Schema</a>
-                                </li>
-
-                            </ul>
-
-                            <div class="tab-content" style='margin-bottom: 10px;'>
-                                <div class="tab-pane active" id="responses-apiEventsCompletePost-500-schema">
-                                  <div id='responses-apiEventsCompletePost-500-schema-500' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
-                                    <script>
-                                      $(document).ready(function() {
-                                        var schemaWrapper = {
-  "description" : "Internal Server Error",
-  "content" : {
-    "application/json" : {
-      "schema" : {
-        "$ref" : "#/components/schemas/ErrorResponse"
-      }
-    }
-  }
-};
-                                        var schema = schemaWrapper.content["application/json"].schema;
-                                        if (schema.$ref != null) {
-                                          schema = defsParser.$refs.get(schema.$ref);
-                                        } else {
-                                          schemaWrapper.components = {};
-                                          schemaWrapper.components.schemas = Object.assign({}, defs);
-                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
-                                            console.log(err);
-                                          });
-                                        }
-
-                                        //console.log(JSON.stringify(schema));
-                                        var view = new JSONSchemaView(schema, 3);
-                                        $('#responses-apiEventsCompletePost-500-schema-data').val(stringify(schema));
-                                        var result = $('#responses-apiEventsCompletePost-500-schema-500');
-                                        result.empty();
-                                        result.append(view.render());
-                                      });
-                                    </script>
-                                  </div>
-                                  <input id='responses-apiEventsCompletePost-500-schema-data' type='hidden' value=''></input>
-                                </div>
-                            </div>
-
-                        </article>
-                      </div>
-                      <hr>
                     <div id="api-Default-apiEventsEventIdParticipantsProgressionGet">
                       <article id="api-Default-apiEventsEventIdParticipantsProgressionGet-0" data-group="User" data-name="apiEventsEventIdParticipantsProgressionGet" data-version="0">
                         <div class="pull-left">
@@ -8920,7 +8432,7 @@ except ApiException as e:
                            <pre class="prettyprint"><code class="language-bsh">curl -X GET\
  -H "Authorization: Bearer [[accessToken]]"\
 -H "Accept: application/json"\
-"http://localhost:8080/api/events/{id}/session/{sessionUuid}/user/{userId}/waypoints"</code></pre>
+"http://localhost:8080/api/events/{id}/session/{sessionUuid}/user/{userId}/waypoints?participantId="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -8941,8 +8453,9 @@ public class DefaultApiExample {
         Integer id = 56; // Integer | Event ID
         String sessionUuid = sessionUuid_example; // String | UUID of the event session
         Integer userId = 56; // Integer | Mobile user ID
+        Integer participantId = 56; // Integer | 
         try {
-            SessionWaypointDetailsWebResponseDto result = apiInstance.apiEventsIdSessionSessionUuidUserUserIdWaypointsGet(id, sessionUuid, userId);
+            SessionWaypointDetailsWebResponseDto result = apiInstance.apiEventsIdSessionSessionUuidUserUserIdWaypointsGet(id, sessionUuid, userId, participantId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DefaultApi#apiEventsIdSessionSessionUuidUserUserIdWaypointsGet");
@@ -8962,8 +8475,9 @@ public class DefaultApiExample {
         Integer id = 56; // Integer | Event ID
         String sessionUuid = sessionUuid_example; // String | UUID of the event session
         Integer userId = 56; // Integer | Mobile user ID
+        Integer participantId = 56; // Integer | 
         try {
-            SessionWaypointDetailsWebResponseDto result = apiInstance.apiEventsIdSessionSessionUuidUserUserIdWaypointsGet(id, sessionUuid, userId);
+            SessionWaypointDetailsWebResponseDto result = apiInstance.apiEventsIdSessionSessionUuidUserUserIdWaypointsGet(id, sessionUuid, userId, participantId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DefaultApi#apiEventsIdSessionSessionUuidUserUserIdWaypointsGet");
@@ -8981,6 +8495,7 @@ public class DefaultApiExample {
 Integer *id = 56; // Event ID
 String *sessionUuid = sessionUuid_example; // UUID of the event session
 Integer *userId = 56; // Mobile user ID
+Integer *participantId = 56; // 
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
@@ -8988,6 +8503,7 @@ DefaultApi *apiInstance = [[DefaultApi alloc] init];
 [apiInstance apiEventsIdSessionSessionUuidUserUserIdWaypointsGetWith:id
     sessionUuid:sessionUuid
     userId:userId
+    participantId:participantId
               completionHandler: ^(SessionWaypointDetailsWebResponseDto output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
@@ -9008,6 +8524,7 @@ var api = new OrienteeringAppServerApi.DefaultApi()
 var id = 56; // {{Integer}} Event ID
 var sessionUuid = sessionUuid_example; // {{String}} UUID of the event session
 var userId = 56; // {{Integer}} Mobile user ID
+var participantId = 56; // {{Integer}} 
 
 var callback = function(error, data, response) {
   if (error) {
@@ -9016,7 +8533,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.apiEventsIdSessionSessionUuidUserUserIdWaypointsGet(id, sessionUuid, userId, callback);
+api.apiEventsIdSessionSessionUuidUserUserIdWaypointsGet(id, sessionUuid, userId, participantId, callback);
 </code></pre>
                             </div>
 
@@ -9042,11 +8559,12 @@ namespace Example
             var id = 56;  // Integer | Event ID
             var sessionUuid = sessionUuid_example;  // String | UUID of the event session
             var userId = 56;  // Integer | Mobile user ID
+            var participantId = 56;  // Integer | 
 
             try
             {
                 // Get session waypoint details for a mobile user
-                SessionWaypointDetailsWebResponseDto result = apiInstance.apiEventsIdSessionSessionUuidUserUserIdWaypointsGet(id, sessionUuid, userId);
+                SessionWaypointDetailsWebResponseDto result = apiInstance.apiEventsIdSessionSessionUuidUserUserIdWaypointsGet(id, sessionUuid, userId, participantId);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -9068,9 +8586,10 @@ $api_instance = new Swagger\Client\ApiDefaultApi();
 $id = 56; // Integer | Event ID
 $sessionUuid = sessionUuid_example; // String | UUID of the event session
 $userId = 56; // Integer | Mobile user ID
+$participantId = 56; // Integer | 
 
 try {
-    $result = $api_instance->apiEventsIdSessionSessionUuidUserUserIdWaypointsGet($id, $sessionUuid, $userId);
+    $result = $api_instance->apiEventsIdSessionSessionUuidUserUserIdWaypointsGet($id, $sessionUuid, $userId, $participantId);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling DefaultApi->apiEventsIdSessionSessionUuidUserUserIdWaypointsGet: ', $e->getMessage(), PHP_EOL;
@@ -9088,9 +8607,10 @@ my $api_instance = WWW::SwaggerClient::DefaultApi->new();
 my $id = 56; # Integer | Event ID
 my $sessionUuid = sessionUuid_example; # String | UUID of the event session
 my $userId = 56; # Integer | Mobile user ID
+my $participantId = 56; # Integer | 
 
 eval { 
-    my $result = $api_instance->apiEventsIdSessionSessionUuidUserUserIdWaypointsGet(id => $id, sessionUuid => $sessionUuid, userId => $userId);
+    my $result = $api_instance->apiEventsIdSessionSessionUuidUserUserIdWaypointsGet(id => $id, sessionUuid => $sessionUuid, userId => $userId, participantId => $participantId);
     print Dumper($result);
 };
 if ($@) {
@@ -9111,10 +8631,11 @@ api_instance = swagger_client.DefaultApi()
 id = 56 # Integer | Event ID
 sessionUuid = sessionUuid_example # String | UUID of the event session
 userId = 56 # Integer | Mobile user ID
+participantId = 56 # Integer | 
 
 try: 
     # Get session waypoint details for a mobile user
-    api_response = api_instance.api_events_id_session_session_uuid_user_user_id_waypoints_get(id, sessionUuid, userId)
+    api_response = api_instance.api_events_id_session_session_uuid_user_user_id_waypoints_get(id, sessionUuid, userId, participantId)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling DefaultApi->apiEventsIdSessionSessionUuidUserUserIdWaypointsGet: %s\n" % e)</code></pre>
@@ -9200,6 +8721,32 @@ except ApiException as e:
 
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">participantId*</td>
+                                <td>
+                                
+                                
+                                    <div id="d2e199_apiEventsIdSessionSessionUuidUserUserIdWaypointsGet_participantId">
+                                        <div class="json-schema-view">
+                                            <div class="primitive">
+                                                <span class="type">
+                                                    Integer
+                                                </span>
+                                
+                                            </div>
+                                                <div class="inner required">
+                                                    Required
+                                                </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                </tr>
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 200 - List of session waypoint details returned </h3>

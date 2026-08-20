@@ -43,6 +43,7 @@ interface SessionParticipantsRepository {
   suspend fun getUserSessionWaypointDetails(
     sessionUuid: String,
     userId: Int,
+    participantId: Int?,
   ): Either<DomainError, List<SessionWaypointDetail>>
 
   suspend fun getSessionWaypointDetails(sessionUuid: String): Either<DomainError, List<SessionWaypointDetail>>
@@ -86,8 +87,9 @@ class SessionParticipantsRepositoryImpl(
   override suspend fun getSessionParticipants(sessionUuid: String): Either<DomainError, List<SessionParticipant>> = either {
     database.getRight().dbQuery {
       SessionParticipantDAO.find { SessionParticipantsTable.sessionUuid eq sessionUuid }
-        .map { it.toDomain() }
         .toList()
+        .sortedByDescending { it.id.value }
+        .map { it.toDomain() }
     }.getRight()
   }
 
@@ -101,9 +103,17 @@ class SessionParticipantsRepositoryImpl(
 
   override suspend fun getSessionParticipant(sessionUuid: String, userId: Int): Either<DomainError, SessionParticipant> = either {
     database.getRight().dbQuery {
-      SessionParticipantDAO.find {
+      val activeParticipant = SessionParticipantDAO.find {
+        (SessionParticipantsTable.sessionUuid eq sessionUuid) and
+          (SessionParticipantsTable.userId eq userId) and
+          (SessionParticipantsTable.finishedAt.isNull())
+      }.firstOrNull()
+
+      val participantDao = activeParticipant ?: SessionParticipantDAO.find {
         (SessionParticipantsTable.sessionUuid eq sessionUuid) and (SessionParticipantsTable.userId eq userId)
-      }.firstOrNull()?.toDomain() ?: raise(error = DomainError.Custom(IllegalStateException("Participant not found")))
+      }.toList().maxByOrNull { it.joinedAt }
+
+      participantDao?.toDomain() ?: raise(error = DomainError.Custom(IllegalStateException("Participant not found")))
     }.getRight()
   }
 
@@ -129,9 +139,14 @@ class SessionParticipantsRepositoryImpl(
     imagePath: String,
   ): Either<DomainError, SessionWaypointDetail> = either {
     database.getRight().dbQuery {
+      val participantDao = SessionParticipantDAO.find {
+        (SessionParticipantsTable.sessionUuid eq sessionUuid) and (SessionParticipantsTable.userId eq userId) and (SessionParticipantsTable.finishedAt.isNull())
+      }.firstOrNull() ?: raise(error = DomainError.Custom(IllegalStateException("Participant not found or already finished")))
+
       SessionWaypointDetailDAO.new {
         this.sessionUuid = sessionUuid
         this.userId = userId
+        this.participantId = participantDao.id.value
         this.waypointId = waypointId
         this.visitedAt = visitedAt
         this.imagePath = imagePath
@@ -142,10 +157,22 @@ class SessionParticipantsRepositoryImpl(
   override suspend fun getUserSessionWaypointDetails(
     sessionUuid: String,
     userId: Int,
+    participantId: Int?,
   ): Either<DomainError, List<SessionWaypointDetail>> = either {
     database.getRight().dbQuery {
+      val activeParticipant = SessionParticipantDAO.find {
+        (SessionParticipantsTable.sessionUuid eq sessionUuid) and (SessionParticipantsTable.userId eq userId) and
+            if (participantId != null) {
+              (SessionParticipantsTable.id eq participantId)
+            } else {
+              (SessionParticipantsTable.finishedAt.isNull())
+            }
+      }.firstOrNull() ?: raise(error = DomainError.Custom(IllegalStateException("Participant not found")))
+
       SessionWaypointDetailDAO.find {
-        (SessionWaypointDetailsTable.sessionUuid eq sessionUuid) and (SessionWaypointDetailsTable.userId eq userId)
+        (SessionWaypointDetailsTable.sessionUuid eq sessionUuid) and
+        (SessionWaypointDetailsTable.userId eq userId) and
+        (SessionWaypointDetailsTable.participantId eq activeParticipant.id.value)
       }.map { detailDao ->
         val waypointLabel = MapWaypointDAO.findById(detailDao.waypointId)?.label
         detailDao.toDomain(label = waypointLabel)
@@ -183,7 +210,7 @@ class SessionParticipantsRepositoryImpl(
           ?: return@mapNotNull null
 
         val visitedCount = SessionWaypointDetailDAO.find {
-          (SessionWaypointDetailsTable.sessionUuid eq sessionUuid) and (SessionWaypointDetailsTable.userId eq userId)
+          (SessionWaypointDetailsTable.sessionUuid eq sessionUuid) and (SessionWaypointDetailsTable.userId eq userId) and (SessionWaypointDetailsTable.participantId eq participant.id.value)
         }.count()
 
         UserSessionSummary(
@@ -194,7 +221,7 @@ class SessionParticipantsRepositoryImpl(
           mapName = mapDao.name,
           eventName = eventDao.name,
         )
-      }
+      }.sortedByDescending { it.startedAt }
     }.getRight()
   }
 }

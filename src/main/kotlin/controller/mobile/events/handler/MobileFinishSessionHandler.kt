@@ -59,6 +59,7 @@ class MobileFinishSessionHandler(
           params = GetUserSessionWaypointDetailsUC.Params(
             sessionUuid = sessionUuid,
             userId = userId,
+            participantId = participant.id,
           )
         ).fold(
           onRight = { waypointDetails ->

@@ -15,6 +15,5 @@ data class AddEventRequestDto(
   val startLocationX: Float,
   val startLocationY: Float,
   val waypointIds: List<Int>,
-  val allowOfflineTracking: Boolean,
   val eventType: EventType,
 )
