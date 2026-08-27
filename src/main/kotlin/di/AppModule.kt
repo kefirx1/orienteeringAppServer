@@ -467,23 +467,26 @@ fun appModule(config: ApplicationConfig) = module {
     )
   }
 
-    single {
-      MobileEventController(
-        eventListHandler = get(),
-        eventDetailHandler = get(),
-        joinSessionHandler = get(),
-        checkSessionJoinHandler = get(),
-        getSessionWaypointDetailsHandler = get(),
-        getSessionParticipantHandler = get(),
-        sessionWebSocketHandler = get(),
-        uploadImageHandler = get(),
-        finishSessionHandler = get(),
-      )
-    } bind Controller::class
+  single { MobileWaypointVisitListHandler(recordWaypointVisitUC = get()) }
 
-    single { MobileUserController(getUserSessionsHandler = get()) } bind Controller::class
+  single {
+    MobileEventController(
+      eventListHandler = get(),
+      eventDetailHandler = get(),
+      joinSessionHandler = get(),
+      checkSessionJoinHandler = get(),
+      getSessionWaypointDetailsHandler = get(),
+      getSessionParticipantHandler = get(),
+      sessionWebSocketHandler = get(),
+      uploadImageHandler = get(),
+      waypointVisitListHandler = get(),
+      finishSessionHandler = get(),
+    )
+  } bind Controller::class
 
-   factory<AddNewMobileUserUC> {
+  single { MobileUserController(getUserSessionsHandler = get()) } bind Controller::class
+
+  factory<AddNewMobileUserUC> {
     AddNewMobileUserUCImpl(
       mobileUserRepository = get(),
       generateAdminPanelUserPasswordHashUC = get(),

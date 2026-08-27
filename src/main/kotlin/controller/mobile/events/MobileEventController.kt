@@ -15,6 +15,7 @@ class MobileEventController(
   private val getSessionParticipantHandler: MobileGetSessionParticipantHandler,
   private val sessionWebSocketHandler: MobileSessionWebSocketHandler,
   private val uploadImageHandler: MobileUploadImageHandler,
+  private val waypointVisitListHandler: MobileWaypointVisitListHandler,
   private val finishSessionHandler: MobileFinishSessionHandler,
 ) : Controller {
 
@@ -47,6 +48,10 @@ class MobileEventController(
 
         post("sessions/{sessionUuid}/upload-image") {
           uploadImageHandler.handle(call)
+        }
+
+        post("sessions/{sessionUuid}/waypoint-visits") {
+          waypointVisitListHandler.handle(call)
         }
 
         post("sessions/{sessionUuid}/finish") {

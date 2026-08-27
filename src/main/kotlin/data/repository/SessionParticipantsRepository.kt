@@ -173,10 +173,12 @@ class SessionParticipantsRepositoryImpl(
         (SessionWaypointDetailsTable.sessionUuid eq sessionUuid) and
         (SessionWaypointDetailsTable.userId eq userId) and
         (SessionWaypointDetailsTable.participantId eq activeParticipant.id.value)
-      }.map { detailDao ->
-        val waypointLabel = MapWaypointDAO.findById(detailDao.waypointId)?.label
-        detailDao.toDomain(label = waypointLabel)
       }.toList()
+        .sortedBy{ it.visitedAt }
+        .map { detailDao ->
+          val waypointLabel = MapWaypointDAO.findById(detailDao.waypointId)?.label
+          detailDao.toDomain(label = waypointLabel)
+        }
     }.getRight()
   }
 

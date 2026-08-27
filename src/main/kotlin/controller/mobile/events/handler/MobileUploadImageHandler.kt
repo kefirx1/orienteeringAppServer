@@ -6,7 +6,6 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
-import pl.dev.bkwiatkowski.core.DomainError
 import pl.dev.bkwiatkowski.core.either
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.UploadImageResponse
