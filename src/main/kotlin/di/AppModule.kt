@@ -213,6 +213,10 @@ fun appModule(config: ApplicationConfig) = module {
     )
   }
 
+  factory<GetLastEventUC> {
+    GetLastEventUCImpl(eventRepository = get())
+  }
+
   factory<DeleteEventUC> {
     DeleteEventUCImpl(
       eventRepository = get(),
@@ -448,6 +452,8 @@ fun appModule(config: ApplicationConfig) = module {
 
   single { MobileGetUserSessionsSummaryHandler(getUserSessionsSummaryUC = get()) }
 
+  single { MobileGetLastEventHandler(getLastEventUC = get()) }
+
   single { EventImageHandler(environmentConfig = get(), getAdminPanelUserByIdUC = get(), getEventByIdUC = get(), eventRepository = get()) }
 
   factory<StoreSessionImageUC> {
@@ -473,6 +479,7 @@ fun appModule(config: ApplicationConfig) = module {
     MobileEventController(
       eventListHandler = get(),
       eventDetailHandler = get(),
+      getLastEventHandler = get(),
       joinSessionHandler = get(),
       checkSessionJoinHandler = get(),
       getSessionWaypointDetailsHandler = get(),

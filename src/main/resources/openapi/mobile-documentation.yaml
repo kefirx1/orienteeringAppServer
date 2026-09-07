@@ -45,6 +45,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /api/mobile/events/last:
+    get:
+      operationId: "getLastMobileEvent"
+      summary: "Get last added event id (Mobile)"
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - "Mobile Events"
+      responses:
+        "200":
+          description: "Last event id returned (nullable)"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MobileLastEventResponseDto"
+        "401":
+          description: "Unauthorized - missing or invalid token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /api/mobile/events/sessions/{sessionUuid}/finished-participants:
     get:
       operationId: "getFinishedSessionParticipants"
@@ -1147,6 +1174,15 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/UserSessionDto"
+    MobileLastEventResponseDto:
+      type: object
+      description: "Response returning last event id"
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+          description: "ID of the last added event
   securitySchemes:
     bearerAuth:
       type: http

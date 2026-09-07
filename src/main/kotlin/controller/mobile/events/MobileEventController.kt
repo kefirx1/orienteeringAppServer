@@ -9,6 +9,7 @@ import pl.dev.bkwiatkowski.core.routing.Controller
 class MobileEventController(
   private val eventListHandler: MobileEventListHandler,
   private val eventDetailHandler: MobileEventDetailHandler,
+  private val getLastEventHandler: MobileGetLastEventHandler,
   private val joinSessionHandler: MobileJoinSessionHandler,
   private val checkSessionJoinHandler: MobileCheckSessionJoinHandler,
   private val getSessionWaypointDetailsHandler: MobileGetSessionWaypointDetailsHandler,
@@ -28,6 +29,10 @@ class MobileEventController(
 
         get("{id}") {
           eventDetailHandler.handle(call)
+        }
+
+        get("last") {
+          getLastEventHandler.handle(call)
         }
 
         post("sessions/join") {
