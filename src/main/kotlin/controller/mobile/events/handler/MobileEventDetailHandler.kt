@@ -12,6 +12,7 @@ import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.EventSessionRes
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
 import pl.dev.bkwiatkowski.domain.usecase.GetEventByIdUC
+import pl.dev.bkwiatkowski.controller.mobile.events.MobileEventConstants
 
 class MobileEventDetailHandler(
   private val getEventByIdUC: GetEventByIdUC,
@@ -87,6 +88,8 @@ class MobileEventDetailHandler(
                 coordinateY = waypoint.coordinateY,
               )
             },
+            maxImageSizeBytes = MobileEventConstants.MAX_IMAGE_SIZE_BYTES,
+            compressedImageQualityPercent = MobileEventConstants.COMPRESSED_IMAGE_QUALITY_PERCENT,
           ),
         )
       },

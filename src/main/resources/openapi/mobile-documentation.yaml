@@ -592,7 +592,6 @@ paths:
     post:
       operationId: "uploadSessionImage"
       summary: "Upload JPEG image for session (Mobile)"
-      description: "Uploads a JPEG image (max 400KB) associated with the given session UUID. The request body must be a JSON object with a Base64-encoded image payload. Returns stored image path. Requires authentication."
       security:
         - bearerAuth: [ ]
       tags:
@@ -969,6 +968,8 @@ components:
         - startLocationY
         - status
         - eventType
+        - maxImageSizeBytes
+        - compressedImageQualityPercent
       properties:
         id:
           type: integer
@@ -1009,6 +1010,12 @@ components:
           nullable: true
           $ref: "#/components/schemas/EventSessionResponseDto"
           description: "Event session data if available (null if no session)"
+        maxImageSizeBytes:
+          type: integer
+          description: "Maximum allowed image size in bytes for session image uploads"
+        compressedImageQualityPercent:
+          type: integer
+          description: "Image quality percent used when compressing uploaded images"
     MapWaypointDto:
       type: object
       required:
@@ -1182,7 +1189,7 @@ components:
       properties:
         id:
           type: integer
-          description: "ID of the last added event
+          description: "ID of the last added event"
   securitySchemes:
     bearerAuth:
       type: http

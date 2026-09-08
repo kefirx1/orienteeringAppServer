@@ -23,4 +23,6 @@ data class MobileEventDetailResponseDto(
   val session: EventSessionResponseDto? = null,
   val map: MobileMapDto,
   val eventWaypoints: List<WaypointResponseDto> = emptyList(),
+  val maxImageSizeBytes: Int,
+  val compressedImageQualityPercent: Int,
 )

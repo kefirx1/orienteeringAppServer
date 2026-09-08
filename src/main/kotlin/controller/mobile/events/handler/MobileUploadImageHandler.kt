@@ -13,15 +13,12 @@ import pl.dev.bkwiatkowski.controller.mobile.events.dto.request.UploadImageReque
 import pl.dev.bkwiatkowski.core.security.coder.ByteCoder
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
 import pl.dev.bkwiatkowski.domain.usecase.StoreSessionImageUC
+import pl.dev.bkwiatkowski.controller.mobile.events.MobileEventConstants
 
 class MobileUploadImageHandler(
   private val storeSessionImageUC: StoreSessionImageUC,
   private val byteCoder: ByteCoder,
 ) {
-
-  companion object {
-    private const val MAX_IMAGE_BYTES = 400 * 1024 // 400 KB
-  }
 
   suspend fun handle(call: ApplicationCall) {
     val principal = call.principal<JWTPrincipal>()
@@ -74,12 +71,12 @@ class MobileUploadImageHandler(
       return
     }
 
-    if (bytes.size > MAX_IMAGE_BYTES) {
+    if (bytes.size > MobileEventConstants.MAX_IMAGE_SIZE_BYTES) {
       call.respond(
         status = HttpStatusCode.BadRequest,
         message = ErrorResponse(
           businessCode = "IMAGE_TOO_LARGE",
-          message = "Image exceeds maximum size of 400KB",
+          message = "Rozmiar zdjęcia przekracza ${MobileEventConstants.MAX_IMAGE_SIZE_BYTES / 1024}KB",
         )
       )
       return
