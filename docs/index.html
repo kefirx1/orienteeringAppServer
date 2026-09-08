@@ -1339,7 +1339,7 @@
                       <article id="api-Default-apiAdminUsersGet-0" data-group="User" data-name="apiAdminUsersGet" data-version="0">
                         <div class="pull-left">
                           <h1>apiAdminUsersGet</h1>
-                          <p>Get All Admin Panel Users</p>
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -1425,7 +1425,6 @@ public class DefaultApiExample {
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Get All Admin Panel Users
 [apiInstance apiAdminUsersGetWithCompletionHandler: 
               ^(array[AdminUserResponseDto] output, NSError* error) {
                             if (output) {
@@ -1477,7 +1476,6 @@ namespace Example
 
             try
             {
-                // Get All Admin Panel Users
                 array[AdminUserResponseDto] result = apiInstance.apiAdminUsersGet();
                 Debug.WriteLine(result);
             }
@@ -1536,7 +1534,6 @@ from pprint import pprint
 api_instance = swagger_client.DefaultApi()
 
 try: 
-    # Get All Admin Panel Users
     api_response = api_instance.api_admin_users_get()
     pprint(api_response)
 except ApiException as e:
@@ -1755,7 +1752,7 @@ except ApiException as e:
                       <article id="api-Default-apiAdminUsersIdDelete-0" data-group="User" data-name="apiAdminUsersIdDelete" data-version="0">
                         <div class="pull-left">
                           <h1>apiAdminUsersIdDelete</h1>
-                          <p>Delete Admin Panel User</p>
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -1842,7 +1839,6 @@ Integer *id = 56; // User ID
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Delete Admin Panel User
 [apiInstance apiAdminUsersIdDeleteWith:id
               completionHandler: ^(NSError* error) {
                             if (error) {
@@ -1894,7 +1890,6 @@ namespace Example
 
             try
             {
-                // Delete Admin Panel User
                 apiInstance.apiAdminUsersIdDelete(id);
             }
             catch (Exception e)
@@ -1953,7 +1948,6 @@ api_instance = swagger_client.DefaultApi()
 id = 56 # Integer | User ID
 
 try: 
-    # Delete Admin Panel User
     api_instance.api_admin_users_id_delete(id)
 except ApiException as e:
     print("Exception when calling DefaultApi->apiAdminUsersIdDelete: %s\n" % e)</code></pre>
@@ -2204,7 +2198,7 @@ except ApiException as e:
                       <article id="api-Default-apiAdminUsersPost-0" data-group="User" data-name="apiAdminUsersPost" data-version="0">
                         <div class="pull-left">
                           <h1>apiAdminUsersPost</h1>
-                          <p>Add Admin Panel User</p>
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -2292,7 +2286,6 @@ AddAdminUserRequestDto *body = ; //
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Add Admin Panel User
 [apiInstance apiAdminUsersPostWith:body
               completionHandler: ^(NSError* error) {
                             if (error) {
@@ -2344,7 +2337,6 @@ namespace Example
 
             try
             {
-                // Add Admin Panel User
                 apiInstance.apiAdminUsersPost(body);
             }
             catch (Exception e)
@@ -2403,7 +2395,6 @@ api_instance = swagger_client.DefaultApi()
 body =  # AddAdminUserRequestDto | 
 
 try: 
-    # Add Admin Panel User
     api_instance.api_admin_users_post(body)
 except ApiException as e:
     print("Exception when calling DefaultApi->apiAdminUsersPost: %s\n" % e)</code></pre>
@@ -2716,7 +2707,7 @@ except ApiException as e:
                       <article id="api-Default-apiAuthChangePasswordPost-0" data-group="User" data-name="apiAuthChangePasswordPost" data-version="0">
                         <div class="pull-left">
                           <h1>apiAuthChangePasswordPost</h1>
-                          <p>Change User Password</p>
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -2804,7 +2795,6 @@ ChangePasswordRequestDto *body = ; //
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Change User Password
 [apiInstance apiAuthChangePasswordPostWith:body
               completionHandler: ^(NSError* error) {
                             if (error) {
@@ -2856,7 +2846,6 @@ namespace Example
 
             try
             {
-                // Change User Password
                 apiInstance.apiAuthChangePasswordPost(body);
             }
             catch (Exception e)
@@ -2915,7 +2904,6 @@ api_instance = swagger_client.DefaultApi()
 body =  # ChangePasswordRequestDto | 
 
 try: 
-    # Change User Password
     api_instance.api_auth_change_password_post(body)
 except ApiException as e:
     print("Exception when calling DefaultApi->apiAuthChangePasswordPost: %s\n" % e)</code></pre>
@@ -3180,7 +3168,7 @@ except ApiException as e:
                       <article id="api-Default-apiAuthLogoutPost-0" data-group="User" data-name="apiAuthLogoutPost" data-version="0">
                         <div class="pull-left">
                           <h1>apiAuthLogoutPost</h1>
-                          <p>User Logout</p>
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -3264,7 +3252,6 @@ public class DefaultApiExample {
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// User Logout
 [apiInstance apiAuthLogoutPostWithCompletionHandler: 
               ^(NSError* error) {
                             if (error) {
@@ -3313,7 +3300,6 @@ namespace Example
 
             try
             {
-                // User Logout
                 apiInstance.apiAuthLogoutPost();
             }
             catch (Exception e)
@@ -3369,7 +3355,6 @@ from pprint import pprint
 api_instance = swagger_client.DefaultApi()
 
 try: 
-    # User Logout
     api_instance.api_auth_logout_post()
 except ApiException as e:
     print("Exception when calling DefaultApi->apiAuthLogoutPost: %s\n" % e)</code></pre>
@@ -3495,7 +3480,7 @@ except ApiException as e:
                       <article id="api-Default-apiAuthRefreshPost-0" data-group="User" data-name="apiAuthRefreshPost" data-version="0">
                         <div class="pull-left">
                           <h1>apiAuthRefreshPost</h1>
-                          <p>Refresh Token</p>
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -3577,7 +3562,6 @@ public class DefaultApiExample {
                               <pre class="prettyprint"><code class="language-cpp">
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Refresh Token
 [apiInstance apiAuthRefreshPostWithCompletionHandler: 
               ^(SignInResponseDto output, NSError* error) {
                             if (output) {
@@ -3626,7 +3610,6 @@ namespace Example
 
             try
             {
-                // Refresh Token
                 SignInResponseDto result = apiInstance.apiAuthRefreshPost();
                 Debug.WriteLine(result);
             }
@@ -3682,7 +3665,6 @@ from pprint import pprint
 api_instance = swagger_client.DefaultApi()
 
 try: 
-    # Refresh Token
     api_response = api_instance.api_auth_refresh_post()
     pprint(api_response)
 except ApiException as e:
@@ -3926,7 +3908,7 @@ except ApiException as e:
                       <article id="api-Default-apiAuthSigninPost-0" data-group="User" data-name="apiAuthSigninPost" data-version="0">
                         <div class="pull-left">
                           <h1>apiAuthSigninPost</h1>
-                          <p>User Sign In</p>
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -4012,7 +3994,6 @@ public class DefaultApiExample {
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// User Sign In
 [apiInstance apiAuthSigninPostWith:body
               completionHandler: ^(SignInResponseDto output, NSError* error) {
                             if (output) {
@@ -4064,7 +4045,6 @@ namespace Example
 
             try
             {
-                // User Sign In
                 SignInResponseDto result = apiInstance.apiAuthSigninPost(body);
                 Debug.WriteLine(result);
             }
@@ -4123,7 +4103,6 @@ api_instance = swagger_client.DefaultApi()
 body =  # SignInRequestDto | 
 
 try: 
-    # User Sign In
     api_response = api_instance.api_auth_signin_post(body)
     pprint(api_response)
 except ApiException as e:
@@ -4458,7 +4437,7 @@ except ApiException as e:
                       <article id="api-Default-apiAuthSignupPost-0" data-group="User" data-name="apiAuthSignupPost" data-version="0">
                         <div class="pull-left">
                           <h1>apiAuthSignupPost</h1>
-                          <p>User Sign Up</p>
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -4542,7 +4521,6 @@ public class DefaultApiExample {
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// User Sign Up
 [apiInstance apiAuthSignupPostWith:body
               completionHandler: ^(NSError* error) {
                             if (error) {
@@ -4591,7 +4569,6 @@ namespace Example
 
             try
             {
-                // User Sign Up
                 apiInstance.apiAuthSignupPost(body);
             }
             catch (Exception e)
@@ -4647,7 +4624,6 @@ api_instance = swagger_client.DefaultApi()
 body =  # SignUpRequestDto | 
 
 try: 
-    # User Sign Up
     api_instance.api_auth_signup_post(body)
 except ApiException as e:
     print("Exception when calling DefaultApi->apiAuthSignupPost: %s\n" % e)</code></pre>
@@ -4864,7 +4840,7 @@ except ApiException as e:
                       <article id="api-Default-apiAuthenticateGet-0" data-group="User" data-name="apiAuthenticateGet" data-version="0">
                         <div class="pull-left">
                           <h1>apiAuthenticateGet</h1>
-                          <p>Authenticate User</p>
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -4947,7 +4923,6 @@ public class DefaultApiExample {
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Authenticate User
 [apiInstance apiAuthenticateGetWithCompletionHandler: 
               ^(NSError* error) {
                             if (error) {
@@ -4996,7 +4971,6 @@ namespace Example
 
             try
             {
-                // Authenticate User
                 apiInstance.apiAuthenticateGet();
             }
             catch (Exception e)
@@ -5052,7 +5026,6 @@ from pprint import pprint
 api_instance = swagger_client.DefaultApi()
 
 try: 
-    # Authenticate User
     api_instance.api_authenticate_get()
 except ApiException as e:
     print("Exception when calling DefaultApi->apiAuthenticateGet: %s\n" % e)</code></pre>
@@ -5090,7 +5063,7 @@ except ApiException as e:
                       <article id="api-Default-apiEventsEventIdParticipantsProgressionGet-0" data-group="User" data-name="apiEventsEventIdParticipantsProgressionGet" data-version="0">
                         <div class="pull-left">
                           <h1>apiEventsEventIdParticipantsProgressionGet</h1>
-                          <p>Get Event Participants Progression</p>
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -5179,7 +5152,6 @@ Integer *eventId = 56; // Event ID
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Get Event Participants Progression
 [apiInstance apiEventsEventIdParticipantsProgressionGetWith:eventId
               completionHandler: ^(array[EventParticipantProgressionDto] output, NSError* error) {
                             if (output) {
@@ -5234,7 +5206,6 @@ namespace Example
 
             try
             {
-                // Get Event Participants Progression
                 array[EventParticipantProgressionDto] result = apiInstance.apiEventsEventIdParticipantsProgressionGet(eventId);
                 Debug.WriteLine(result);
             }
@@ -5296,7 +5267,6 @@ api_instance = swagger_client.DefaultApi()
 eventId = 56 # Integer | Event ID
 
 try: 
-    # Get Event Participants Progression
     api_response = api_instance.api_events_event_id_participants_progression_get(eventId)
     pprint(api_response)
 except ApiException as e:
@@ -5592,7 +5562,7 @@ except ApiException as e:
                       <article id="api-Default-apiEventsGet-0" data-group="User" data-name="apiEventsGet" data-version="0">
                         <div class="pull-left">
                           <h1>apiEventsGet</h1>
-                          <p>Get All Events</p>
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -5678,7 +5648,6 @@ public class DefaultApiExample {
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Get All Events
 [apiInstance apiEventsGetWithCompletionHandler: 
               ^(array[EventListResponseDto] output, NSError* error) {
                             if (output) {
@@ -5730,7 +5699,6 @@ namespace Example
 
             try
             {
-                // Get All Events
                 array[EventListResponseDto] result = apiInstance.apiEventsGet();
                 Debug.WriteLine(result);
             }
@@ -5789,7 +5757,6 @@ from pprint import pprint
 api_instance = swagger_client.DefaultApi()
 
 try: 
-    # Get All Events
     api_response = api_instance.api_events_get()
     pprint(api_response)
 except ApiException as e:
@@ -5864,7 +5831,7 @@ except ApiException as e:
                       <article id="api-Default-apiEventsIdDelete-0" data-group="User" data-name="apiEventsIdDelete" data-version="0">
                         <div class="pull-left">
                           <h1>apiEventsIdDelete</h1>
-                          <p>Delete Event</p>
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -5951,7 +5918,6 @@ Integer *id = 56; // Event ID
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Delete Event
 [apiInstance apiEventsIdDeleteWith:id
               completionHandler: ^(NSError* error) {
                             if (error) {
@@ -6003,7 +5969,6 @@ namespace Example
 
             try
             {
-                // Delete Event
                 apiInstance.apiEventsIdDelete(id);
             }
             catch (Exception e)
@@ -6062,7 +6027,6 @@ api_instance = swagger_client.DefaultApi()
 id = 56 # Integer | Event ID
 
 try: 
-    # Delete Event
     api_instance.api_events_id_delete(id)
 except ApiException as e:
     print("Exception when calling DefaultApi->apiEventsIdDelete: %s\n" % e)</code></pre>
@@ -6313,7 +6277,7 @@ except ApiException as e:
                       <article id="api-Default-apiEventsIdGet-0" data-group="User" data-name="apiEventsIdGet" data-version="0">
                         <div class="pull-left">
                           <h1>apiEventsIdGet</h1>
-                          <p>Get Event Details</p>
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -6402,7 +6366,6 @@ Integer *id = 56; // Event ID
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Get Event Details
 [apiInstance apiEventsIdGetWith:id
               completionHandler: ^(EventDetailResponseDto output, NSError* error) {
                             if (output) {
@@ -6457,7 +6420,6 @@ namespace Example
 
             try
             {
-                // Get Event Details
                 EventDetailResponseDto result = apiInstance.apiEventsIdGet(id);
                 Debug.WriteLine(result);
             }
@@ -6519,7 +6481,6 @@ api_instance = swagger_client.DefaultApi()
 id = 56 # Integer | Event ID
 
 try: 
-    # Get Event Details
     api_response = api_instance.api_events_id_get(id)
     pprint(api_response)
 except ApiException as e:
@@ -6811,7 +6772,7 @@ except ApiException as e:
                       <article id="api-Default-apiEventsIdSessionClosePost-0" data-group="User" data-name="apiEventsIdSessionClosePost" data-version="0">
                         <div class="pull-left">
                           <h1>apiEventsIdSessionClosePost</h1>
-                          <p>Close session</p>
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -6898,7 +6859,6 @@ Integer *id = 56; // Event ID
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Close session
 [apiInstance apiEventsIdSessionClosePostWith:id
               completionHandler: ^(NSError* error) {
                             if (error) {
@@ -6950,7 +6910,6 @@ namespace Example
 
             try
             {
-                // Close session
                 apiInstance.apiEventsIdSessionClosePost(id);
             }
             catch (Exception e)
@@ -7009,7 +6968,6 @@ api_instance = swagger_client.DefaultApi()
 id = 56 # Integer | Event ID
 
 try: 
-    # Close session
     api_instance.api_events_id_session_close_post(id)
 except ApiException as e:
     print("Exception when calling DefaultApi->apiEventsIdSessionClosePost: %s\n" % e)</code></pre>
@@ -7308,7 +7266,7 @@ except ApiException as e:
                       <article id="api-Default-apiEventsIdSessionJoinablePost-0" data-group="User" data-name="apiEventsIdSessionJoinablePost" data-version="0">
                         <div class="pull-left">
                           <h1>apiEventsIdSessionJoinablePost</h1>
-                          <p>Set session joinable</p>
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -7399,7 +7357,6 @@ Integer *id = 56; // Event ID
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Set session joinable
 [apiInstance apiEventsIdSessionJoinablePostWith:body
     id:id
               completionHandler: ^(NSError* error) {
@@ -7454,7 +7411,6 @@ namespace Example
 
             try
             {
-                // Set session joinable
                 apiInstance.apiEventsIdSessionJoinablePost(body, id);
             }
             catch (Exception e)
@@ -7516,7 +7472,6 @@ body =  # SetEventSessionJoinableRequestDto |
 id = 56 # Integer | Event ID
 
 try: 
-    # Set session joinable
     api_instance.api_events_id_session_joinable_post(body, id)
 except ApiException as e:
     print("Exception when calling DefaultApi->apiEventsIdSessionJoinablePost: %s\n" % e)</code></pre>
@@ -7858,7 +7813,7 @@ except ApiException as e:
                       <article id="api-Default-apiEventsIdSessionPost-0" data-group="User" data-name="apiEventsIdSessionPost" data-version="0">
                         <div class="pull-left">
                           <h1>apiEventsIdSessionPost</h1>
-                          <p>Create Event Session</p>
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -7947,7 +7902,6 @@ Integer *id = 56; // Event ID
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Create Event Session
 [apiInstance apiEventsIdSessionPostWith:id
               completionHandler: ^(CreateEventSessionResponseDto output, NSError* error) {
                             if (output) {
@@ -8002,7 +7956,6 @@ namespace Example
 
             try
             {
-                // Create Event Session
                 CreateEventSessionResponseDto result = apiInstance.apiEventsIdSessionPost(id);
                 Debug.WriteLine(result);
             }
@@ -8064,7 +8017,6 @@ api_instance = swagger_client.DefaultApi()
 id = 56 # Integer | Event ID
 
 try: 
-    # Create Event Session
     api_response = api_instance.api_events_id_session_post(id)
     pprint(api_response)
 except ApiException as e:
@@ -8404,7 +8356,7 @@ except ApiException as e:
                       <article id="api-Default-apiEventsIdSessionSessionUuidUserUserIdWaypointsGet-0" data-group="User" data-name="apiEventsIdSessionSessionUuidUserUserIdWaypointsGet" data-version="0">
                         <div class="pull-left">
                           <h1>apiEventsIdSessionSessionUuidUserUserIdWaypointsGet</h1>
-                          <p>Get session waypoint details for a mobile user</p>
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -8502,7 +8454,6 @@ Integer *participantId = 56; //
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Get session waypoint details for a mobile user
 [apiInstance apiEventsIdSessionSessionUuidUserUserIdWaypointsGetWith:id
     sessionUuid:sessionUuid
     userId:userId
@@ -8566,7 +8517,6 @@ namespace Example
 
             try
             {
-                // Get session waypoint details for a mobile user
                 SessionWaypointDetailsWebResponseDto result = apiInstance.apiEventsIdSessionSessionUuidUserUserIdWaypointsGet(id, sessionUuid, userId, participantId);
                 Debug.WriteLine(result);
             }
@@ -8637,7 +8587,6 @@ userId = 56 # Integer | Mobile user ID
 participantId = 56 # Integer | 
 
 try: 
-    # Get session waypoint details for a mobile user
     api_response = api_instance.api_events_id_session_session_uuid_user_user_id_waypoints_get(id, sessionUuid, userId, participantId)
     pprint(api_response)
 except ApiException as e:
@@ -9047,7 +8996,7 @@ except ApiException as e:
                       <article id="api-Default-apiEventsImagesGet-0" data-group="User" data-name="apiEventsImagesGet" data-version="0">
                         <div class="pull-left">
                           <h1>apiEventsImagesGet</h1>
-                          <p>Get event image file (query param)</p>
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -9136,7 +9085,6 @@ String *path = path_example; // Relative path under images storage, e.g. '{sessi
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Get event image file (query param)
 [apiInstance apiEventsImagesGetWith:path
               completionHandler: ^(byte[] output, NSError* error) {
                             if (output) {
@@ -9191,7 +9139,6 @@ namespace Example
 
             try
             {
-                // Get event image file (query param)
                 byte[] result = apiInstance.apiEventsImagesGet(path);
                 Debug.WriteLine(result);
             }
@@ -9253,7 +9200,6 @@ api_instance = swagger_client.DefaultApi()
 path = path_example # String | Relative path under images storage, e.g. '{sessionUuid}/photo.jpg'
 
 try: 
-    # Get event image file (query param)
     api_response = api_instance.api_events_images_get(path)
     pprint(api_response)
 except ApiException as e:
@@ -9595,7 +9541,7 @@ except ApiException as e:
                       <article id="api-Default-apiEventsPost-0" data-group="User" data-name="apiEventsPost" data-version="0">
                         <div class="pull-left">
                           <h1>apiEventsPost</h1>
-                          <p>Create New Event</p>
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -9685,7 +9631,6 @@ AddEventRequestDto *body = ; //
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Create New Event
 [apiInstance apiEventsPostWith:body
               completionHandler: ^(CreateEventResponseDto output, NSError* error) {
                             if (output) {
@@ -9740,7 +9685,6 @@ namespace Example
 
             try
             {
-                // Create New Event
                 CreateEventResponseDto result = apiInstance.apiEventsPost(body);
                 Debug.WriteLine(result);
             }
@@ -9802,7 +9746,6 @@ api_instance = swagger_client.DefaultApi()
 body =  # AddEventRequestDto | 
 
 try: 
-    # Create New Event
     api_response = api_instance.api_events_post(body)
     pprint(api_response)
 except ApiException as e:
@@ -10060,7 +10003,7 @@ except ApiException as e:
                       <article id="api-Default-apiMapsGet-0" data-group="User" data-name="apiMapsGet" data-version="0">
                         <div class="pull-left">
                           <h1>apiMapsGet</h1>
-                          <p>Get All Maps</p>
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -10146,7 +10089,6 @@ public class DefaultApiExample {
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Get All Maps
 [apiInstance apiMapsGetWithCompletionHandler: 
               ^(array[MapListResponseDto] output, NSError* error) {
                             if (output) {
@@ -10198,7 +10140,6 @@ namespace Example
 
             try
             {
-                // Get All Maps
                 array[MapListResponseDto] result = apiInstance.apiMapsGet();
                 Debug.WriteLine(result);
             }
@@ -10257,7 +10198,6 @@ from pprint import pprint
 api_instance = swagger_client.DefaultApi()
 
 try: 
-    # Get All Maps
     api_response = api_instance.api_maps_get()
     pprint(api_response)
 except ApiException as e:
@@ -10428,7 +10368,7 @@ except ApiException as e:
                       <article id="api-Default-apiMapsIdDelete-0" data-group="User" data-name="apiMapsIdDelete" data-version="0">
                         <div class="pull-left">
                           <h1>apiMapsIdDelete</h1>
-                          <p>Delete Map</p>
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -10515,7 +10455,6 @@ Integer *id = 56; // Map ID
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Delete Map
 [apiInstance apiMapsIdDeleteWith:id
               completionHandler: ^(NSError* error) {
                             if (error) {
@@ -10567,7 +10506,6 @@ namespace Example
 
             try
             {
-                // Delete Map
                 apiInstance.apiMapsIdDelete(id);
             }
             catch (Exception e)
@@ -10626,7 +10564,6 @@ api_instance = swagger_client.DefaultApi()
 id = 56 # Integer | Map ID
 
 try: 
-    # Delete Map
     api_instance.api_maps_id_delete(id)
 except ApiException as e:
     print("Exception when calling DefaultApi->apiMapsIdDelete: %s\n" % e)</code></pre>
@@ -10925,7 +10862,7 @@ except ApiException as e:
                       <article id="api-Default-apiMapsIdGet-0" data-group="User" data-name="apiMapsIdGet" data-version="0">
                         <div class="pull-left">
                           <h1>apiMapsIdGet</h1>
-                          <p>Get Map Details</p>
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -11014,7 +10951,6 @@ Integer *id = 56; // Map ID
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Get Map Details
 [apiInstance apiMapsIdGetWith:id
               completionHandler: ^(MapDetailResponseDto output, NSError* error) {
                             if (output) {
@@ -11069,7 +11005,6 @@ namespace Example
 
             try
             {
-                // Get Map Details
                 MapDetailResponseDto result = apiInstance.apiMapsIdGet(id);
                 Debug.WriteLine(result);
             }
@@ -11131,7 +11066,6 @@ api_instance = swagger_client.DefaultApi()
 id = 56 # Integer | Map ID
 
 try: 
-    # Get Map Details
     api_response = api_instance.api_maps_id_get(id)
     pprint(api_response)
 except ApiException as e:
@@ -11423,7 +11357,7 @@ except ApiException as e:
                       <article id="api-Default-apiMapsPost-0" data-group="User" data-name="apiMapsPost" data-version="0">
                         <div class="pull-left">
                           <h1>apiMapsPost</h1>
-                          <p>Create New Map</p>
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -11513,7 +11447,6 @@ AddMapRequestDto *body = ; //
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Create New Map
 [apiInstance apiMapsPostWith:body
               completionHandler: ^(CreateMapResponseDto output, NSError* error) {
                             if (output) {
@@ -11568,7 +11501,6 @@ namespace Example
 
             try
             {
-                // Create New Map
                 CreateMapResponseDto result = apiInstance.apiMapsPost(body);
                 Debug.WriteLine(result);
             }
@@ -11630,7 +11562,6 @@ api_instance = swagger_client.DefaultApi()
 body =  # AddMapRequestDto | 
 
 try: 
-    # Create New Map
     api_response = api_instance.api_maps_post(body)
     pprint(api_response)
 except ApiException as e:
@@ -11936,7 +11867,7 @@ except ApiException as e:
                       <article id="api-Default-apiSettingsGet-0" data-group="User" data-name="apiSettingsGet" data-version="0">
                         <div class="pull-left">
                           <h1>apiSettingsGet</h1>
-                          <p>Get Settings</p>
+                          <p></p>
                         </div>
                         <div class="pull-right"></div>
                         <div class="clearfix"></div>
@@ -12022,7 +11953,6 @@ public class DefaultApiExample {
 
 DefaultApi *apiInstance = [[DefaultApi alloc] init];
 
-// Get Settings
 [apiInstance apiSettingsGetWithCompletionHandler: 
               ^(SettingsResponseDto output, NSError* error) {
                             if (output) {
@@ -12074,7 +12004,6 @@ namespace Example
 
             try
             {
-                // Get Settings
                 SettingsResponseDto result = apiInstance.apiSettingsGet();
                 Debug.WriteLine(result);
             }
@@ -12133,7 +12062,6 @@ from pprint import pprint
 api_instance = swagger_client.DefaultApi()
 
 try: 
-    # Get Settings
     api_response = api_instance.api_settings_get()
     pprint(api_response)
 except ApiException as e:

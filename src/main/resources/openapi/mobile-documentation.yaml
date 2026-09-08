@@ -10,7 +10,6 @@ paths:
   /api/mobile/auth/register:
     post:
       operationId: "registerMobileUser"
-      summary: "Mobile User Registration"
       description: "Registers a new mobile user account with username, email, and optional mobile-specific fields"
       tags:
         - "Mobile Authentication"
@@ -48,7 +47,6 @@ paths:
   /api/mobile/events/last:
     get:
       operationId: "getLastMobileEvent"
-      summary: "Get last added event id (Mobile)"
       security:
         - bearerAuth: [ ]
       tags:
@@ -75,7 +73,6 @@ paths:
   /api/mobile/events/sessions/{sessionUuid}/finished-participants:
     get:
       operationId: "getFinishedSessionParticipants"
-      summary: "Get finished participants for authenticated user"
       security:
         - bearerAuth: [ ]
       tags:
@@ -123,7 +120,6 @@ paths:
   /api/mobile/auth/login:
     post:
       operationId: "loginMobileUser"
-      summary: "Mobile User Login"
       description: "Authenticates a mobile user and returns access token, refresh token, and token expiration time"
       tags:
         - "Mobile Authentication"
@@ -210,7 +206,6 @@ paths:
   /api/mobile/auth/refresh:
     post:
       operationId: "refreshMobileToken"
-      summary: "Refresh Access Token"
       description: "Refreshes the user's access token using a valid refresh token. Returns new access token and refresh token."
       tags:
         - "Mobile Authentication"
@@ -248,7 +243,6 @@ paths:
   /api/mobile/settings:
     get:
       operationId: "getMobileSettings"
-      summary: "Get Mobile Settings"
       description: "Returns mobile client settings including current server time and the authenticated user's id. Used for synchronizing client clock and retrieving configuration."
       tags:
         - "Mobile Settings"
@@ -356,7 +350,6 @@ paths:
   /api/mobile/events:
     get:
       operationId: "getMobileEvents"
-      summary: "Get All Events (Mobile)"
       description: "Retrieves a list of events for mobile users. Mobile users see events according to mobile authorization rules. Returns an empty list if none."
       security:
         - bearerAuth: [ ]
@@ -386,7 +379,6 @@ paths:
   /api/mobile/events/{id}:
     get:
       operationId: "getMobileEventById"
-      summary: "Get Event Details (Mobile)"
       description: "Retrieves detailed information about a specific event for mobile users. **Requires authentication.**"
       security:
         - bearerAuth: [ ]
@@ -433,7 +425,6 @@ paths:
   /api/mobile/events/sessions/join:
     post:
       operationId: "joinEventSession"
-      summary: "Join Event Session (Mobile)"
       description: "Allows a mobile user to join an event session. **Requires authentication.**"
       security:
         - bearerAuth: [ ]
@@ -475,7 +466,6 @@ paths:
   /api/mobile/events/sessions/{sessionUuid}/joined:
     get:
       operationId: "checkUserInEventSession"
-      summary: "Check If Mobile User Joined Session"
       description: "Checks whether the authenticated mobile user (userId taken from JWT token) has already joined the specified event session. Requires authentication."
       security:
         - bearerAuth: [ ]
@@ -555,7 +545,6 @@ paths:
   /api/mobile/events/sessions/{sessionUuid}/ws:
     get:
       operationId: "openSessionWebSocket"
-      summary: "Open WebSocket for Session (Mobile)"
       security:
         - bearerAuth: [ ]
       tags:
@@ -591,7 +580,6 @@ paths:
   /api/mobile/events/sessions/{sessionUuid}/upload-image:
     post:
       operationId: "uploadSessionImage"
-      summary: "Upload JPEG image for session (Mobile)"
       security:
         - bearerAuth: [ ]
       tags:
@@ -691,11 +679,9 @@ components:
         businessCode:
           type: string
           description: "Business error code"
-          example: "VALIDATION_FAILED"
         message:
           type: string
           description: "Human-readable error message"
-          example: "User with this email already exists"
         showMessage:
           type: boolean
     MobileSignUpRequestDto:
@@ -709,31 +695,26 @@ components:
         username:
           type: string
           description: "Unique username for the mobile user"
-          example: "john_doe"
           minLength: 3
           maxLength: 50
         email:
           type: string
           format: email
           description: "Email address for the mobile user"
-          example: "john@example.com"
         password:
           type: string
           format: password
           description: "Password for the account"
-          example: "SecurePassword123!"
           minLength: 8
         phoneNumber:
           type: string
           nullable: true
           description: "Optional phone number (mobile-specific)"
-          example: "+48123456789"
         dateOfBirth:
           type: string
           format: date-time
           nullable: true
           description: "Optional date of birth in ISO 8601 format (mobile-specific)"
-          example: "1990-05-15T10:30:00"
     ChangePasswordRequestDto:
       type: object
       description: "Request to change password (used by mobile and admin endpoints)"
@@ -757,12 +738,10 @@ components:
         username:
           type: string
           description: "Username or email of the mobile user"
-          example: "john_doe"
         password:
           type: string
           format: password
           description: "User password"
-          example: "SecurePassword123!"
     MobileRefreshTokenRequestDto:
       type: object
       description: "Token refresh request"
@@ -772,7 +751,6 @@ components:
         refreshToken:
           type: string
           description: "Valid refresh token obtained from login or previous refresh"
-          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
     MobileSignInResponseDto:
       type: object
       description: "Mobile user authentication response with tokens"
@@ -785,21 +763,17 @@ components:
         accessToken:
           type: string
           description: "JWT access token for API requests. Include in Authorization header as 'Bearer {token}'"
-          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
         refreshToken:
           type: string
           description: "JWT refresh token for obtaining new access tokens. Store securely in mobile device."
-          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
         accessTokenExpiresTimestamp:
           type: integer
           format: int64
           description: "Expiration timestamp (epoch seconds) for access token"
-          example: 1710000000
         refreshTokenExpiresTimestamp:
           type: integer
           format: int64
           description: "Expiration timestamp (epoch seconds) for refresh token"
-          example: 1710086400
     MobileSettingsResponseDto:
       type: object
       description: "Mobile client settings response"
@@ -814,7 +788,6 @@ components:
           type: string
           format: date-time
           description: "Server local time as LocalDateTime in ISO-8601 (no offset). Serialized as java.time.LocalDateTime."
-          example: "2026-06-25T12:34:56"
     MobileMapDto:
       type: object
       required:
@@ -868,7 +841,6 @@ components:
         sessionUuid:
           type: string
           description: "UUID of the event session to join"
-          example: "550e8400-e29b-41d4-a716-446655440000"
     CheckSessionRequestDto:
       type: object
       description: "Request to check if the authenticated mobile user has joined a session"
@@ -878,7 +850,6 @@ components:
         sessionUuid:
           type: string
           description: "UUID of the event session to check"
-          example: "550e8400-e29b-41d4-a716-446655440000"
     WebsocketWaypointVisitDto:
       type: object
       description: "Message sent from mobile client over WebSocket to report a waypoint visit"
@@ -889,17 +860,14 @@ components:
         waypointId:
           type: integer
           description: "Identifier of the waypoint visited"
-          example: 5
         visitedAt:
           type: string
           format: date-time
           nullable: true
           description: "Optional timestamp when the waypoint was visited (LocalDateTime). If omitted server will use current time"
-          example: "2026-06-25T12:34:56"
         imagePath:
           type: string
           description: "Previously uploaded image path associated with this visit (relative storage path, must start with sessionUuid). Can be empty string if no image is associated. Example: '550e8400-e29b-41d4-a716-446655440000/photo.jpg'"
-          example: "550e8400-e29b-41d4-a716-446655440000/photo.jpg"
     IsUserInSessionResponseDto:
       type: object
       description: "Response indicating the membership status of the authenticated user in the session"
