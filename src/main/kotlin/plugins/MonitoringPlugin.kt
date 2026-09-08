@@ -5,8 +5,16 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.request.*
 import org.slf4j.event.*
+import io.ktor.http.*
 
 private const val MAX_LOG_LENGTH = 300
+private val SENSITIVE_HEADERS = setOf(
+  "authorization",
+  "cookie",
+  "set-cookie",
+  "proxy-authorization",
+  "x-api-key"
+)
 
 private fun truncateBody(body: String): String {
   return if (body.length > MAX_LOG_LENGTH) {
@@ -16,10 +24,24 @@ private fun truncateBody(body: String): String {
   }
 }
 
+private fun formatHeaders(headers: Headers): String {
+  return headers.entries().joinToString(prefix = "[", postfix = "]") { (name, values) ->
+    val lower = name.lowercase()
+    val displayValue = if (SENSITIVE_HEADERS.contains(lower)) {
+      values.joinToString(",") { "[REDACTED]" }
+    } else {
+      val joined = values.joinToString(",")
+      if (joined.length > 200) joined.substring(0, 200) + "..." else joined
+    }
+    "${name}=${displayValue}"
+  }
+}
+
 val ResponseBodyLoggingPlugin = createApplicationPlugin(name = "ResponseBodyLoggingPlugin") {
 
   fun PipelineCall.getMessage(body: String): String =
     "Response [${this.request.httpMethod.value} ${this.request.path()}]" +
+        " headers=${formatHeaders(this.request.headers)}" +
         " -> status=${this.response.status()}" +
         " body=${truncateBody(body)}"
 
