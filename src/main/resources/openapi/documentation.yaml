@@ -944,6 +944,8 @@ components:
           type: string
         message:
           type: string
+        showMessage:
+          type: boolean
     SignUpRequestDto:
       type: object
       required:

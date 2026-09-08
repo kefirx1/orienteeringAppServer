@@ -75,6 +75,7 @@ class MobileUploadImageHandler(
       call.respond(
         status = HttpStatusCode.BadRequest,
         message = ErrorResponse(
+          showMessage = true,
           businessCode = "IMAGE_TOO_LARGE",
           message = "Rozmiar zdjęcia przekracza ${MobileEventConstants.MAX_IMAGE_SIZE_BYTES / 1024}KB",
         )

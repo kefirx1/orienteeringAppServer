@@ -6,4 +6,5 @@ import kotlinx.serialization.Serializable
 data class ErrorResponse(
   val businessCode: String,
   val message: String,
+  val showMessage: Boolean = false,
 )
