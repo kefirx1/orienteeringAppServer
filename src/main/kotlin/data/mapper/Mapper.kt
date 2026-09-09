@@ -78,3 +78,15 @@ fun SessionWaypointDetailDAO.toDomain(label: String? = null) = SessionWaypointDe
   imagePath = imagePath.takeIf { it.isNotBlank() },
   label = label,
 )
+
+fun MobileUserFriendDAO.toDomain() = MobileUserFriend(
+  id = id.value,
+  userId = userId,
+  friendId = friendId,
+  createdAt = createdAt,
+  status = when (status) {
+    "ACCEPTED" -> FriendshipStatus.ACCEPTED
+    "NOT_ACCEPTED" -> FriendshipStatus.NOT_ACCEPTED
+    else -> FriendshipStatus.NOT_ACCEPTED
+  },
+)

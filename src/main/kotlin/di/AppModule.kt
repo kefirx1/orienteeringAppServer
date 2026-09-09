@@ -27,6 +27,11 @@ import pl.dev.bkwiatkowski.controller.mobile.settings.handler.MobileChangePasswo
 import pl.dev.bkwiatkowski.controller.mobile.settings.handler.MobileSettingsHandler
 import pl.dev.bkwiatkowski.controller.mobile.user.MobileUserController
 import pl.dev.bkwiatkowski.controller.mobile.user.handler.MobileGetUserSessionsSummaryHandler
+import pl.dev.bkwiatkowski.controller.mobile.user.handler.MobileCheckUserHandler
+import pl.dev.bkwiatkowski.controller.mobile.user.handler.MobileGetFriendsListHandler
+import pl.dev.bkwiatkowski.controller.mobile.user.handler.MobileSendFriendRequestHandler
+import pl.dev.bkwiatkowski.controller.mobile.user.handler.MobileAcceptFriendRequestHandler
+import pl.dev.bkwiatkowski.controller.mobile.user.handler.MobileRemoveFriendHandler
 import pl.dev.bkwiatkowski.controller.settings.SettingsController
 import pl.dev.bkwiatkowski.controller.settings.handler.SettingsHandler
 import pl.dev.bkwiatkowski.core.EnvironmentConfig
@@ -83,6 +88,8 @@ fun appModule(config: ApplicationConfig) = module {
   single<MobileUserRepository> { MobileUserRepositoryImpl(databaseProvider = get()) }
 
   single<MobileUserRefreshTokenRepository> { MobileUserRefreshTokenRepositoryImpl(databaseProvider = get()) }
+
+  single<MobileUserFriendsRepository> { MobileUserFriendsRepositoryImpl(databaseProvider = get()) }
 
   single<MapRepository> { MapRepositoryImpl(databaseProvider = get()) }
 
@@ -452,6 +459,16 @@ fun appModule(config: ApplicationConfig) = module {
 
   single { MobileGetUserSessionsSummaryHandler(getUserSessionsSummaryUC = get()) }
 
+  single { MobileCheckUserHandler(getMobileUserUC = get(), getMobileUserByIdUC = get()) }
+
+  single { MobileGetFriendsListHandler(getMobileUserFriendsUC = get(), getMobileUserByIdUC = get(), getFriendshipStatusUC = get()) }
+
+  single { MobileSendFriendRequestHandler(sendMobileUserFriendRequestUC = get()) }
+
+  single { MobileAcceptFriendRequestHandler(acceptMobileUserFriendRequestUC = get()) }
+
+  single { MobileRemoveFriendHandler(removeMobileUserFriendUC = get()) }
+
   single { MobileGetLastEventHandler(getLastEventUC = get()) }
 
   single { EventImageHandler(environmentConfig = get(), getAdminPanelUserByIdUC = get(), getEventByIdUC = get(), eventRepository = get()) }
@@ -491,7 +508,7 @@ fun appModule(config: ApplicationConfig) = module {
     )
   } bind Controller::class
 
-  single { MobileUserController(getUserSessionsHandler = get()) } bind Controller::class
+  single { MobileUserController(getUserSessionsHandler = get(), checkUserExistsHandler = get(), getFriendsListHandler = get(), sendFriendRequestHandler = get(), acceptFriendRequestHandler = get(), removeFriendHandler = get()) } bind Controller::class
 
   factory<AddNewMobileUserUC> {
     AddNewMobileUserUCImpl(
@@ -547,6 +564,37 @@ fun appModule(config: ApplicationConfig) = module {
   factory<RevokeAllMobileUserRefreshTokensUC> {
     RevokeAllMobileUserRefreshTokensUCImpl(
       mobileUserRefreshTokenRepository = get(),
+    )
+  }
+
+  factory<GetMobileUserFriendsUC> {
+    GetMobileUserFriendsUCImpl(
+      mobileUserFriendsRepository = get(),
+    )
+  }
+
+  factory<SendMobileUserFriendRequestUC> {
+    SendMobileUserFriendRequestUCImpl(
+      mobileUserFriendsRepository = get(),
+      mobileUserRepository = get(),
+    )
+  }
+
+  factory<AcceptMobileUserFriendRequestUC> {
+    AcceptMobileUserFriendRequestUCImpl(
+      mobileUserFriendsRepository = get(),
+    )
+  }
+
+  factory<RemoveMobileUserFriendUC> {
+    RemoveMobileUserFriendUCImpl(
+      mobileUserFriendsRepository = get(),
+    )
+  }
+
+  factory<GetFriendshipStatusUC> {
+    GetFriendshipStatusUCImpl(
+      mobileUserFriendsRepository = get(),
     )
   }
 

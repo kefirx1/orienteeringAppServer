@@ -347,6 +347,202 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /api/mobile/user/by-username/{username}:
+    get:
+      operationId: "getMobileUserByUsername"
+      description: "Retrieves basic information about a mobile user by username. The requesting user must be authenticated via JWT and cannot request their own username. Returns username (for now)."
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - "Mobile User"
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "Username to lookup"
+      responses:
+        "200":
+          description: "User found - returns basic user info"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CheckUserResponseDto"
+        "400":
+          description: "Bad Request - Missing or invalid query parameter"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized - missing or invalid token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: "Forbidden - requesting user cannot fetch their own username or authenticated user not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Not Found - User does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/mobile/user/friends/list:
+    get:
+      operationId: "getFriendsList"
+      description: "Retrieves list of friends for the authenticated mobile user. Returns friend information including username, friendship status, and creation date."
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - "Mobile User"
+      responses:
+        "200":
+          description: "List of friends returned successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetFriendsListResponseDto"
+        "401":
+          description: "Unauthorized - missing or invalid token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/mobile/user/friends/send-request:
+    post:
+      operationId: "sendFriendRequest"
+      description: "Sends a friend request to another mobile user. Creates a friendship record with ACCEPTED status for sender and NOT_ACCEPTED status for recipient."
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - "Mobile User"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SendFriendRequestDto"
+      responses:
+        "201":
+          description: "Friend request sent successfully"
+        "400":
+          description: "Bad Request - Invalid request body or trying to send request to yourself"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized - missing or invalid token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Not Found - Target friend user does not exist"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/mobile/user/friends/accept-request:
+    post:
+      operationId: "acceptFriendRequest"
+      description: "Accepts a pending friend request from another user. Changes the friendship status from NOT_ACCEPTED to ACCEPTED for the authenticated user."
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - "Mobile User"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AcceptFriendRequestDto"
+      responses:
+        "200":
+          description: "Friend request accepted successfully"
+        "400":
+          description: "Bad Request - Invalid request body"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized - missing or invalid token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Not Found - Friendship request not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/mobile/user/friends/remove:
+    delete:
+      operationId: "removeFriend"
+      description: "Removes a friend from the authenticated user's friend list. Deletes the friendship record from both users' perspectives."
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - "Mobile User"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RemoveFriendDto"
+      responses:
+        "200":
+          description: "Friend removed successfully"
+        "400":
+          description: "Bad Request - Invalid request body"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized - missing or invalid token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /api/mobile/events:
     get:
       operationId: "getMobileEvents"
@@ -1160,6 +1356,94 @@ components:
         id:
           type: integer
           description: "ID of the last added event"
+    CheckUserRequestDto:
+      type: object
+      description: "Request to check whether a mobile user exists by username"
+      required:
+        - username
+      properties:
+        username:
+          type: string
+          description: "Username to check"
+    CheckUserResponseDto:
+      type: object
+      description: "Response returned when a mobile user is found by username"
+      required:
+        - username
+      properties:
+        username:
+          type: string
+          description: "Username of the found user"
+    FriendshipStatusDto:
+      type: string
+      enum:
+        - ACCEPTED
+        - NOT_ACCEPTED
+      description: "Friendship status between two users. ACCEPTED = friendship is mutual, NOT_ACCEPTED = pending or one-directional"
+    FriendDto:
+      type: object
+      description: "Information about a friend in the user's friend list"
+      required:
+        - friendId
+        - username
+        - createdAt
+        - status
+        - friendStatus
+      properties:
+        friendId:
+          type: integer
+          description: "User ID of the friend"
+        username:
+          type: string
+          description: "Username of the friend"
+        createdAt:
+          type: string
+          format: date-time
+          description: "When the friendship was initiated (server LocalDateTime)"
+        status:
+          $ref: "#/components/schemas/FriendshipStatusDto"
+          description: "Current user's status in this friendship"
+        friendStatus:
+          $ref: "#/components/schemas/FriendshipStatusDto"
+          description: "Friend's status towards the current user"
+    GetFriendsListResponseDto:
+      type: object
+      description: "Response containing list of friends for the authenticated user"
+      required:
+        - friends
+      properties:
+        friends:
+          type: array
+          items:
+            $ref: "#/components/schemas/FriendDto"
+          description: "List of friends"
+    SendFriendRequestDto:
+      type: object
+      description: "Request to send a friend request to another user"
+      required:
+        - friendId
+      properties:
+        friendId:
+          type: integer
+          description: "ID of the user to send friend request to"
+    AcceptFriendRequestDto:
+      type: object
+      description: "Request to accept a pending friend request"
+      required:
+        - friendId
+      properties:
+        friendId:
+          type: integer
+          description: "ID of the user whose friend request to accept"
+    RemoveFriendDto:
+      type: object
+      description: "Request to remove a friend from friend list"
+      required:
+        - friendId
+      properties:
+        friendId:
+          type: integer
+          description: "ID of the friend to remove"
   securitySchemes:
     bearerAuth:
       type: http
