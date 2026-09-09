@@ -44,6 +44,14 @@ class MobileUserFriendsRepositoryImpl(
 
   override suspend fun sendFriendRequest(userId: Int, friendId: Int): Either<DomainError, Unit> = either {
     database.getRight().dbQuery {
+      val existingFriendship = MobileUserFriendDAO.find {
+        (MobileUserFriendTable.userId eq userId) and (MobileUserFriendTable.friendId eq friendId)
+      }.firstOrNull()
+
+      if (existingFriendship != null) {
+        raise(error = DomainError.Custom(e = IllegalStateException("User is already in your friends list")))
+      }
+
       val now = LocalDateTime.now()
 
       MobileUserFriendDAO.new {
@@ -66,7 +74,7 @@ class MobileUserFriendsRepositoryImpl(
     database.getRight().dbQuery {
       val friendship = MobileUserFriendDAO.find {
         (MobileUserFriendTable.userId eq userId) and (MobileUserFriendTable.friendId eq friendId)
-      }.singleOrNull()
+      }.firstOrNull()
         ?: raise(error = DomainError.Custom(e = NoSuchElementException("Friendship not found")))
 
       friendship.status = FriendshipStatus.ACCEPTED.name
@@ -86,7 +94,7 @@ class MobileUserFriendsRepositoryImpl(
     database.getRight().dbQuery {
       MobileUserFriendDAO.find {
         (MobileUserFriendTable.userId eq userId) and (MobileUserFriendTable.friendId eq friendId)
-      }.singleOrNull()?.toDomain()
+      }.firstOrNull()?.toDomain()
     }.getRight()
   }
 }

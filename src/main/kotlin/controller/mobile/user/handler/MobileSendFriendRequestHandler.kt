@@ -68,7 +68,8 @@ class MobileSendFriendRequestHandler(
           status = HttpStatusCode.NotFound,
           message = ErrorResponse(
             businessCode = "USER_NOT_FOUND",
-            message = "Friend user not found",
+            message = "Nie udało się dodać znajomego",
+            showMessage = true,
           )
         )
       }

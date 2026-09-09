@@ -1369,8 +1369,12 @@ components:
       type: object
       description: "Response returned when a mobile user is found by username"
       required:
+        - id
         - username
       properties:
+        id:
+          type: integer
+          description: "ID of the found user"
         username:
           type: string
           description: "Username of the found user"

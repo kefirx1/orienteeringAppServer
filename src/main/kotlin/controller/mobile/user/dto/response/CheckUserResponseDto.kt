@@ -4,5 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CheckUserResponseDto(
+  val id: Int,
   val username: String,
 )

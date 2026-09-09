@@ -23,7 +23,7 @@ class SendMobileUserFriendRequestUCImpl(
       mobileUserFriendsRepository.sendFriendRequest(
         userId = params.userId,
         friendId = params.friendId,
-      )
+      ).getRight()
     }.getRight()
   }
 }

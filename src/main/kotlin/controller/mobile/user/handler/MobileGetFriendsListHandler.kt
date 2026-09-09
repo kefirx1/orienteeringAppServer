@@ -76,7 +76,8 @@ class MobileGetFriendsListHandler(
           status = HttpStatusCode.InternalServerError,
           message = ErrorResponse(
             businessCode = "ERROR_FETCHING_FRIENDS",
-            message = "Failed to fetch friends list",
+            message = "Nie udało się pobrać listy znajomych",
+            showMessage = true,
           )
         )
       }

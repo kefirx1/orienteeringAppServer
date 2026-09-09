@@ -73,7 +73,7 @@ class MobileCheckUserHandler(
       onRight = { user ->
         call.respond(
           status = HttpStatusCode.OK,
-          message = CheckUserResponseDto(username = user.username),
+          message = CheckUserResponseDto(id = user.id, username = user.username),
         )
       },
       onLeft = {
