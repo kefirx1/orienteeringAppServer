@@ -34,6 +34,7 @@ class AddNewMobileUserUCImpl(
       salt = hashedPassword.salt,
       phoneNumber = params.phoneNumber,
       dateOfBirth = params.dateOfBirth,
+      joinedAt = LocalDateTime.now(),
     )
 
     mobileUserRepository.insertUser(user = newUser)

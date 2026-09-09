@@ -10,6 +10,7 @@ fun MobileUserDAO.toDomain() = MobileUser(
   password = password,
   salt = salt,
   phoneNumber = phoneNumber,
+  joinedAt = joinedAt,
   dateOfBirth = dateOfBirth,
 )
 

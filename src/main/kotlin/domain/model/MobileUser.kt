@@ -10,4 +10,5 @@ data class MobileUser(
   val salt: String,
   val phoneNumber: String?,
   val dateOfBirth: LocalDateTime?,
+  val joinedAt: LocalDateTime = LocalDateTime.now(),
 )

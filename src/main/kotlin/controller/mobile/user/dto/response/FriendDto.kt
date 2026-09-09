@@ -9,6 +9,8 @@ data class FriendDto(
   val friendId: Int,
   val username: String,
   @Contextual val createdAt: LocalDateTime,
+  @Contextual val joinedAt: LocalDateTime,
+  val attendedEventsCount: Int,
   val status: FriendshipStatusDto,
   val friendStatus: FriendshipStatusDto,
 )

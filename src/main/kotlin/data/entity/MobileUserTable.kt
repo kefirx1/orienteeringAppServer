@@ -10,4 +10,5 @@ object MobileUserTable : IntIdTable(name = "mobile_users") {
   val salt = varchar(name = "salt", length = 255)
   val phoneNumber = varchar(name = "phone_number", length = 32).nullable()
   val dateOfBirth = datetime(name = "date_of_birth").nullable()
+  val joinedAt = datetime(name = "joined_at")
 }

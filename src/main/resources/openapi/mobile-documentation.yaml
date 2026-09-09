@@ -1391,6 +1391,8 @@ components:
         - friendId
         - username
         - createdAt
+        - joinedAt
+        - attendedEventsCount
         - status
         - friendStatus
       properties:
@@ -1404,6 +1406,13 @@ components:
           type: string
           format: date-time
           description: "When the friendship was initiated (server LocalDateTime)"
+        joinedAt:
+          type: string
+          format: date-time
+          description: "When the friend joined the application (server LocalDateTime)"
+        attendedEventsCount:
+          type: integer
+          description: "Number of finished event sessions attended by the friend"
         status:
           $ref: "#/components/schemas/FriendshipStatusDto"
           description: "Current user's status in this friendship"

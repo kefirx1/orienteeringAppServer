@@ -14,11 +14,13 @@ import pl.dev.bkwiatkowski.domain.model.FriendshipStatus
 import pl.dev.bkwiatkowski.domain.usecase.GetFriendshipStatusUC
 import pl.dev.bkwiatkowski.domain.usecase.GetMobileUserByIdUC
 import pl.dev.bkwiatkowski.domain.usecase.GetMobileUserFriendsUC
+import pl.dev.bkwiatkowski.domain.usecase.GetUserSessionsSummaryUC
 
 class MobileGetFriendsListHandler(
   private val getMobileUserFriendsUC: GetMobileUserFriendsUC,
   private val getMobileUserByIdUC: GetMobileUserByIdUC,
   private val getFriendshipStatusUC: GetFriendshipStatusUC,
+  private val getUserSessionsSummaryUC: GetUserSessionsSummaryUC,
 ) {
   suspend fun handle(call: ApplicationCall) {
     val principal = call.principal<JWTPrincipal>()
@@ -57,10 +59,19 @@ class MobileGetFriendsListHandler(
             onLeft = { null }
           ) ?: return@mapNotNull null
 
+          val attendedEventsCount = getUserSessionsSummaryUC(
+            params = GetUserSessionsSummaryUC.Params(userId = friendship.friendId)
+          ).fold(
+            onRight = { sessions -> sessions.size },
+            onLeft = { 0 }
+          )
+
           FriendDto(
             friendId = friendship.friendId,
             username = friendUser.username,
             createdAt = friendship.createdAt,
+            joinedAt = friendUser.joinedAt,
+            attendedEventsCount = attendedEventsCount,
             status = friendship.status.toDto(),
             friendStatus = friendPerspectiveStatus.toDto(),
           )

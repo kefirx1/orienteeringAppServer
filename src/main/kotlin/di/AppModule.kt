@@ -461,7 +461,7 @@ fun appModule(config: ApplicationConfig) = module {
 
   single { MobileCheckUserHandler(getMobileUserUC = get(), getMobileUserByIdUC = get()) }
 
-  single { MobileGetFriendsListHandler(getMobileUserFriendsUC = get(), getMobileUserByIdUC = get(), getFriendshipStatusUC = get()) }
+  single { MobileGetFriendsListHandler(getMobileUserFriendsUC = get(), getMobileUserByIdUC = get(), getFriendshipStatusUC = get(), getUserSessionsSummaryUC = get()) }
 
   single { MobileSendFriendRequestHandler(sendMobileUserFriendRequestUC = get()) }
 

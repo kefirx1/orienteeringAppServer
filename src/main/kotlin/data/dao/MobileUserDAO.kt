@@ -14,4 +14,5 @@ class MobileUserDAO(id: EntityID<Int>) : IntEntity(id) {
   var salt by MobileUserTable.salt
   var phoneNumber by MobileUserTable.phoneNumber
   var dateOfBirth by MobileUserTable.dateOfBirth
+  var joinedAt by MobileUserTable.joinedAt
 }

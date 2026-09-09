@@ -63,6 +63,7 @@ class MobileUserRepositoryImpl(
         salt = user.salt
         phoneNumber = user.phoneNumber
         dateOfBirth = user.dateOfBirth
+        joinedAt = user.joinedAt
       }
     }.getRight()
   }
