@@ -29,7 +29,7 @@ services:
       postgres_db:
         condition: service_healthy
     volumes:
-      - ~/orienteeringapp/images:~/orienteeringapp/images
+      - /home/ubuntu/orienteeringapp/images:/images
     environment:
       DB_HOST: postgres_db
       POSTGRES_USER: ${POSTGRES_USER}
