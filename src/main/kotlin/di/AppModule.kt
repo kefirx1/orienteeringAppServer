@@ -483,14 +483,10 @@ fun appModule(config: ApplicationConfig) = module {
 
   single { MobileFinishSessionHandler(finishSessionUC = get(), getUserSessionWaypointDetailsUC = get()) }
 
-  single<MobileSessionWebSocketHandler> {
-    MobileSessionWebSocketHandler(
-      recordWaypointVisitUC = get(),
-      jsonSerializer = get(),
-    )
-  }
 
   single { MobileWaypointVisitListHandler(recordWaypointVisitUC = get()) }
+
+  single { MobileRecordWaypointVisitHandler(recordWaypointVisitUC = get()) }
 
   single {
     MobileEventController(
@@ -501,9 +497,9 @@ fun appModule(config: ApplicationConfig) = module {
       checkSessionJoinHandler = get(),
       getSessionWaypointDetailsHandler = get(),
       getSessionParticipantHandler = get(),
-      sessionWebSocketHandler = get(),
       uploadImageHandler = get(),
       waypointVisitListHandler = get(),
+      recordWaypointVisitHandler = get(),
       finishSessionHandler = get(),
     )
   } bind Controller::class

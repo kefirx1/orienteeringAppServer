@@ -163,6 +163,7 @@ paths:
   /api/mobile/events/sessions/{sessionUuid}/waypoint-visits:
     post:
       operationId: "postSessionWaypointVisits"
+      description: "Records batch of waypoint visits for the authenticated user in the specified session."
       security:
         - bearerAuth: [ ]
       tags:
@@ -184,7 +185,7 @@ paths:
                 $ref: "#/components/schemas/WebsocketWaypointVisitDto"
       responses:
         "200":
-          description: "OK - request processed"
+          description: "OK - waypoint visits processed successfully"
         "400":
           description: "Bad Request - invalid body or missing sessionUuid"
           content:
@@ -199,6 +200,52 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "500":
           description: "Internal Server Error - failed to record waypoint visits"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /api/mobile/events/sessions/{sessionUuid}/waypoint-visit:
+    post:
+      operationId: "postSessionWaypointVisit"
+      description: "Records a single waypoint visit for the authenticated user in the specified session. Returns details of the recorded waypoint visit."
+      security:
+        - bearerAuth: [ ]
+      tags:
+        - "Mobile Events"
+      parameters:
+        - name: sessionUuid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "UUID of the event session"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WebsocketWaypointVisitDto"
+      responses:
+        "200":
+          description: "Waypoint visit recorded successfully"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebsocketWaypointVisitResponseDto"
+        "400":
+          description: "Bad Request - invalid body, missing sessionUuid, or invalid image path"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: "Unauthorized - missing or invalid token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal Server Error - failed to record waypoint visit"
           content:
             application/json:
               schema:
@@ -728,41 +775,6 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
         "401":
           description: "Unauthorized - missing or invalid token"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "500":
-          description: "Internal Server Error"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-  /api/mobile/events/sessions/{sessionUuid}/ws:
-    get:
-      operationId: "openSessionWebSocket"
-      security:
-        - bearerAuth: [ ]
-      tags:
-        - "Mobile Events"
-      parameters:
-        - name: sessionUuid
-          in: path
-          required: true
-          schema:
-            type: string
-          description: "UUID of the event session to bind the WebSocket to"
-      responses:
-        "101":
-          description: "Switching Protocols - WebSocket upgrade"
-        "401":
-          description: "Unauthorized - missing or invalid token"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "400":
-          description: "Bad Request - invalid handshake or parameters"
           content:
             application/json:
               schema:

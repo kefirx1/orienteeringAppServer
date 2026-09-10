@@ -2,7 +2,6 @@ package pl.dev.bkwiatkowski.controller.mobile.events
 
 import io.ktor.server.auth.*
 import io.ktor.server.routing.*
-import io.ktor.server.websocket.*
 import pl.dev.bkwiatkowski.controller.mobile.events.handler.*
 import pl.dev.bkwiatkowski.core.routing.Controller
 
@@ -14,9 +13,9 @@ class MobileEventController(
   private val checkSessionJoinHandler: MobileCheckSessionJoinHandler,
   private val getSessionWaypointDetailsHandler: MobileGetSessionWaypointDetailsHandler,
   private val getSessionParticipantHandler: MobileGetSessionParticipantHandler,
-  private val sessionWebSocketHandler: MobileSessionWebSocketHandler,
   private val uploadImageHandler: MobileUploadImageHandler,
   private val waypointVisitListHandler: MobileWaypointVisitListHandler,
+  private val recordWaypointVisitHandler: MobileRecordWaypointVisitHandler,
   private val finishSessionHandler: MobileFinishSessionHandler,
 ) : Controller {
 
@@ -59,12 +58,12 @@ class MobileEventController(
           waypointVisitListHandler.handle(call)
         }
 
-        post("sessions/{sessionUuid}/finish") {
-          finishSessionHandler.handle(call)
+        post("sessions/{sessionUuid}/waypoint-visit") {
+          recordWaypointVisitHandler.handle(call)
         }
 
-        webSocket("sessions/{sessionUuid}/ws") {
-          sessionWebSocketHandler.handle(session = this)
+        post("sessions/{sessionUuid}/finish") {
+          finishSessionHandler.handle(call)
         }
       }
     }
