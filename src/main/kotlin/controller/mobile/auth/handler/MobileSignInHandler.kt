@@ -33,7 +33,8 @@ class MobileSignInHandler(
         status = HttpStatusCode.BadRequest,
         message = ErrorResponse(
           businessCode = "INVALID_REQUEST",
-          message = "Invalid or missing request body",
+          message = "Nie udało się zalogować",
+          showMessage = true,
         )
       )
       return
@@ -46,7 +47,8 @@ class MobileSignInHandler(
         status = HttpStatusCode.NotFound,
         message = ErrorResponse(
           businessCode = "USER_NOT_FOUND",
-          message = "User does not exist",
+          message = "Nie udało się zalogować",
+          showMessage = true,
         )
       )
       return
@@ -65,7 +67,8 @@ class MobileSignInHandler(
         status = HttpStatusCode.InternalServerError,
         message = ErrorResponse(
           businessCode = "AUTHENTICATION_ERROR",
-          message = "Failed to verify authentication",
+          message = "Nie udało się zalogować",
+          showMessage = true,
         )
       )
       return
@@ -76,7 +79,8 @@ class MobileSignInHandler(
         status = HttpStatusCode.Unauthorized,
         message = ErrorResponse(
           businessCode = "INVALID_CREDENTIALS",
-          message = "Invalid username or password",
+          message = "Nie udało się zalogować",
+          showMessage = true,
         )
       )
       return
@@ -89,7 +93,8 @@ class MobileSignInHandler(
         status = HttpStatusCode.InternalServerError,
         message = ErrorResponse(
           businessCode = "TOKEN_GENERATION_ERROR",
-          message = "Failed to generate authentication token",
+          message = "Nie udało się zalogować",
+          showMessage = true,
         )
       )
       return
@@ -102,7 +107,8 @@ class MobileSignInHandler(
         status = HttpStatusCode.InternalServerError,
         message = ErrorResponse(
           businessCode = "TOKEN_GENERATION_ERROR",
-          message = "Failed to generate refresh token",
+          message = "Nie udało się zalogować",
+          showMessage = true,
         )
       )
       return
@@ -118,7 +124,8 @@ class MobileSignInHandler(
         status = HttpStatusCode.InternalServerError,
         message = ErrorResponse(
           businessCode = "DB_SAVE_ERROR",
-          message = "Failed to save refresh token",
+          message = "Nie udało się zalogować",
+          showMessage = true,
         )
       )
       return
