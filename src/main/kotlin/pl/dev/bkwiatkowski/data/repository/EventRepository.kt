@@ -1,0 +1,204 @@
+package pl.dev.bkwiatkowski.data.repository
+
+import pl.dev.bkwiatkowski.domain.repository.EventRepository
+import org.jetbrains.exposed.v1.core.eq
+import pl.dev.bkwiatkowski.core.DomainError
+import pl.dev.bkwiatkowski.core.Either
+import pl.dev.bkwiatkowski.core.database.DatabaseProvider
+import pl.dev.bkwiatkowski.core.database.dbQuery
+import pl.dev.bkwiatkowski.core.database.initTable
+import pl.dev.bkwiatkowski.core.either
+import pl.dev.bkwiatkowski.data.dao.EventDAO
+import pl.dev.bkwiatkowski.data.dao.EventSessionDAO
+import pl.dev.bkwiatkowski.data.dao.EventWaypointDAO
+import pl.dev.bkwiatkowski.data.dao.MapWaypointDAO
+import pl.dev.bkwiatkowski.data.entity.EventSessionTable
+import pl.dev.bkwiatkowski.data.entity.EventTable
+import pl.dev.bkwiatkowski.data.entity.EventWaypointTable
+import pl.dev.bkwiatkowski.data.entity.MapWaypointTable
+import pl.dev.bkwiatkowski.data.mapper.toDomain
+import pl.dev.bkwiatkowski.domain.model.Event
+import pl.dev.bkwiatkowski.domain.model.EventSession
+import pl.dev.bkwiatkowski.domain.model.EventStatus
+import pl.dev.bkwiatkowski.domain.model.EventType
+import java.time.LocalDateTime
+import java.util.*
+
+class EventRepositoryImpl(
+  databaseProvider: DatabaseProvider,
+) : EventRepository {
+
+  private val database = databaseProvider.get()
+
+  init {
+    either {
+      database.getRight().initTable(table = EventTable)
+      database.getRight().initTable(table = EventWaypointTable)
+      database.getRight().initTable(table = EventSessionTable)
+    }
+  }
+
+  override suspend fun getAllEventsByUserId(userId: Int): Either<DomainError, List<Event>> = either {
+    database.getRight().dbQuery {
+      EventDAO.find { EventTable.userId eq userId }.map { event ->
+        val allMapWaypoints = MapWaypointDAO.find { MapWaypointTable.mapId eq event.mapId }.map { it.toDomain() }
+        val waypointIds = EventWaypointDAO.find { EventWaypointTable.eventId eq event.id.value }.map { it.waypointId }.toList()
+        val eventWaypoints = allMapWaypoints.filter { it.id in waypointIds }
+        event.toDomain(mapWaypoints = allMapWaypoints, eventWaypoints = eventWaypoints)
+      }
+    }.getRight()
+  }
+
+  override suspend fun getAllEvents(): Either<DomainError, List<Event>> = either {
+    database.getRight().dbQuery {
+      EventDAO.all().map { event ->
+        val allMapWaypoints = MapWaypointDAO.find { MapWaypointTable.mapId eq event.mapId }.map { it.toDomain() }
+        val waypointIds = EventWaypointDAO.find { EventWaypointTable.eventId eq event.id.value }.map { it.waypointId }.toList()
+        val eventWaypoints = allMapWaypoints.filter { it.id in waypointIds }
+        event.toDomain(mapWaypoints = allMapWaypoints, eventWaypoints = eventWaypoints)
+      }
+    }.getRight()
+  }
+
+  override suspend fun getEventById(id: Int): Either<DomainError, Event> = either {
+    database.getRight().dbQuery {
+      val eventDao = EventDAO.findById(id)
+        ?: raise(error = DomainError.Custom(e = NullPointerException("Event not found")))
+
+      val allMapWaypoints = MapWaypointDAO.find { MapWaypointTable.mapId eq eventDao.mapId }.map { it.toDomain() }
+      val waypointIds = EventWaypointDAO.find { EventWaypointTable.eventId eq eventDao.id.value }.map { it.waypointId }.toList()
+      val eventWaypoints = allMapWaypoints.filter { it.id in waypointIds }
+      val event = eventDao.toDomain(mapWaypoints = allMapWaypoints, eventWaypoints = eventWaypoints)
+
+       val sessionDao = EventSessionDAO.find { EventSessionTable.eventId eq eventDao.id.value }.firstOrNull()
+       if (sessionDao != null) {
+         val session = EventSession(
+           id = sessionDao.sessionUuid,
+           eventId = sessionDao.eventId,
+           startedAt = sessionDao.startedAt,
+           finishedAt = sessionDao.finishedAt,
+           userCanJoin = sessionDao.userCanJoin,
+         )
+         event.copy(session = session)
+       } else {
+         event
+       }
+    }.getRight()
+  }
+
+  override suspend fun insertEvent(event: Event, waypointIds: List<Int>): Either<DomainError, Int> = either {
+    database.getRight().dbQuery {
+      val newEvent = EventDAO.new {
+        mapId = event.map.id
+        userId = event.userId
+        name = event.name
+        description = event.description
+        createdAt = event.createdAt
+        startDate = event.startDate
+        startLocationX = event.startLocationX
+        startLocationY = event.startLocationY
+        status = event.status.value
+        eventType = event.eventType.value
+      }
+
+      waypointIds.forEach { waypointId ->
+        EventWaypointDAO.new {
+          eventId = newEvent.id.value
+          this.waypointId = waypointId
+        }
+      }
+
+      newEvent.id.value
+    }.getRight()
+  }
+
+  override suspend fun deleteEvent(id: Int): Either<DomainError, Unit> = either {
+    database.getRight().dbQuery {
+      EventDAO.findById(id)?.delete()
+        ?: raise(error = DomainError.Custom(e = NullPointerException("Event not found")))
+
+      EventWaypointDAO.find { EventWaypointTable.eventId eq id }.forEach { it.delete() }
+    }.getRight()
+  }
+
+  override suspend fun setSessionUserCanJoin(eventId: Int, userCanJoin: Boolean): Either<DomainError, Unit> = either {
+    database.getRight().dbQuery {
+      val session = EventSessionDAO.find { EventSessionTable.eventId eq eventId }.firstOrNull()
+        ?: raise(error = DomainError.Custom(e = NullPointerException("Session not found")))
+      if (session.finishedAt != null) raise(error = DomainError.Custom(e = IllegalStateException("Session is already finished")))
+      session.userCanJoin = userCanJoin
+    }.getRight()
+  }
+
+  override suspend fun closeSessionForEvent(eventId: Int, finishedAt: LocalDateTime): Either<DomainError, Unit> = either {
+    database.getRight().dbQuery {
+      val session = EventSessionDAO.find { EventSessionTable.eventId eq eventId }.firstOrNull()
+        ?: raise(error = DomainError.Custom(e = NullPointerException("Session not found")))
+      session.finishedAt = finishedAt
+      session.userCanJoin = false
+
+      val eventDao = EventDAO.findById(eventId)
+        ?: raise(error = DomainError.Custom(e = NullPointerException("Event not found")))
+
+      if (eventDao.eventType == EventType.ONLINE.value) {
+        eventDao.status = EventStatus.COMPLETED.value
+      }
+    }.getRight()
+  }
+
+  override suspend fun createSessionForEvent(eventId: Int): Either<DomainError, String> = either {
+    database.getRight().dbQuery {
+      val eventDao = EventDAO.findById(eventId) ?: raise(error = DomainError.Custom(e = NullPointerException("Event not found")))
+      val existing = EventSessionDAO.find { EventSessionTable.eventId eq eventId }.firstOrNull()
+      if (existing != null) raise(error = DomainError.Custom(e = IllegalStateException("Session for event already exists")))
+
+      val now = LocalDateTime.now()
+      if (eventDao.startDate.isAfter(now)) raise(error = DomainError.Custom(e = IllegalStateException("Event has not started yet")))
+
+      val uuid = UUID.randomUUID().toString()
+      EventSessionDAO.new {
+        sessionUuid = uuid
+        this.eventId = eventDao.id.value
+        startedAt = LocalDateTime.now()
+        finishedAt = null
+        userCanJoin = true
+      }
+
+      if (eventDao.eventType == EventType.ONLINE.value){
+        eventDao.status = EventStatus.IN_PROGRESS.value
+      }
+
+      uuid
+    }.getRight()
+  }
+
+    override suspend fun getSessionByEventId(eventId: Int): Either<DomainError, EventSession?> = either {
+      database.getRight().dbQuery {
+        val sessionDao = EventSessionDAO.find { EventSessionTable.eventId eq eventId }.firstOrNull()
+        sessionDao?.let {
+          EventSession(
+            id = it.sessionUuid,
+            eventId = it.eventId,
+            startedAt = it.startedAt,
+            finishedAt = it.finishedAt,
+            userCanJoin = it.userCanJoin,
+          )
+        }
+      }.getRight()
+    }
+
+    override suspend fun getSessionByUuid(sessionUuid: String): Either<DomainError, EventSession?> = either {
+      database.getRight().dbQuery {
+        val sessionDao = EventSessionDAO.find { EventSessionTable.sessionUuid eq sessionUuid }.firstOrNull()
+        sessionDao?.let {
+          EventSession(
+            id = it.sessionUuid,
+            eventId = it.eventId,
+            startedAt = it.startedAt,
+            finishedAt = it.finishedAt,
+            userCanJoin = it.userCanJoin,
+          )
+        }
+      }.getRight()
+    }
+}
