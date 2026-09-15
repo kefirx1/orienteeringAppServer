@@ -5,6 +5,7 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
+import pl.dev.bkwiatkowski.core.DomainError
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
 import pl.dev.bkwiatkowski.core.security.token.USER_ROLE_CLAIM
@@ -57,14 +58,34 @@ class DeleteMapHandler(
       onRight = {
         call.respond(HttpStatusCode.OK)
       },
-      onLeft = {
-        call.respond(
-          status = HttpStatusCode.NotFound,
-          message = ErrorResponse(
-            businessCode = "MAP_NOT_FOUND",
-            message = "Map not found"
-          )
-        )
+      onLeft = { domainError ->
+        when (domainError) {
+          is DomainError.Custom -> {
+            when (domainError.e) {
+              is NullPointerException -> call.respond(
+                status = HttpStatusCode.NotFound,
+                message = ErrorResponse(
+                  businessCode = "MAP_NOT_FOUND",
+                  message = "Map not found"
+                )
+              )
+              is IllegalStateException -> call.respond(
+                status = HttpStatusCode.Conflict,
+                message = ErrorResponse(
+                  businessCode = "MAP_HAS_EVENTS",
+                  message = "Map cannot be deleted because there are events attached to it"
+                )
+              )
+              else -> call.respond(
+                status = HttpStatusCode.InternalServerError,
+                message = ErrorResponse(
+                  businessCode = "UNKNOWN_ERROR",
+                  message = "An unexpected error occurred"
+                )
+              )
+            }
+          }
+        }
       }
     )
   }

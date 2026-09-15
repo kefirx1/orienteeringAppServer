@@ -10,6 +10,8 @@ import pl.dev.bkwiatkowski.core.database.initTable
 import pl.dev.bkwiatkowski.core.either
 import pl.dev.bkwiatkowski.data.dao.MapDAO
 import pl.dev.bkwiatkowski.data.dao.MapWaypointDAO
+import pl.dev.bkwiatkowski.data.dao.EventDAO
+import pl.dev.bkwiatkowski.data.entity.EventTable
 import pl.dev.bkwiatkowski.data.entity.MapTable
 import pl.dev.bkwiatkowski.data.entity.MapWaypointTable
 import pl.dev.bkwiatkowski.data.mapper.toDomain
@@ -72,6 +74,11 @@ class MapRepositoryImpl(
 
   override suspend fun deleteMap(id: Int): Either<DomainError, Unit> = either {
     database.getRight().dbQuery {
+      val existingEvent = EventDAO.find { EventTable.mapId eq id }.firstOrNull()
+      if (existingEvent != null) {
+        raise(error = DomainError.Custom(e = IllegalStateException("Map has events attached")))
+      }
+
       MapWaypointDAO.find { MapWaypointTable.mapId eq id }.forEach { it.delete() }
       MapDAO.findById(id)?.delete()
         ?: raise(error = DomainError.Custom(e = NullPointerException("Map not found")))
