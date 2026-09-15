@@ -1,7 +1,7 @@
 package pl.dev.bkwiatkowski.core.validation
 
 class EmailRule(
-  override val errorMessage: String = "Invalid email format"
+  override val errorMessage: String = "Zły format email"
 ) : ValidationRule {
   private val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$".toRegex()
 

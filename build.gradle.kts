@@ -44,6 +44,7 @@ dependencies {
   implementation(libs.exposed.java.time)
   implementation(libs.hikari.cp)
   implementation(libs.ktor.server.core)
+  testImplementation(libs.mockk)
   testImplementation(libs.ktor.server.test.host)
   testImplementation(libs.kotlin.test.junit)
 }
