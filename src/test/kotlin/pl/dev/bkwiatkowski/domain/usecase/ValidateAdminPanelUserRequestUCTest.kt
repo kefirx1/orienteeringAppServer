@@ -3,7 +3,7 @@ package pl.dev.bkwiatkowski.domain.usecase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import pl.dev.bkwiatkowski.core.DomainError
 import pl.dev.bkwiatkowski.core.Either
 import pl.dev.bkwiatkowski.core.validation.DefaultTextValidator
@@ -26,7 +26,7 @@ class ValidateAdminPanelUserRequestUCTest {
   private val eitherLeft = Either.Left(value = DomainError.Custom())
 
   @Test
-  fun `valid request returns Valid`() = runBlocking {
+  fun `valid request returns Valid`() = runTest {
     coEvery { repository.getUserByUsername(any()) } returns eitherLeft
     coEvery { repository.getUserByEmail(any()) } returns eitherLeft
 
@@ -43,7 +43,7 @@ class ValidateAdminPanelUserRequestUCTest {
   }
 
   @Test
-  fun `username already exists returns Invalid`() = runBlocking {
+  fun `username already exists returns Invalid`() = runTest {
     coEvery { repository.getUserByUsername(any()) } returns
         Either.Right(
           value = AdminPanelUser(
@@ -70,7 +70,7 @@ class ValidateAdminPanelUserRequestUCTest {
   }
 
   @Test
-  fun `email already exists returns Invalid`() = runBlocking {
+  fun `email already exists returns Invalid`() = runTest {
     coEvery { repository.getUserByUsername(any()) } returns eitherLeft
     coEvery { repository.getUserByEmail(any()) } returns
         Either.Right(
@@ -97,7 +97,7 @@ class ValidateAdminPanelUserRequestUCTest {
   }
 
   @Test
-  fun `wrong username returns Invalid early`() = runBlocking {
+  fun `wrong username returns Invalid early`() = runTest {
     coEvery { repository.getUserByUsername(any()) } returns eitherLeft
     coEvery { repository.getUserByEmail(any()) } returns eitherLeft
 
@@ -116,7 +116,7 @@ class ValidateAdminPanelUserRequestUCTest {
   }
 
   @Test
-  fun `wrong password returns Invalid and does not query repo`() = runBlocking {
+  fun `wrong password returns Invalid and does not query repo`() = runTest {
     coEvery { repository.getUserByUsername(any()) } returns eitherLeft
     coEvery { repository.getUserByEmail(any()) } returns eitherLeft
 
