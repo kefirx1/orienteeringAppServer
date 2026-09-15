@@ -10,7 +10,6 @@ import pl.dev.bkwiatkowski.controller.events.dto.request.AddEventRequestDto
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
 import pl.dev.bkwiatkowski.domain.usecase.AddEventUC
-import pl.dev.bkwiatkowski.domain.model.EventType
 import pl.dev.bkwiatkowski.core.either
 
 class AddEventHandler(
@@ -64,6 +63,7 @@ class AddEventHandler(
         startDate = request.startDateTime,
         startLocationX = request.startLocationX,
         startLocationY = request.startLocationY,
+        waypointRadiusMeters = request.waypointRadiusMeters,
         waypointIds = request.waypointIds,
         eventType = request.eventType,
       )
@@ -75,6 +75,7 @@ class AddEventHandler(
         )
       },
       onLeft = {
+        println(it)
         call.respond(
           status = HttpStatusCode.InternalServerError,
           message = ErrorResponse(

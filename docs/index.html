@@ -710,7 +710,7 @@
   }
 };
             defs["AddEventRequestDto"] = {
-  "required" : [ "description", "mapId", "name", "startDateTime", "startLocationX", "startLocationY" ],
+  "required" : [ "description", "mapId", "name", "startDateTime", "startLocationX", "startLocationY", "waypointRadiusMeters" ],
   "type" : "object",
   "properties" : {
     "mapId" : {
@@ -736,6 +736,11 @@
     "startLocationY" : {
       "type" : "number",
       "description" : "Y coordinate of the event start location",
+      "format" : "float"
+    },
+    "waypointRadiusMeters" : {
+      "type" : "number",
+      "description" : "Radius in meters used to consider waypoint reached",
       "format" : "float"
     },
     "waypointIds" : {
@@ -850,7 +855,7 @@
   }
 };
             defs["EventDetailResponseDto"] = {
-  "required" : [ "createdAt", "description", "eventType", "id", "map", "name", "startDate", "startLocationX", "startLocationY", "status" ],
+  "required" : [ "createdAt", "description", "eventType", "id", "map", "name", "startDate", "startLocationX", "startLocationY", "status", "waypointRadiusMeters" ],
   "type" : "object",
   "properties" : {
     "id" : {
@@ -881,6 +886,11 @@
     },
     "startLocationY" : {
       "type" : "number",
+      "format" : "float"
+    },
+    "waypointRadiusMeters" : {
+      "type" : "number",
+      "description" : "Radius in meters used to consider waypoint reached",
       "format" : "float"
     },
     "status" : {
@@ -906,7 +916,7 @@
   }
 };
             defs["EventListResponseDto"] = {
-  "required" : [ "createdAt", "createdByUsername", "description", "eventType", "id", "map", "name", "startDate", "startLocationX", "startLocationY" ],
+  "required" : [ "createdAt", "createdByUsername", "description", "eventType", "id", "map", "name", "startDate", "startLocationX", "startLocationY", "waypointRadiusMeters" ],
   "type" : "object",
   "properties" : {
     "id" : {
@@ -937,6 +947,11 @@
     },
     "startLocationY" : {
       "type" : "number",
+      "format" : "float"
+    },
+    "waypointRadiusMeters" : {
+      "type" : "number",
+      "description" : "Radius in meters used to consider waypoint reached",
       "format" : "float"
     },
     "createdByUsername" : {

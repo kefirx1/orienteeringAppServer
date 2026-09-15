@@ -12,6 +12,7 @@ object EventTable : IntIdTable(name = "events") {
   val startDate = datetime(name = "start_date")
   val startLocationX = float(name = "start_location_x")
   val startLocationY = float(name = "start_location_y")
+  val waypointRadiusMeters = float(name = "waypoint_radius_meters")
   val status = varchar(name = "status", length = 20)
   val eventType = varchar(name = "event_type", length = 20)
 }

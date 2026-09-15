@@ -1094,6 +1094,7 @@ components:
          - startDateTime
          - startLocationX
          - startLocationY
+         - waypointRadiusMeters
        properties:
          mapId:
            type: integer
@@ -1114,6 +1115,10 @@ components:
            type: number
            format: float
            description: "Y coordinate of the event start location"
+         waypointRadiusMeters:
+           type: number
+           format: float
+           description: "Radius in meters used to consider waypoint reached"
          waypointIds:
            type: array
            items:
@@ -1135,6 +1140,7 @@ components:
         - startDate
         - startLocationX
         - startLocationY
+        - waypointRadiusMeters
         - createdByUsername
         - eventType
       properties:
@@ -1160,6 +1166,10 @@ components:
         startLocationY:
           type: number
           format: float
+        waypointRadiusMeters:
+          type: number
+          format: float
+          description: "Radius in meters used to consider waypoint reached"
         createdByUsername:
           type: string
           description: "Username of the user who created the event"
@@ -1183,6 +1193,7 @@ components:
         - startDate
         - startLocationX
         - startLocationY
+        - waypointRadiusMeters
         - status
         - eventType
       properties:
@@ -1208,6 +1219,10 @@ components:
         startLocationY:
           type: number
           format: float
+        waypointRadiusMeters:
+          type: number
+          format: float
+          description: "Radius in meters used to consider waypoint reached"
         status:
           type: string
           enum: [ PLANNED, IN_PROGRESS, COMPLETED, CONTINUOUS ]

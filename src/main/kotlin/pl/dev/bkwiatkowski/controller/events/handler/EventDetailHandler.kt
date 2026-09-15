@@ -99,6 +99,7 @@ class EventDetailHandler(
              startDate = event.startDate,
              startLocationX = event.startLocationX,
              startLocationY = event.startLocationY,
+             waypointRadiusMeters = event.waypointRadiusMeters,
              status = event.status,
              eventType = event.eventType,
              eventWaypoints = event.eventWaypoints.map { waypoint ->

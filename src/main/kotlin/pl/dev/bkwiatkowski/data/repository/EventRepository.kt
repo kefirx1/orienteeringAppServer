@@ -97,6 +97,7 @@ class EventRepositoryImpl(
         startDate = event.startDate
         startLocationX = event.startLocationX
         startLocationY = event.startLocationY
+        waypointRadiusMeters = event.waypointRadiusMeters
         status = event.status.value
         eventType = event.eventType.value
       }

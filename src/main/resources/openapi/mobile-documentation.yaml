@@ -1096,6 +1096,7 @@ components:
         - startDate
         - startLocationX
         - startLocationY
+        - waypointRadiusMeters
         - createdByUsername
         - eventType
       properties:
@@ -1121,6 +1122,10 @@ components:
         startLocationY:
           type: number
           format: float
+        waypointRadiusMeters:
+          type: number
+          format: float
+          description: "Radius in meters used to consider waypoint reached"
         createdByUsername:
           type: string
           description: "Username of the user who created the event"
@@ -1171,6 +1176,10 @@ components:
         startLocationY:
           type: number
           format: float
+        waypointRadiusMeters:
+          type: number
+          format: float
+          description: "Radius in meters used to consider waypoint reached"
         status:
           type: string
           enum: [ PLANNED, IN_PROGRESS, COMPLETED, CONTINUOUS ]

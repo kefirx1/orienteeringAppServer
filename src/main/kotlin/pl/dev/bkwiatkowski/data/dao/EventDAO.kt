@@ -17,6 +17,7 @@ class EventDAO(id: EntityID<Int>) : IntEntity(id) {
   var startDate by EventTable.startDate
   var startLocationX by EventTable.startLocationX
   var startLocationY by EventTable.startLocationY
+  var waypointRadiusMeters by EventTable.waypointRadiusMeters
   var status by EventTable.status
   var eventType by EventTable.eventType
 }

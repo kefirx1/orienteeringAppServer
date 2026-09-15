@@ -74,6 +74,7 @@ class EventListHandler(
               startDate = event.startDate,
               startLocationX = event.startLocationX,
               startLocationY = event.startLocationY,
+              waypointRadiusMeters = event.waypointRadiusMeters,
               createdByUsername = creatorUsername,
               eventType = event.eventType,
               eventWaypoints = event.eventWaypoints.map { waypoint ->

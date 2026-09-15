@@ -48,6 +48,7 @@ fun EventDAO.toDomain(mapWaypoints: List<MapWaypoint>, eventWaypoints: List<MapW
   startDate = startDate,
   startLocationX = startLocationX,
   startLocationY = startLocationY,
+  waypointRadiusMeters = waypointRadiusMeters,
   status = when (status) {
     "IN_PROGRESS" -> EventStatus.IN_PROGRESS
     "COMPLETED" -> EventStatus.COMPLETED

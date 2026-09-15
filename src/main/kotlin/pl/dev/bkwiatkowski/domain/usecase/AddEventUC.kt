@@ -20,6 +20,7 @@ interface AddEventUC : UseCase<AddEventUC.Params, Int> {
     val startDate: LocalDateTime,
     val startLocationX: Float,
     val startLocationY: Float,
+    val waypointRadiusMeters: Float,
     val waypointIds: List<Int>,
     val eventType: EventType,
   ) : UseCase.Params
@@ -53,6 +54,7 @@ class AddEventUCImpl(
       startDate = startDate,
       startLocationX = params.startLocationX,
       startLocationY = params.startLocationY,
+      waypointRadiusMeters = params.waypointRadiusMeters,
       status = status,
       eventType = params.eventType,
     )

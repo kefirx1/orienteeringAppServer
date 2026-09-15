@@ -14,6 +14,7 @@ data class AddEventRequestDto(
   val startDateTime: LocalDateTime,
   val startLocationX: Float,
   val startLocationY: Float,
+  val waypointRadiusMeters: Float,
   val waypointIds: List<Int>,
   val eventType: EventType,
 )
