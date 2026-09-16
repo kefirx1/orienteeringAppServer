@@ -68,6 +68,7 @@ class MobileEventListHandler(
             startLocationY = event.startLocationY,
             createdByUsername = creatorUsername,
             eventType = event.eventType,
+            waypointRadiusMeters = event.waypointRadiusMeters,
             eventWaypoints = event.eventWaypoints.map { waypoint ->
               WaypointResponseDto(
                 id = waypoint.id,

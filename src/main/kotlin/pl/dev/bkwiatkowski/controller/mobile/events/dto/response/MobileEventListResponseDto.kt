@@ -18,6 +18,7 @@ data class MobileEventListResponseDto(
   val startDate: LocalDateTime,
   val startLocationX: Float,
   val startLocationY: Float,
+  val waypointRadiusMeters: Float,
   val createdByUsername: String,
   val eventType: EventType,
   val eventWaypoints: List<WaypointResponseDto>,
