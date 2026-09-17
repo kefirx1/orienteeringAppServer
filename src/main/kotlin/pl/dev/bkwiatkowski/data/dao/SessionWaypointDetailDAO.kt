@@ -14,4 +14,5 @@ class SessionWaypointDetailDAO(id: EntityID<Int>) : IntEntity(id) {
   var waypointId by SessionWaypointDetailsTable.waypointId
   var visitedAt by SessionWaypointDetailsTable.visitedAt
   var imagePath by SessionWaypointDetailsTable.imagePath
+  var accuracy by SessionWaypointDetailsTable.accuracy
 }

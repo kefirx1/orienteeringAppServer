@@ -1064,6 +1064,7 @@ components:
       required:
         - waypointId
         - imagePath
+        - accuracy
       properties:
         waypointId:
           type: integer
@@ -1076,6 +1077,9 @@ components:
         imagePath:
           type: string
           description: "Previously uploaded image path associated with this visit (relative storage path, must start with sessionUuid). Can be empty string if no image is associated. Example: '550e8400-e29b-41d4-a716-446655440000/photo.jpg'"
+        accuracy:
+          $ref: "#/components/schemas/AccuracyDto"
+          description: "Accuracy of the waypoint visit"
     IsUserInSessionResponseDto:
       type: object
       description: "Response indicating the membership status of the authenticated user in the session"
@@ -1237,6 +1241,7 @@ components:
       required:
         - waypointId
         - visitedAt
+        - accuracy
       properties:
         waypointId:
           type: integer
@@ -1245,6 +1250,9 @@ components:
           type: string
           format: date-time
           description: "Timestamp when the waypoint was visited (server LocalDateTime serialized as string)"
+        accuracy:
+          $ref: "#/components/schemas/AccuracyDto"
+          description: "Accuracy of the waypoint visit"
     SessionParticipantDto:
       type: object
       description: "Participant record for a session"
@@ -1479,6 +1487,11 @@ components:
         friendId:
           type: integer
           description: "ID of the friend to remove"
+    AccuracyDto:
+      type: string
+      description: "Accuracy enum: STRONG, WEAK, VERY_WEAK"
+      enum: [ STRONG, WEAK, VERY_WEAK ]
+
   securitySchemes:
     bearerAuth:
       type: http

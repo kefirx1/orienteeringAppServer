@@ -7,9 +7,11 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import pl.dev.bkwiatkowski.controller.events.dto.response.SessionWaypointDetailWebDto
 import pl.dev.bkwiatkowski.controller.events.dto.response.SessionWaypointDetailsWebResponseDto
+import pl.dev.bkwiatkowski.controller.mobile.events.dto.AccuracyDto
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
 import pl.dev.bkwiatkowski.core.security.token.USER_ROLE_CLAIM
+import pl.dev.bkwiatkowski.domain.model.Accuracy
 import pl.dev.bkwiatkowski.domain.model.AdminPanelUser
 import pl.dev.bkwiatkowski.domain.usecase.GetEventByIdUC
 import pl.dev.bkwiatkowski.domain.usecase.GetUserSessionWaypointDetailsUC
@@ -123,10 +125,17 @@ class GetUserSessionWaypointDetailsHandler(
       )
     ).fold(
       onRight = { details ->
+        val hasLowAccuracy = details.any { it.accuracy == Accuracy.WEAK || it.accuracy == Accuracy.VERY_WEAK }
+
         val dto = details.map { detail ->
           SessionWaypointDetailWebDto(
             waypointId = detail.waypointId,
             visitedAt = detail.visitedAt,
+            accuracy = when (detail.accuracy) {
+              Accuracy.STRONG -> AccuracyDto.STRONG
+              Accuracy.WEAK -> AccuracyDto.WEAK
+              Accuracy.VERY_WEAK -> AccuracyDto.VERY_WEAK
+            },
             label = detail.label,
             imagePath = detail.imagePath,
           )
@@ -134,7 +143,10 @@ class GetUserSessionWaypointDetailsHandler(
 
         call.respond(
           status = HttpStatusCode.OK,
-          message = SessionWaypointDetailsWebResponseDto(sessionWaypointDetails = dto),
+          message = SessionWaypointDetailsWebResponseDto(
+            sessionWaypointDetails = dto,
+            hasLowAccuracy = hasLowAccuracy,
+          ),
         )
       },
       onLeft = {

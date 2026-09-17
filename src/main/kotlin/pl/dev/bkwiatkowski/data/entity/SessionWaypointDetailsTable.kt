@@ -10,4 +10,5 @@ object SessionWaypointDetailsTable : IntIdTable(name = "session_waypoint_details
   val waypointId = integer(name = "waypoint_id").references(MapWaypointTable.id)
   val visitedAt = datetime(name = "visited_at")
   val imagePath = varchar(name = "image_path", length = 512)
+  val accuracy = varchar(name = "accuracy", length = 16)
 }

@@ -6,13 +6,13 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import pl.dev.bkwiatkowski.controller.maps.dto.response.WaypointResponseDto
+import pl.dev.bkwiatkowski.controller.mobile.events.MobileEventConstants
+import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.EventSessionResponseDto
 import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.MobileEventDetailResponseDto
 import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.MobileMapDto
-import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.EventSessionResponseDto
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
 import pl.dev.bkwiatkowski.domain.usecase.GetEventByIdUC
-import pl.dev.bkwiatkowski.controller.mobile.events.MobileEventConstants
 
 class MobileEventDetailHandler(
   private val getEventByIdUC: GetEventByIdUC,
@@ -70,6 +70,7 @@ class MobileEventDetailHandler(
             startDate = event.startDate,
             startLocationX = event.startLocationX,
             startLocationY = event.startLocationY,
+            waypointRadiusMeters = event.waypointRadiusMeters,
             status = event.status,
             eventType = event.eventType,
             session = event.session?.let { session ->

@@ -689,6 +689,11 @@
   <script>
     // Script section to load models into a JS Var
     var defs = {}
+            defs["AccuracyDto"] = {
+  "type" : "string",
+  "description" : "Accuracy enum: STRONG, WEAK, VERY_WEAK",
+  "enum" : [ "STRONG", "WEAK", "VERY_WEAK" ]
+};
             defs["AddAdminUserRequestDto"] = {
   "required" : [ "email", "password", "username" ],
   "type" : "object",
@@ -1100,7 +1105,7 @@
   }
 };
             defs["SessionWaypointDetailWebDto"] = {
-  "required" : [ "visitedAt", "waypointId" ],
+  "required" : [ "accuracy", "visitedAt", "waypointId" ],
   "type" : "object",
   "properties" : {
     "waypointId" : {
@@ -1111,6 +1116,9 @@
       "type" : "string",
       "description" : "Timestamp when the waypoint was visited (LocalDateTime)",
       "format" : "date-time"
+    },
+    "accuracy" : {
+      "$ref" : "#/components/schemas/AccuracyDto"
     },
     "label" : {
       "type" : "string",

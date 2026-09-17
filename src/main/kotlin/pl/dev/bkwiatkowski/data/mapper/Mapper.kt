@@ -79,6 +79,11 @@ fun SessionWaypointDetailDAO.toDomain(label: String? = null) = SessionWaypointDe
   visitedAt = visitedAt,
   imagePath = imagePath.takeIf { it.isNotBlank() },
   label = label,
+  accuracy = when (accuracy.uppercase()) {
+    "STRONG" -> Accuracy.STRONG
+    "WEAK" -> Accuracy.WEAK
+    else -> Accuracy.VERY_WEAK
+  }
 )
 
 fun MobileUserFriendDAO.toDomain() = MobileUserFriend(

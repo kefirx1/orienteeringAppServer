@@ -1,11 +1,12 @@
-package domain.repository
+package pl.dev.bkwiatkowski.domain.repository
 
-import java.time.LocalDateTime
-import pl.dev.bkwiatkowski.core.Either
 import pl.dev.bkwiatkowski.core.DomainError
+import pl.dev.bkwiatkowski.core.Either
+import pl.dev.bkwiatkowski.domain.model.Accuracy
 import pl.dev.bkwiatkowski.domain.model.SessionParticipant
 import pl.dev.bkwiatkowski.domain.model.SessionWaypointDetail
 import pl.dev.bkwiatkowski.domain.model.UserSessionSummary
+import java.time.LocalDateTime
 
 interface SessionParticipantsRepository {
   suspend fun addParticipantToSession(
@@ -26,6 +27,7 @@ interface SessionParticipantsRepository {
     waypointId: Int,
     visitedAt: LocalDateTime,
     imagePath: String,
+    accuracy: Accuracy,
   ): Either<DomainError, SessionWaypointDetail>
 
   suspend fun getUserSessionWaypointDetails(

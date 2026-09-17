@@ -2,8 +2,9 @@ package pl.dev.bkwiatkowski.domain.usecase
 
 import pl.dev.bkwiatkowski.domain.repository.EventRepository
 import domain.repository.MobileUserRepository
-import domain.repository.SessionParticipantsRepository
+import pl.dev.bkwiatkowski.domain.repository.SessionParticipantsRepository
 import pl.dev.bkwiatkowski.controller.admin.events.dto.response.EventParticipantProgressionDto
+import pl.dev.bkwiatkowski.domain.model.Accuracy
 import pl.dev.bkwiatkowski.core.DomainError
 import pl.dev.bkwiatkowski.core.Either
 import pl.dev.bkwiatkowski.core.UseCase
@@ -30,6 +31,7 @@ class GetEventParticipantsProgressionUCImpl(
       val progressions = participants.map { participant ->
         val user = mobileUserRepository.getUserById(id = participant.userId).getRight()
         val visitedCount = sessionWaypointDetails.count { it.participantId == participant.id }
+        val hasLowAccuracy = sessionWaypointDetails.any { it.participantId == participant.id && (it.accuracy == Accuracy.WEAK || it.accuracy == Accuracy.VERY_WEAK) }
 
         EventParticipantProgressionDto(
           participantId = participant.id,
@@ -38,6 +40,7 @@ class GetEventParticipantsProgressionUCImpl(
           startedAt = participant.joinedAt,
           finishedAt = participant.finishedAt,
           visitedWaypointsCount = visitedCount,
+          hasLowAccuracy = hasLowAccuracy,
         )
       }
 

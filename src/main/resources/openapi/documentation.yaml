@@ -1367,6 +1367,7 @@ components:
       required:
         - waypointId
         - visitedAt
+        - accuracy
       properties:
         waypointId:
           type: integer
@@ -1375,6 +1376,9 @@ components:
           type: string
           format: date-time
           description: "Timestamp when the waypoint was visited (LocalDateTime)"
+        accuracy:
+          $ref: "#/components/schemas/AccuracyDto"
+          description: "Accuracy of the waypoint visit"
         label:
           type: string
           nullable: true
@@ -1392,6 +1396,11 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/SessionWaypointDetailWebDto"
+    AccuracyDto:
+      type: string
+      description: "Accuracy enum: STRONG, WEAK, VERY_WEAK"
+      enum: [ STRONG, WEAK, VERY_WEAK ]
+
   securitySchemes:
     bearerAuth:
       type: http

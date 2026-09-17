@@ -18,6 +18,7 @@ data class MobileEventDetailResponseDto(
   val startDate: LocalDateTime,
   val startLocationX: Float,
   val startLocationY: Float,
+  val waypointRadiusMeters: Float,
   val status: EventStatus,
   val eventType: EventType,
   val session: EventSessionResponseDto? = null,

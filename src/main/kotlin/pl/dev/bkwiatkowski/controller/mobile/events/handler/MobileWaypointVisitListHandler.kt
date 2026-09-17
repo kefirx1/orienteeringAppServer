@@ -6,12 +6,14 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
+import pl.dev.bkwiatkowski.controller.mobile.events.dto.AccuracyDto
 import pl.dev.bkwiatkowski.controller.mobile.events.dto.request.WebsocketWaypointVisitDto
 import pl.dev.bkwiatkowski.core.DomainError
 import pl.dev.bkwiatkowski.core.Log
 import pl.dev.bkwiatkowski.core.either
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
+import pl.dev.bkwiatkowski.domain.model.Accuracy
 import pl.dev.bkwiatkowski.domain.usecase.RecordWaypointVisitUC
 import java.time.LocalDateTime
 
@@ -67,6 +69,12 @@ class MobileWaypointVisitListHandler(
           Log.warn(message = "Invalid image path for session: ${dto.imagePath}")
         }
 
+        val accuracy = when (dto.accuracy) {
+          AccuracyDto.STRONG -> Accuracy.STRONG
+          AccuracyDto.WEAK -> Accuracy.WEAK
+          AccuracyDto.VERY_WEAK -> Accuracy.VERY_WEAK
+        }
+
         recordWaypointVisitUC(
           params = RecordWaypointVisitUC.Params(
             sessionUuid = sessionUuid,
@@ -74,6 +82,7 @@ class MobileWaypointVisitListHandler(
             waypointId = dto.waypointId,
             visitedAt = visitedAt,
             imagePath = imagePath!!,
+            accuracy = accuracy,
           )
         ).getRight()
       }.onLeft { error ->

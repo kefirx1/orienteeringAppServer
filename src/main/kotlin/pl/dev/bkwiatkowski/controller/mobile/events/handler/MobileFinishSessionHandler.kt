@@ -5,6 +5,7 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
+import pl.dev.bkwiatkowski.controller.mobile.events.dto.AccuracyDto
 import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.FinishSessionResponseDto
 import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.SessionParticipantDto
 import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.SessionWaypointDetailDto
@@ -12,6 +13,7 @@ import pl.dev.bkwiatkowski.core.DomainError
 import pl.dev.bkwiatkowski.core.Log
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
+import pl.dev.bkwiatkowski.domain.model.Accuracy
 import pl.dev.bkwiatkowski.domain.usecase.FinishSessionUC
 import pl.dev.bkwiatkowski.domain.usecase.GetUserSessionWaypointDetailsUC
 import java.time.LocalDateTime
@@ -73,6 +75,11 @@ class MobileFinishSessionHandler(
               SessionWaypointDetailDto(
                 waypointId = d.waypointId,
                 visitedAt = d.visitedAt,
+                accuracy = when (d.accuracy) {
+                  Accuracy.STRONG -> AccuracyDto.STRONG
+                  Accuracy.WEAK -> AccuracyDto.WEAK
+                  Accuracy.VERY_WEAK -> AccuracyDto.VERY_WEAK
+                },
               )
             }
 

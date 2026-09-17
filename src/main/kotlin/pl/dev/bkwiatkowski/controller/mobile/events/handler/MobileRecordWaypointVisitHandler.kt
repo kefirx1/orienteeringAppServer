@@ -6,6 +6,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
+import pl.dev.bkwiatkowski.controller.mobile.events.dto.AccuracyDto
 import pl.dev.bkwiatkowski.controller.mobile.events.dto.request.WebsocketWaypointVisitDto
 import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.SessionWaypointDetailDto
 import pl.dev.bkwiatkowski.controller.mobile.events.dto.response.WebsocketWaypointVisitResponseDto
@@ -14,6 +15,7 @@ import pl.dev.bkwiatkowski.core.Log
 import pl.dev.bkwiatkowski.core.either
 import pl.dev.bkwiatkowski.core.response.ErrorResponse
 import pl.dev.bkwiatkowski.core.security.token.USER_ID_CLAIM
+import pl.dev.bkwiatkowski.domain.model.Accuracy
 import pl.dev.bkwiatkowski.domain.usecase.RecordWaypointVisitUC
 import java.time.LocalDateTime
 
@@ -75,6 +77,12 @@ class MobileRecordWaypointVisitHandler(
         return
       }
 
+      val accuracy = when (dto.accuracy) {
+        AccuracyDto.STRONG -> Accuracy.STRONG
+        AccuracyDto.WEAK -> Accuracy.WEAK
+        AccuracyDto.VERY_WEAK -> Accuracy.VERY_WEAK
+      }
+
       val savedDetail = recordWaypointVisitUC(
         params = RecordWaypointVisitUC.Params(
           sessionUuid = sessionUuid,
@@ -82,12 +90,18 @@ class MobileRecordWaypointVisitHandler(
           waypointId = dto.waypointId,
           visitedAt = visitedAt,
           imagePath = imagePath!!,
+          accuracy = accuracy,
         )
       ).getRight()
 
       val lastDetailDto = SessionWaypointDetailDto(
         waypointId = savedDetail.waypointId,
         visitedAt = savedDetail.visitedAt,
+        accuracy = when (savedDetail.accuracy) {
+          Accuracy.STRONG -> AccuracyDto.STRONG
+          Accuracy.WEAK -> AccuracyDto.WEAK
+          Accuracy.VERY_WEAK -> AccuracyDto.VERY_WEAK
+        },
       )
 
       val response = WebsocketWaypointVisitResponseDto(

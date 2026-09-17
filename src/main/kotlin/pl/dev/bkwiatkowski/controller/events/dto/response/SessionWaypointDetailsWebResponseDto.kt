@@ -5,4 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class SessionWaypointDetailsWebResponseDto(
   val sessionWaypointDetails: List<SessionWaypointDetailWebDto>,
+  val hasLowAccuracy: Boolean,
 )

@@ -1,7 +1,7 @@
 package pl.dev.bkwiatkowski.domain.usecase
 
 import pl.dev.bkwiatkowski.domain.repository.EventRepository
-import domain.repository.SessionParticipantsRepository
+import pl.dev.bkwiatkowski.domain.repository.SessionParticipantsRepository
 import pl.dev.bkwiatkowski.core.DomainError
 import pl.dev.bkwiatkowski.core.Either
 import pl.dev.bkwiatkowski.core.UseCase

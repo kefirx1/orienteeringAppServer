@@ -52,6 +52,7 @@ import pl.dev.bkwiatkowski.core.validation.TextValidator
 import pl.dev.bkwiatkowski.data.repository.*
 import pl.dev.bkwiatkowski.domain.repository.AdminPanelUserRepository
 import pl.dev.bkwiatkowski.domain.repository.EventRepository
+import pl.dev.bkwiatkowski.domain.repository.SessionParticipantsRepository
 import pl.dev.bkwiatkowski.domain.usecase.*
 import pl.dev.bkwiatkowski.plugins.HTTPPlugin
 import pl.dev.bkwiatkowski.plugins.MonitoringPlugin

@@ -1,6 +1,5 @@
 package pl.dev.bkwiatkowski.data.repository
 
-import domain.repository.SessionParticipantsRepository
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.isNull
@@ -15,9 +14,11 @@ import pl.dev.bkwiatkowski.data.entity.EventSessionTable
 import pl.dev.bkwiatkowski.data.entity.SessionParticipantsTable
 import pl.dev.bkwiatkowski.data.entity.SessionWaypointDetailsTable
 import pl.dev.bkwiatkowski.data.mapper.toDomain
+import pl.dev.bkwiatkowski.domain.model.Accuracy
 import pl.dev.bkwiatkowski.domain.model.SessionParticipant
 import pl.dev.bkwiatkowski.domain.model.SessionWaypointDetail
 import pl.dev.bkwiatkowski.domain.model.UserSessionSummary
+import pl.dev.bkwiatkowski.domain.repository.SessionParticipantsRepository
 import java.time.LocalDateTime
 
 class SessionParticipantsRepositoryImpl(
@@ -100,6 +101,7 @@ class SessionParticipantsRepositoryImpl(
     waypointId: Int,
     visitedAt: LocalDateTime,
     imagePath: String,
+    accuracy: Accuracy,
   ): Either<DomainError, SessionWaypointDetail> = either {
     database.getRight().dbQuery {
       val participantDao = SessionParticipantDAO.find {
@@ -113,6 +115,7 @@ class SessionParticipantsRepositoryImpl(
         this.waypointId = waypointId
         this.visitedAt = visitedAt
         this.imagePath = imagePath
+        this.accuracy = accuracy.name
       }.toDomain()
     }.getRight()
   }

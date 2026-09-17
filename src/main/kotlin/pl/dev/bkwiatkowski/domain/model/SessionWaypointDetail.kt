@@ -11,4 +11,5 @@ data class SessionWaypointDetail(
   val visitedAt: LocalDateTime,
   val imagePath: String?,
   val label: String? = null,
+  val accuracy: Accuracy,
 )
