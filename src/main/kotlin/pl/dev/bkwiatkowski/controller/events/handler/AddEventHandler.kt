@@ -75,7 +75,6 @@ class AddEventHandler(
         )
       },
       onLeft = {
-        println(it)
         call.respond(
           status = HttpStatusCode.InternalServerError,
           message = ErrorResponse(

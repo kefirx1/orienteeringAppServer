@@ -144,8 +144,6 @@ class GetUserSessionWaypointDetailsHandler(
           return
         }
 
-        println(participant)
-
         val dto = details.map { detail ->
           SessionWaypointDetailWebDto(
             waypointId = detail.waypointId,
