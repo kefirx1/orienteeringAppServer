@@ -16,6 +16,7 @@ class EventController(
   private val setEventSessionJoinableHandler: SetEventSessionJoinableHandler,
   private val closeEventSessionHandler: CloseEventSessionHandler,
   private val imageHandler: EventImageHandler,
+  private val acceptParticipantHandler: AcceptParticipantHandler,
 ) : Controller {
 
   override fun Route.registerRoutes() {
@@ -35,6 +36,10 @@ class EventController(
 
         get("{eventId}/participants-progression") {
           eventParticipantsProgressionHandler.handle(call)
+        }
+
+        post("{id}/session/participants/{participantId}/accept") {
+          acceptParticipantHandler.handle(call)
         }
 
         get("{id}/session/{sessionUuid}/user/{userId}/waypoints") {

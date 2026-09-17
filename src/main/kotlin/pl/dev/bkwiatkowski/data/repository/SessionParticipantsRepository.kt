@@ -213,4 +213,14 @@ class SessionParticipantsRepositoryImpl(
       participantDao.toDomain()
     }.getRight()
   }
+
+  override suspend fun acceptParticipant(participantId: Int): Either<DomainError, Unit> = either {
+    database.getRight().dbQuery {
+      val participantDao = SessionParticipantDAO.findById(participantId) ?: raise(error = DomainError.Custom(IllegalStateException("Participant not found")))
+
+      participantDao.hasToBeChecked = false
+
+      participantDao.toDomain()
+    }.getRight()
+  }
 }

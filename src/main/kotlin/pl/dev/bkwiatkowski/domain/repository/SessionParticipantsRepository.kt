@@ -47,4 +47,6 @@ interface SessionParticipantsRepository {
     userId: Int,
     finishedAt: LocalDateTime,
   ): Either<DomainError, SessionParticipant>
+
+  suspend fun acceptParticipant(participantId: Int): Either<DomainError, Unit>
 }

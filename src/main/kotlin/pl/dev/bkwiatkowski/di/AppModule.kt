@@ -398,6 +398,7 @@ fun appModule(config: ApplicationConfig) = module {
       setEventSessionJoinableHandler = get(),
       closeEventSessionHandler = get(),
       imageHandler = get(),
+      acceptParticipantHandler = get(),
     )
   } bind Controller::class
 
@@ -426,6 +427,12 @@ fun appModule(config: ApplicationConfig) = module {
 
   factory<GetSessionParticipantByIdUC> {
     GetSessionParticipantByIdUCImpl(
+      sessionParticipantsRepository = get(),
+    )
+  }
+
+  factory<AcceptParticipantUC> {
+    AcceptParticipantUCImpl(
       sessionParticipantsRepository = get(),
     )
   }
@@ -483,6 +490,8 @@ fun appModule(config: ApplicationConfig) = module {
   single { MobileGetLastEventHandler(getLastEventUC = get()) }
 
   single { EventImageHandler(environmentConfig = get(), getAdminPanelUserByIdUC = get(), getEventByIdUC = get(), getSessionByUuidUC = get()) }
+
+  single { AcceptParticipantHandler(acceptParticipantUC = get(), getSessionParticipantByIdUC = get(), getEventBySessionUuidUC = get(), getAdminPanelUserByIdUC = get()) }
 
   factory<StoreSessionImageUC> {
     StoreSessionImageUCImpl(

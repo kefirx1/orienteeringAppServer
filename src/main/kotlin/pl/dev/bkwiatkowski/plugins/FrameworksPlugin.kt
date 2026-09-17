@@ -12,7 +12,6 @@ import org.koin.logger.slf4jLogger
 import pl.dev.bkwiatkowski.core.serialization.LocalDateSerializer
 import pl.dev.bkwiatkowski.core.serialization.LocalDateTimeSerializer
 import pl.dev.bkwiatkowski.di.appModule
-import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 class FrameworksPlugin {

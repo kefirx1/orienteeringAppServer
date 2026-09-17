@@ -681,6 +681,54 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /api/events/{id}/session/participants/{participantId}/accept:
+    post:
+      summary: Accept a session participant
+      description: "Mark participant's `hasToBeChecked` flag as false. Only accessible by admins or the event owner. Requires authentication."
+      security:
+        - bearerAuth: []
+      tags:
+        - events
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: "Event ID"
+        - name: participantId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: "Numeric id of the session participant to accept"
+      responses:
+        "200":
+          description: "Participant accepted successfully"
+        "401":
+          description: "Unauthorized - missing or invalid authentication"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
+          description: "Forbidden - insufficient permissions"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: "Not found - participant or event not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
   /api/events/{id}/session/{sessionUuid}/user/{userId}/waypoints:
     get:
       description: "Retrieves a list of waypoint visit details (visitedAt, label, image path) for a given session UUID and mobile user. Accessible by event owner or admin. **Requires authentication.**"
@@ -1366,6 +1414,30 @@ components:
         hasToBeChecked:
           type: boolean
           description: "Indicates whether the participant's run/session requires manual checking (default false)"
+    SessionParticipant:
+      type: object
+      required:
+        - id
+        - sessionUuid
+        - userId
+        - joinedAt
+        - hasToBeChecked
+      properties:
+        id:
+          type: integer
+        sessionUuid:
+          type: string
+        userId:
+          type: integer
+        joinedAt:
+          type: string
+          format: date-time
+        finishedAt:
+          type: string
+          format: date-time
+          nullable: true
+        hasToBeChecked:
+          type: boolean
     SessionWaypointDetailWebDto:
       type: object
       required:
