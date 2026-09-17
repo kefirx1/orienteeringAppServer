@@ -52,6 +52,7 @@ class MobileGetSessionParticipantHandler(
             sessionUuid = p.sessionUuid,
             joinedAt = p.joinedAt,
             finishedAt = p.finishedAt!!,
+            hasToBeChecked = p.hasToBeChecked,
           )
         }
 

@@ -66,6 +66,7 @@ class MobileGetUserSessionsSummaryHandler(
             visitedWaypointsCount = s.visitedWaypointsCount,
             mapName = s.mapName,
             eventName = s.eventName,
+            hasToBeChecked = s.hasToBeChecked,
           )
         }
 

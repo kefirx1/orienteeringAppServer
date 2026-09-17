@@ -13,4 +13,5 @@ data class EventParticipantProgressionDto(
   @Contextual val finishedAt: LocalDateTime?,
   val visitedWaypointsCount: Int,
   val hasLowAccuracy: Boolean,
+  val hasToBeChecked: Boolean,
 )

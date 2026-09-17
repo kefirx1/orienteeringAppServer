@@ -8,4 +8,5 @@ data class SessionParticipant(
   val userId: Int,
   val joinedAt: LocalDateTime,
   val finishedAt: LocalDateTime? = null,
+  val hasToBeChecked: Boolean,
 )

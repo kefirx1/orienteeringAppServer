@@ -11,4 +11,5 @@ data class SessionParticipantDto(
   val joinedAt: LocalDateTime,
   @Contextual
   val finishedAt: LocalDateTime,
+  val hasToBeChecked: Boolean,
 )

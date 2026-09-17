@@ -9,4 +9,5 @@ data class SessionParticipantResponseDto(
   val sessionUuid: String,
   @Contextual val joinedAt: LocalDateTime,
   @Contextual val finishedAt: LocalDateTime,
+  val hasToBeChecked: Boolean,
 )

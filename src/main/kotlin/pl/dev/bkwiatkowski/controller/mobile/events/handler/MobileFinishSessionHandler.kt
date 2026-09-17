@@ -69,6 +69,7 @@ class MobileFinishSessionHandler(
               sessionUuid = participant.sessionUuid,
               joinedAt = participant.joinedAt,
               finishedAt = participant.finishedAt!!,
+              hasToBeChecked = participant.hasToBeChecked,
             )
 
             val waypointDto = waypointDetails.map { d ->

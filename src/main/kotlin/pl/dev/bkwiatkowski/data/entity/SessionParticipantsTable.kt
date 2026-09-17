@@ -8,4 +8,5 @@ object SessionParticipantsTable : IntIdTable(name = "session_participants") {
   val userId = integer(name = "user_id").references(MobileUserTable.id)
   val joinedAt = datetime(name = "joined_at")
   val finishedAt = datetime(name = "finished_at").nullable()
+  val hasToBeChecked = bool(name = "has_to_be_checked").default(false)
 }

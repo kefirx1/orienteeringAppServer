@@ -20,7 +20,7 @@ fun AdminPanelUserDAO.toDomain() = AdminPanelUser(
   email = email,
   password = password,
   salt = salt,
-  role = role
+  role = role,
 )
 
 fun MapWaypointDAO.toDomain() = MapWaypoint(
@@ -68,6 +68,7 @@ fun SessionParticipantDAO.toDomain() = SessionParticipant(
   userId = userId,
   joinedAt = joinedAt,
   finishedAt = finishedAt,
+  hasToBeChecked = hasToBeChecked,
 )
 
 fun SessionWaypointDetailDAO.toDomain(label: String? = null) = SessionWaypointDetail(

@@ -41,6 +41,7 @@ class GetEventParticipantsProgressionUCImpl(
           finishedAt = participant.finishedAt,
           visitedWaypointsCount = visitedCount,
           hasLowAccuracy = hasLowAccuracy,
+          hasToBeChecked = participant.hasToBeChecked,
         )
       }
 

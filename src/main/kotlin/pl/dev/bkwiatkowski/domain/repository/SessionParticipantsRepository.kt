@@ -21,6 +21,8 @@ interface SessionParticipantsRepository {
 
   suspend fun getSessionParticipant(sessionUuid: String, userId: Int): Either<DomainError, SessionParticipant>
 
+  suspend fun getSessionParticipantById(participantId: Int): Either<DomainError, SessionParticipant>
+
   suspend fun recordWaypointVisit(
     sessionUuid: String,
     userId: Int,

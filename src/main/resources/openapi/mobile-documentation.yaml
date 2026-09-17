@@ -1260,6 +1260,7 @@ components:
         - sessionUuid
         - joinedAt
         - finishedAt
+        - hasToBeChecked
       properties:
         sessionUuid:
           type: string
@@ -1271,6 +1272,9 @@ components:
           type: string
           format: date-time
           description: "Timestamp when the user finished the session (nullable)"
+        hasToBeChecked:
+          type: boolean
+          description: "Indicates whether this participant's run/session requires manual checking (default false)"
     SessionParticipantResponseDto:
       type: object
       description: "Response containing participant record for the authenticated user (only returned when finishedAt is present)"
@@ -1278,6 +1282,7 @@ components:
         - sessionUuid
         - joinedAt
         - finishedAt
+        - hasToBeChecked
       properties:
         sessionUuid:
           type: string
@@ -1289,6 +1294,9 @@ components:
           type: string
           format: date-time
           description: "Timestamp when the user finished the session (LocalDateTime, not null)"
+        hasToBeChecked:
+          type: boolean
+          description: "Indicates whether this participant's run/session requires manual checking (default false)"
     FinishSessionResponseDto:
       type: object
       description: "Response returned when finishing a session for the authenticated user"
@@ -1346,6 +1354,7 @@ components:
         - visitedWaypointsCount
         - mapName
         - eventName
+        - hasToBeChecked
       properties:
         sessionUuid:
           type: string
@@ -1367,6 +1376,9 @@ components:
         eventName:
           type: string
           description: "Name of the event"
+        hasToBeChecked:
+          type: boolean
+          description: "Indicates whether this participant's run/session requires manual checking (default false)"
     UserSessionsResponseDto:
       type: object
       description: "Response containing list of user session summaries"
@@ -1491,7 +1503,6 @@ components:
       type: string
       description: "Accuracy enum: STRONG, WEAK, VERY_WEAK"
       enum: [ STRONG, WEAK, VERY_WEAK ]
-
   securitySchemes:
     bearerAuth:
       type: http

@@ -978,7 +978,7 @@
   }
 };
             defs["EventParticipantProgressionDto"] = {
-  "required" : [ "finishedAt", "isLiveTracking", "participantId", "startedAt", "userId", "userName", "visitedWaypointsCount" ],
+  "required" : [ "finishedAt", "hasLowAccuracy", "hasToBeChecked", "participantId", "startedAt", "userId", "userName", "visitedWaypointsCount" ],
   "type" : "object",
   "properties" : {
     "participantId" : {
@@ -1007,9 +1007,13 @@
       "type" : "integer",
       "description" : "Number of waypoints visited by the participant"
     },
-    "isLiveTracking" : {
+    "hasLowAccuracy" : {
       "type" : "boolean",
-      "description" : "Whether the participant was in live tracking mode (true) or offline/replay mode (false)"
+      "description" : "Indicates whether any waypoint visit by this participant has low accuracy"
+    },
+    "hasToBeChecked" : {
+      "type" : "boolean",
+      "description" : "Indicates whether the participant's run/session requires manual checking (default false)"
     }
   }
 };
@@ -1133,7 +1137,7 @@
   }
 };
             defs["SessionWaypointDetailsWebResponseDto"] = {
-  "required" : [ "sessionWaypointDetails" ],
+  "required" : [ "hasLowAccuracy", "hasToBeChecked", "sessionWaypointDetails" ],
   "type" : "object",
   "properties" : {
     "sessionWaypointDetails" : {
@@ -1141,6 +1145,14 @@
       "items" : {
         "$ref" : "#/components/schemas/SessionWaypointDetailWebDto"
       }
+    },
+    "hasLowAccuracy" : {
+      "type" : "boolean",
+      "description" : "Indicates whether any of the returned waypoint visits has low accuracy"
+    },
+    "hasToBeChecked" : {
+      "type" : "boolean",
+      "description" : "Indicates whether the participant's run/session requires manual checking (default false)"
     }
   }
 };

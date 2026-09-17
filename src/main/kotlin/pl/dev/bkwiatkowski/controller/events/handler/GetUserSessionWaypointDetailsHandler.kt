@@ -15,9 +15,11 @@ import pl.dev.bkwiatkowski.domain.model.Accuracy
 import pl.dev.bkwiatkowski.domain.model.AdminPanelUser
 import pl.dev.bkwiatkowski.domain.usecase.GetEventByIdUC
 import pl.dev.bkwiatkowski.domain.usecase.GetUserSessionWaypointDetailsUC
+import pl.dev.bkwiatkowski.domain.usecase.GetSessionParticipantByIdUC
 
 class GetUserSessionWaypointDetailsHandler(
   private val getUserSessionWaypointDetailsUC: GetUserSessionWaypointDetailsUC,
+  private val getSessionParticipantByIdUC: GetSessionParticipantByIdUC,
   private val getEventByIdUC: GetEventByIdUC,
 ) {
   suspend fun handle(call: ApplicationCall) {
@@ -127,6 +129,23 @@ class GetUserSessionWaypointDetailsHandler(
       onRight = { details ->
         val hasLowAccuracy = details.any { it.accuracy == Accuracy.WEAK || it.accuracy == Accuracy.VERY_WEAK }
 
+        val participant = getSessionParticipantByIdUC(
+          params = GetSessionParticipantByIdUC.Params(
+            participantId = participantId,
+          ),
+        ).getRightOrElse {
+          call.respond(
+            status = HttpStatusCode.InternalServerError,
+            message = ErrorResponse(
+              businessCode = "FETCH_PARTICIPANT_FAILED",
+              message = "Failed to fetch session participant",
+            )
+          )
+          return
+        }
+
+        println(participant)
+
         val dto = details.map { detail ->
           SessionWaypointDetailWebDto(
             waypointId = detail.waypointId,
@@ -146,6 +165,7 @@ class GetUserSessionWaypointDetailsHandler(
           message = SessionWaypointDetailsWebResponseDto(
             sessionWaypointDetails = dto,
             hasLowAccuracy = hasLowAccuracy,
+            hasToBeChecked = participant.hasToBeChecked,
           ),
         )
       },

@@ -44,6 +44,7 @@ class SessionParticipantsRepositoryImpl(
         this.sessionUuid = sessionUuid
         this.userId = userId
         this.joinedAt = joinedAt
+        this.hasToBeChecked = false
       }.toDomain()
     }.getRight()
   }
@@ -92,9 +93,21 @@ class SessionParticipantsRepositoryImpl(
       }.firstOrNull() ?: raise(error = DomainError.Custom(IllegalStateException("Participant not found or already finished")))
 
       participant.finishedAt = finishedAt
+
+      val hasLowAccuracy = SessionWaypointDetailDAO.find {
+        (SessionWaypointDetailsTable.sessionUuid eq sessionUuid) and
+        (SessionWaypointDetailsTable.userId eq userId) and
+        (SessionWaypointDetailsTable.participantId eq participant.id.value)
+      }.any { detailDao ->
+        detailDao.accuracy != Accuracy.STRONG.name
+      }
+
+      participant.hasToBeChecked = hasLowAccuracy
+
       participant.toDomain()
     }.getRight()
   }
+
   override suspend fun recordWaypointVisit(
     sessionUuid: String,
     userId: Int,
@@ -188,8 +201,16 @@ class SessionParticipantsRepositoryImpl(
           visitedWaypointsCount = visitedCount.toInt(),
           mapName = mapDao.name,
           eventName = eventDao.name,
+          hasToBeChecked = participant.hasToBeChecked,
         )
       }.sortedByDescending { it.startedAt }
+    }.getRight()
+  }
+
+  override suspend fun getSessionParticipantById(participantId: Int): Either<DomainError, SessionParticipant> = either {
+    database.getRight().dbQuery {
+      val participantDao = SessionParticipantDAO.findById(participantId) ?: raise(error = DomainError.Custom(IllegalStateException("Participant not found")))
+      participantDao.toDomain()
     }.getRight()
   }
 }

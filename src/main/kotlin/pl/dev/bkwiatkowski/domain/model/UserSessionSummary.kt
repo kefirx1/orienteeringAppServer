@@ -9,4 +9,5 @@ data class UserSessionSummary(
   val visitedWaypointsCount: Int,
   val mapName: String,
   val eventName: String,
+  val hasToBeChecked: Boolean,
 )

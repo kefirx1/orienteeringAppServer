@@ -12,4 +12,5 @@ class SessionParticipantDAO(id: EntityID<Int>) : IntEntity(id) {
   var userId by SessionParticipantsTable.userId
   var joinedAt by SessionParticipantsTable.joinedAt
   var finishedAt by SessionParticipantsTable.finishedAt
+  var hasToBeChecked by SessionParticipantsTable.hasToBeChecked
 }
